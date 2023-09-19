@@ -18,6 +18,7 @@ public class MessageOptionalParameter implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "parameter_uuid")
     private Long id;
 
     @Column(name = "is_spam")

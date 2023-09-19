@@ -4,6 +4,14 @@ spring:
     username: leir
     password: 123
     url: jdbc:postgresql://localhost:5432/socialmedia
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        ddl-auto: validate
+        format_sql: true
+        show_sql: true
+
 
 jwt:
   lifetime: 10m

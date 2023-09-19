@@ -75,4 +75,11 @@ public class User {
                 ", modifiedAt=" + modifiedAt +
                 '}';
     }
+
+    public User(UUID id, String username, String email, String password) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }
