@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: leir
+    password: 123
+    url: jdbc:postgresql://localhost:5432/socialmedia
+
+jwt:
+  lifetime: 10m
+socialmedia:
+  files:
+    path: /home/david/uploadFiles
+    mime-type-to-valid-extension:
+      "[image/jpeg]": [ ".jpeg", ".jpg", ".jpe", ".JPEG", ".JPG", ".JPE" ]
+      "[image/png]": [ ".png", ".PNG" ]
