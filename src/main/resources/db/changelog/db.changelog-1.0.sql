@@ -17,7 +17,7 @@ CREATE TABLE users
 --changeset leir:3
 CREATE TABLE publication_optional_parameters
 (
-    id SMALLSERIAL PRIMARY KEY,
+    parameter_uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     is_published BOOLEAN,
     is_draft BOOLEAN,
     is_hidden BOOLEAN,
@@ -33,7 +33,7 @@ CREATE TABLE publications
     publisher_uuid UUID REFERENCES users (id),
     created_date TIMESTAMP NOT NULL,
     modified_at TIMESTAMP,
-    parameters SMALLINT REFERENCES publication_optional_parameters(id)
+    parameters UUID REFERENCES publication_optional_parameters(parameter_uuid)
 );
 
 --changeset leir:5
@@ -86,7 +86,7 @@ CREATE TABLE publication_files
 --changeset leir:10
 CREATE TABLE messages_optional_parameters
 (
-    id SMALLSERIAL PRIMARY KEY,
+    parameter_uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     is_spam BOOLEAN,
     is_deleted BOOLEAN,
     not_delivered BOOLEAN,
@@ -103,7 +103,7 @@ CREATE TABLE messages
     sent_datetime TIMESTAMP NOT NULL,
     message_body TEXT,
     is_read BOOLEAN,
-    parameters SMALLINT REFERENCES messages_optional_parameters(id),
+    parameters UUID REFERENCES messages_optional_parameters(parameter_uuid),
     updated_at TIMESTAMP,
     parent_message UUID REFERENCES messages(id)
 );
@@ -114,6 +114,15 @@ CREATE TABLE message_files
     message_uuid UUID REFERENCES messages(id),
     file_uuid UUID REFERENCES files(name),
     CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_uuid)
+);
+
+--changeset leir:13
+CREATE TABLE subscriptions
+(
+    subscriber_id UUID REFERENCES users(id),
+    follower_id UUID REFERENCES users(id),
+    subscription_datetime TIMESTAMP NOT NULL,
+    CONSTRAINT subscriptions_pk PRIMARY KEY (subscriber_id, follower_id)
 );
 
 
