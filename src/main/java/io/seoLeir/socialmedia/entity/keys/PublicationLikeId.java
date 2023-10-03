@@ -1,6 +1,8 @@
-package io.seoLeir.socialmedia.entity;
+package io.seoLeir.socialmedia.entity.keys;
 
 
+import io.seoLeir.socialmedia.entity.Publication;
+import io.seoLeir.socialmedia.entity.User;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;

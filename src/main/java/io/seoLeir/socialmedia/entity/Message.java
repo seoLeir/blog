@@ -44,9 +44,20 @@ public class Message implements BaseEntity<UUID> {
     @Column(name = "is_read")
     private Boolean isRead;
 
-    @JoinColumn(name = "parameters")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private MessageOptionalParameter parameters;
+    @Column(name = "is_spam")
+    private Boolean isSpam;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Column(name = "not_delivered")
+    private Boolean notDelivered;
+
+    @Column(name = "is_postponed")
+    private Boolean isPostponed;
+
+    @Column(name = "is_edited")
+    private Boolean isEdited;
 
     @Column(name = "updated_at")
     @LastModifiedDate
@@ -81,16 +92,5 @@ public class Message implements BaseEntity<UUID> {
         return Objects.hash(id, sentDateTime, messageBody);
     }
 
-    @Override
-    public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", userFrom=" + userFrom +
-                ", userTo=" + userTo +
-                ", sentDateTime=" + sentDateTime +
-                ", messageBody='" + messageBody + '\'' +
-                ", isRead=" + isRead +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+
 }

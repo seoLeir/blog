@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,5 +40,9 @@ public class UserService implements UserDetailsService {
                     log.debug("user with username: {} not found", username);
                     return new UsernameNotFoundException("User with username: " + username + "not found");
                 });
+    }
+
+    public Optional<User> findByUsername(String username){
+        return userRepository.findByUsername(username);
     }
 }
