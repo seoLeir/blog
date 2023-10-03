@@ -11,13 +11,21 @@ spring:
         ddl-auto: validate
         format_sql: true
         show_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 200MB
+      max-file-size: 215MB
 
-
-jwt:
-  lifetime: 10m
 socialmedia:
+  jwt:
+    lifetime: 15m
   files:
-    path: /home/david/uploadFiles
+    "basic-directory": D:\projects\social-media\s3files
     mime-type-to-valid-extension:
-      "[image/jpeg]": [ ".jpeg", ".jpg", ".jpe", ".JPEG", ".JPG", ".JPE" ]
-      "[image/png]": [ ".png", ".PNG" ]
+      "[image/jpeg]": [".jpeg", ".jpg", ".jpe", ".JPEG", ".JPG", ".JPE", ".jfif", ".JFIF"]
+      "[image/png]": [".png", ".PNG"]
+      "[image/gif]": [".gif"]
+      "[video/mp4]": [".mp4", ".mp4v", ".mpg4"]
+
+

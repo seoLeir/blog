@@ -1,5 +1,6 @@
 package io.seoLeir.socialmedia.entity;
 
+import io.seoLeir.socialmedia.entity.keys.SubscriptionId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +27,10 @@ public class Subscription implements BaseEntity<SubscriptionId>{
     @CreatedDate
     private Instant subscriptionDate;
 
+    @Column(name = "is_mutual")
+    private boolean isMutual;
 
+    public Subscription(SubscriptionId id) {
+        this.id = id;
+    }
 }

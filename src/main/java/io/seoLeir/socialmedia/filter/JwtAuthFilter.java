@@ -1,12 +1,11 @@
 package io.seoLeir.socialmedia.filter;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import io.seoLeir.socialmedia.util.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,26 +24,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authentication");
-        if (authHeader != null && authHeader.startsWith("Bearer ")){
-            try {
-                String jwt = authHeader.substring(7);
-                String username = jwtTokenUtils.getUsername(jwt);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() != null){
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(new UsernamePasswordAuthenticationToken(
-                                    username,
-                                    null,
-                                    jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new)
-                                            .toList()));
-                }
-            } catch (ExpiredJwtException e){
-                log.debug("token has expired ", e);
-
-            } catch (SignatureException e){
-                // TODO доработка выброса конкретного исключения
-                log.debug("incorrect signature for token", e);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String jwt = authHeader.substring(7);
+            String username = jwtTokenUtils.getUsername(jwt);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() != null) {
+                SecurityContextHolder.getContext()
+                        .setAuthentication(new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new)
+                                        .toList()));
             }
         }
         filterChain.doFilter(request, response);

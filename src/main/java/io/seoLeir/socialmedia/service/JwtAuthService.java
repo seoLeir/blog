@@ -1,6 +1,7 @@
 package io.seoLeir.socialmedia.service;
 
 import io.seoLeir.socialmedia.entity.User;
+import io.seoLeir.socialmedia.exception.user.InvalidUsernameOrPassword;
 import io.seoLeir.socialmedia.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,12 +24,12 @@ public class JwtAuthService {
     }
 
     @Transactional
-    public String authorize(String username, String password){
+    public String login(String username, String password){
         UserDetails userDetails = userService.loadUserByUsername(username);
         if (passwordEncoder.matches(password, userDetails.getPassword())){
             return jwtTokenUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
         }else {
-            throw new RuntimeException();
+            throw new InvalidUsernameOrPassword("Username or password are invalid");
         }
     }
 }

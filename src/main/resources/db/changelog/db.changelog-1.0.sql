@@ -15,28 +15,21 @@ CREATE TABLE users
 );
 
 --changeset leir:3
-CREATE TABLE publication_optional_parameters
-(
-    parameter_uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    is_published BOOLEAN,
-    is_draft BOOLEAN,
-    is_hidden BOOLEAN,
-    is_edited BOOLEAN
-);
-
---changeset leir:4
 CREATE TABLE publications
 (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     header TEXT NOT NULL,
     publication_text text NOT NULL,
     publisher_uuid UUID REFERENCES users (id),
+    is_published BOOLEAN default false,
+    is_draft BOOLEAN default false,
+    is_hidden BOOLEAN default false,
+    is_edited BOOLEAN default false,
     created_date TIMESTAMP NOT NULL,
-    modified_at TIMESTAMP,
-    parameters UUID REFERENCES publication_optional_parameters(parameter_uuid)
+    modified_at TIMESTAMP
 );
 
---changeset leir:5
+--changeset leir:4
 CREATE TABLE user_comments
 (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -47,7 +40,7 @@ CREATE TABLE user_comments
     created_at TIMESTAMP NOT NULL
 );
 
---changeset leir:6
+--changeset leir:5
 CREATE TABLE publication_likes
 (
     user_uuid UUID REFERENCES users(id),
@@ -56,7 +49,7 @@ CREATE TABLE publication_likes
     CONSTRAINT publication_likes_fk PRIMARY KEY (publication_uuid, user_uuid)
 );
 
---changeset leir:7
+--changeset leir:6
 CREATE TABLE comment_likes
 (
     user_uuid UUID REFERENCES users(id),
@@ -65,17 +58,18 @@ CREATE TABLE comment_likes
     CONSTRAINT comments_likes_fk PRIMARY KEY (comment_uuid, user_uuid)
 );
 
---changeset leir:8
+--changeset leir:7
 CREATE TABLE files
 (
     name UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     real_name TEXT NOT NULL,
     file_extension VARCHAR(7) NOT NULL,
     mime_type VARCHAR(64) NOT NULL,
+    loaded_by UUID references users(id),
     loaded_time TIMESTAMP NOT NULL
 );
 
---changeset leir:9
+--changeset leir:8
 CREATE TABLE publication_files
 (
     publication_uuid UUID REFERENCES publications(id),
@@ -83,18 +77,7 @@ CREATE TABLE publication_files
     CONSTRAINT publication_files_pk PRIMARY KEY (publication_uuid, file_uuid)
 );
 
---changeset leir:10
-CREATE TABLE messages_optional_parameters
-(
-    parameter_uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    is_spam BOOLEAN,
-    is_deleted BOOLEAN,
-    not_delivered BOOLEAN,
-    is_postponed BOOLEAN,
-    is_edited BOOLEAN
-);
-
---changeset leir:11
+--changeset leir:9
 CREATE TABLE messages
 (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -102,13 +85,17 @@ CREATE TABLE messages
     user_to UUID references users(id) NOT NULL,
     sent_datetime TIMESTAMP NOT NULL,
     message_body TEXT,
-    is_read BOOLEAN,
-    parameters UUID REFERENCES messages_optional_parameters(parameter_uuid),
+    is_read BOOLEAN default false,
+    is_spam BOOLEAN default false,
+    is_deleted BOOLEAN default false,
+    not_delivered BOOLEAN default false,
+    is_postponed BOOLEAN default false,
+    is_edited BOOLEAN default false,
     updated_at TIMESTAMP,
     parent_message UUID REFERENCES messages(id)
 );
 
---changeset leir:12
+--changeset leir:10
 CREATE TABLE message_files
 (
     message_uuid UUID REFERENCES messages(id),
@@ -116,13 +103,14 @@ CREATE TABLE message_files
     CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_uuid)
 );
 
---changeset leir:13
+--changeset leir:11
 CREATE TABLE subscriptions
 (
     subscriber_id UUID REFERENCES users(id),
-    follower_id UUID REFERENCES users(id),
+    target_user UUID REFERENCES users(id),
+    is_mutual BOOLEAN,
     subscription_datetime TIMESTAMP NOT NULL,
-    CONSTRAINT subscriptions_pk PRIMARY KEY (subscriber_id, follower_id)
+    CONSTRAINT subscriptions_pk PRIMARY KEY (subscriber_id, target_user)
 );
 
 

@@ -1,5 +1,6 @@
-package io.seoLeir.socialmedia.entity;
+package io.seoLeir.socialmedia.entity.keys;
 
+import io.seoLeir.socialmedia.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,26 +27,26 @@ public class SubscriptionId implements Serializable {
 
     @JoinColumn(name = "follower_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private User follower;
+    private User targetUser;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubscriptionId that = (SubscriptionId) o;
-        return Objects.equals(subscriber, that.subscriber) && Objects.equals(follower, that.follower);
+        return Objects.equals(subscriber, that.subscriber) && Objects.equals(targetUser, that.targetUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subscriber, follower);
+        return Objects.hash(subscriber, targetUser);
     }
 
     @Override
     public String toString() {
         return "SubscriptionId{" +
                 "subscriber=" + subscriber +
-                ", follower=" + follower +
+                ", follower=" + targetUser +
                 '}';
     }
 }

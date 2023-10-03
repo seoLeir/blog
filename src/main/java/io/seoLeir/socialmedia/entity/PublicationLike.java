@@ -1,5 +1,6 @@
 package io.seoLeir.socialmedia.entity;
 
+import io.seoLeir.socialmedia.entity.keys.PublicationLikeId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

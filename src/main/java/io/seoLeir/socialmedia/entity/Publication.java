@@ -38,6 +38,18 @@ public class Publication implements BaseEntity<UUID> {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Column(name = "is_published")
+    private Boolean isPublished;
+
+    @Column(name = "is_draft")
+    private Boolean isDraft;
+
+    @Column(name = "is_hidden")
+    private Boolean isHidden;
+
+    @Column(name = "is_edited")
+    private Boolean isEdited;
+
     @Column(name = "created_date", nullable = false)
     @CreatedDate
     private Instant createdDate;
@@ -45,11 +57,6 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "modified_at")
     @LastModifiedDate
     private Instant modifiedAt;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parameters")
-    private PublicationOptionalParameter publicationOptionalParameter;
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "publication_files",

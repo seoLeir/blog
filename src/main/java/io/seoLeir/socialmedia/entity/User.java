@@ -43,6 +43,9 @@ public class User {
     private Instant modifiedAt;
 
     @OneToMany(fetch = FetchType.LAZY)
+    private List<File> files = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Comment> userComments = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
