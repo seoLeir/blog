@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -75,5 +76,10 @@ public class FileService {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public List<File> getAllFilesByUserUuid(UUID id){
+        return fileRepository.findAllByUser(id);
     }
 }

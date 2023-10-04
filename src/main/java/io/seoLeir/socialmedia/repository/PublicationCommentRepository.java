@@ -8,5 +8,5 @@ import java.util.UUID;
 
 
 @Repository
-public interface CommentRepository extends JpaRepository<PublicationComment, UUID> {
+public interface PublicationCommentRepository extends JpaRepository<PublicationComment, UUID> {
 }

@@ -25,10 +25,11 @@ public class JwtTokenUtils {
                 .build();
     }
 
-    public String generateToken(String name, Collection<? extends GrantedAuthority> authorities){
+    public String generateToken(String name, Collection<? extends GrantedAuthority> authorities, UUID userUuid){
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = authorities.stream().map(GrantedAuthority::getAuthority).toList();
         claims.put("roles", roleList);
+        claims.put("user_uuid", userUuid);
         Date issDate = new Date(System.currentTimeMillis());
         Date expDate = new Date(issDate.getTime() + lifetime.toMillis());
         return Jwts.builder().setClaims(claims)
@@ -46,6 +47,10 @@ public class JwtTokenUtils {
 
     public String getUsername(String token){
         return getAllClaimsFromJwtToken(token).getSubject();
+    }
+
+    public UUID getUserUuid(String token){
+        return (UUID) getAllClaimsFromJwtToken(token).get("user_uuid");
     }
 
     @SuppressWarnings("unchecked")

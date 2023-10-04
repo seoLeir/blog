@@ -33,7 +33,7 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "publication_text")
     private String text;
 
-    @JoinColumn(name = "publisher_uuid")
+    @JoinColumn(name = "publisher_username")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

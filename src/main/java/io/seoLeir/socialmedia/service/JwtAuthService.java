@@ -27,9 +27,9 @@ public class JwtAuthService {
 
     @Transactional
     public String login(String username, String password){
-        UserDetails userDetails = userService.loadUserByUsername(username);
+        User userDetails = (User) userService.loadUserByUsername(username);
         if (passwordEncoder.matches(password, userDetails.getPassword())){
-            return jwtTokenUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+            return jwtTokenUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), userDetails.getId());
         }else {
             throw new InvalidUsernameOrPassword("Username or password are invalid");
         }

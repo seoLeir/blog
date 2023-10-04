@@ -1,6 +1,6 @@
 package io.seoLeir.socialmedia.mapper;
 
-import io.seoLeir.socialmedia.dto.publication.CreatePublicationDto;
+import io.seoLeir.socialmedia.dto.publication.PublicationCreateRequestDto;
 import io.seoLeir.socialmedia.entity.Publication;
 import io.seoLeir.socialmedia.entity.User;
 import org.mapstruct.*;
@@ -14,6 +14,6 @@ public abstract class PublicationMapper {
     @Mappings(value = {
             @Mapping(target = "user", source = "user")
     })
-    public abstract Publication publicationFromCreateDto(CreatePublicationDto dto, User user);
+    public abstract Publication publicationFromCreateDto(PublicationCreateRequestDto dto, User user);
 
 }
