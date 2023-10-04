@@ -10,9 +10,9 @@ insert into subscriptions (subscriber_id, target_user, is_mutual, subscription_d
 values ('e8fa8044-50ee-42b1-a85e-ef992ad56c26', 'e7d90ffe-1e27-49f2-8556-c7cda2f1e4f7', true, now()),
        ('e7d90ffe-1e27-49f2-8556-c7cda2f1e4f7', 'e8fa8044-50ee-42b1-a85e-ef992ad56c26', true, now());
 
-insert into files (name, real_name, file_extension, mime_type, loaded_time, loaded_by)
-values ('e563ff6b-6290-4ad7-8d6d-d0ba11e37df5', 'real-photo-name', '.jpg', 'image/jpeg', now(), 'e8fa8044-50ee-42b1-a85e-ef992ad56c26'),
-       ('61d79add-2e3a-4f06-abc7-49c606d8a82b', 'real-video-name', '.mp4', 'video/mp4', now(), 'e7d90ffe-1e27-49f2-8556-c7cda2f1e4f7');
+insert into files (name, real_name, mime_type, loaded_time, loaded_by)
+values ('e563ff6b-6290-4ad7-8d6d-d0ba11e37df5', 'real-photo-name', 'image/jpeg', now(), 'e8fa8044-50ee-42b1-a85e-ef992ad56c26'),
+       ('61d79add-2e3a-4f06-abc7-49c606d8a82b', 'real-video-name', 'video/mp4', now(), 'e7d90ffe-1e27-49f2-8556-c7cda2f1e4f7');
 
 insert into publication_files (publication_uuid, file_uuid)
 values ('66adccd2-94d2-498d-978f-7e8e0b66bc4b', 'e563ff6b-6290-4ad7-8d6d-d0ba11e37df5'),
@@ -23,8 +23,8 @@ values ('e8fa8044-50ee-42b1-a85e-ef992ad56c26', '66adccd2-94d2-498d-978f-7e8e0b6
        ('e8fa8044-50ee-42b1-a85e-ef992ad56c26', 'e277d488-fefa-40f4-bf7f-b4dacddcd00a', now());
 
 insert into user_comments (id, user_uuid, publication_uuid, parent_comment_uuid, comment_message, created_at)
-values ('7fcfc797-c148-4b11-b918-6fd5ee0cce77', 'e8fa8044-50ee-42b1-a85e-ef992ad56c26', '66adccd2-94d2-498d-978f-7e8e0b66bc4b', null, 'Self-comment by leir seoLeir', now()),
-       ('5513b18f-9607-4c99-bbb9-ad72863b3fb9', 'e7d90ffe-1e27-49f2-8556-c7cda2f1e4f7', '66adccd2-94d2-498d-978f-7e8e0b66bc4b', '7fcfc797-c148-4b11-b918-6fd5ee0cce77', 'Comment to seoLeir comment by david', now());
+values ('7fcfc797-c148-4b11-b918-6fd5ee0cce77', 'e8fa8044-50ee-42b1-a85e-ef992ad56c26', '66adccd2-94d2-498d-978f-7e8e0b66bc4b', null, 'Self-publicationComment by leir seoLeir', now()),
+       ('5513b18f-9607-4c99-bbb9-ad72863b3fb9', 'e7d90ffe-1e27-49f2-8556-c7cda2f1e4f7', '66adccd2-94d2-498d-978f-7e8e0b66bc4b', '7fcfc797-c148-4b11-b918-6fd5ee0cce77', 'Comment to seoLeir publicationComment by david', now());
 
 insert into comment_likes (user_uuid, comment_uuid, like_datetime)
 values ('e8fa8044-50ee-42b1-a85e-ef992ad56c26', '7fcfc797-c148-4b11-b918-6fd5ee0cce77', now()),

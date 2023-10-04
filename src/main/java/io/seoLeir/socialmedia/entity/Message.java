@@ -23,7 +23,6 @@ import java.util.UUID;
 public class Message implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @JoinColumn(name = "user_from", nullable = false)

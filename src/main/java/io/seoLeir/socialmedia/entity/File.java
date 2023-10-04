@@ -25,15 +25,11 @@ import java.util.UUID;
 public class File{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "name")
     private UUID filename;
 
     @Column(name = "real_name", nullable = false)
     private String realName;
-
-    @Column(name = "file_extension", nullable = false)
-    private String fileExtension;
 
     @Column(name = "mime_type", nullable = false)
     private String mimeType;
@@ -52,10 +48,9 @@ public class File{
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Publication> publications = new ArrayList<>();
 
-    public File(UUID name, String realName, String fileExtension, String mimeType, User loadedBy) {
+    public File(UUID name, String realName, String mimeType, User loadedBy) {
         this.filename = name;
         this.realName = realName;
-        this.fileExtension = fileExtension;
         this.mimeType = mimeType;
         this.user = loadedBy;
     }
@@ -65,22 +60,11 @@ public class File{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         File file = (File) o;
-        return Objects.equals(filename, file.filename) && Objects.equals(fileExtension, file.fileExtension) && Objects.equals(mimeType, file.mimeType);
+        return Objects.equals(filename, file.filename) && Objects.equals(mimeType, file.mimeType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(filename, fileExtension, mimeType);
-    }
-
-    @Override
-    public String toString() {
-        return "File{" +
-                "id=" + filename +
-                ", realName='" + realName + '\'' +
-                ", fileExtension='" + fileExtension + '\'' +
-                ", mimeType='" + mimeType + '\'' +
-                ", loadedTime=" + loadedTime +
-                '}';
+        return Objects.hash(filename, mimeType);
     }
 }

@@ -17,8 +17,6 @@ import java.util.UUID;
 public interface PublicationRepository extends JpaRepository<Publication, UUID> {
 
 
-    @Query("select p from Publication p where p.user.id = :userUuid")
-    List<Publication> getAllByUser(UUID userUuid);
 
 //    @Modifying(flushAutomatically = true)
 //    @Query("update Publication p set " +

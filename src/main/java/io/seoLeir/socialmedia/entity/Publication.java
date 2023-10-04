@@ -25,7 +25,6 @@ import java.util.UUID;
 public class Publication implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "header", nullable = false)
@@ -34,7 +33,7 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "publication_text")
     private String text;
 
-    @JoinColumn(name = "publisher_uuid")
+    @JoinColumn(name = "publisher_username")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -65,7 +64,7 @@ public class Publication implements BaseEntity<UUID> {
     private List<File> files = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Comment> publicationComments = new ArrayList<>();
+    private List<PublicationComment> publicationComments = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

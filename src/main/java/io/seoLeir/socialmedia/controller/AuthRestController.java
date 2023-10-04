@@ -3,11 +3,13 @@ package io.seoLeir.socialmedia.controller;
 import io.seoLeir.socialmedia.dto.authentication.AuthLoginRequestDto;
 import io.seoLeir.socialmedia.dto.authentication.AuthRegistrationRequestDto;
 import io.seoLeir.socialmedia.dto.authentication.AuthJwtTokenResponseDto;
-import io.seoLeir.socialmedia.dto.user.UserCreated;
+import io.seoLeir.socialmedia.dto.authentication.AuthRegistrationResponseDto;
 import io.seoLeir.socialmedia.service.JwtAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -17,9 +19,9 @@ public class AuthRestController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserCreated authenticateAndGetToken(@RequestBody AuthRegistrationRequestDto authRequest){
-        authService.registerUser(authRequest.getUsername(), authRequest.getEmail(), authRequest.getPassword());
-        return new UserCreated(HttpStatus.CREATED, "User was successfully created");
+    public AuthRegistrationResponseDto authenticateAndGetToken(@RequestBody AuthRegistrationRequestDto authRequest){
+        UUID createdUserUuid = authService.registerUser(authRequest.getUsername(), authRequest.getEmail(), authRequest.getPassword());
+        return new AuthRegistrationResponseDto(createdUserUuid);
     }
 
     @PostMapping("/login")

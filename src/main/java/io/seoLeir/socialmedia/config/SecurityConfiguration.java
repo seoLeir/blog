@@ -35,7 +35,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -54,14 +55,13 @@ public class SecurityConfiguration {
         return http.authorizeHttpRequests((requests) -> requests
                     .requestMatchers("/api/v1/login").anonymous()
                     .requestMatchers("/api/v1/registration").anonymous()
-                        .requestMatchers("/api/v1/**").permitAll())
-//                    .anyRequest().authenticated())
-//                .securityMatcher("/api/**")
+                    .anyRequest().authenticated())
+                .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .exceptionHandling(ses -> ses.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(ses -> ses.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .build();
     }
 }

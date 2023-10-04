@@ -19,15 +19,17 @@ public class JwtAuthService {
     private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
-    public void registerUser(String username, String email, String password){
-        userService.save(new User(UUID.randomUUID(), username, email, passwordEncoder.encode(password)));
+    public UUID registerUser(String username, String email, String password){
+        UUID userUuid = UUID.randomUUID();
+        userService.save(new User(userUuid, username, email, passwordEncoder.encode(password)));
+        return userUuid;
     }
 
     @Transactional
     public String login(String username, String password){
-        UserDetails userDetails = userService.loadUserByUsername(username);
+        User userDetails = (User) userService.loadUserByUsername(username);
         if (passwordEncoder.matches(password, userDetails.getPassword())){
-            return jwtTokenUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+            return jwtTokenUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), userDetails.getId());
         }else {
             throw new InvalidUsernameOrPassword("Username or password are invalid");
         }

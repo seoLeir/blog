@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -37,16 +38,26 @@ public class FileService {
         if(multipartFile.isEmpty()){
             throw new EmptyFileException("multipartFile should not be empty");
         }
-        String fileExtension = ExtensionResolver.getFileExtension(Objects.requireNonNull(multipartFile.getOriginalFilename()))
+        String fileExtension = ExtensionResolver
+                .getFileExtension(Objects.requireNonNull(multipartFile.getOriginalFilename()))
                 .orElseThrow(() -> new UnsupportedFileExtension("Unsupported file extension"));
         Set<String> validExtensionForMimetype = properties.getValidExtensionForMimetype(multipartFile.getContentType())
                 .orElseThrow(() -> new InvalidMimeType("Invalid mime type"));
         if (!validExtensionForMimetype.contains(fileExtension)){
-            throw new InvalidFileExtensionException("Unsupported multipartFile extension");
+            throw new UnsupportedFileExtension("Unsupported multipartFile extension");
         }
-        File fileToSave = new File(UUID.randomUUID(), multipartFile.getOriginalFilename(), fileExtension, multipartFile.getContentType(), user);
+        File fileToSave = new File(
+                UUID.randomUUID(),
+                multipartFile.getOriginalFilename(),
+                multipartFile.getContentType(),
+                user);
         fileRepository.save(fileToSave);
-        Files.copy(multipartFile.getInputStream(), properties.getBasicDirectory().resolve(fileToSave.getFilename().toString()), StandardCopyOption.REPLACE_EXISTING);
+        if (!Files.exists(properties.getBasicDirectory())){
+            Files.createDirectory(properties.getBasicDirectory());
+        }
+        Files.copy(multipartFile.getInputStream(),
+                properties.getBasicDirectory().resolve(fileToSave.getFilename().toString()),
+                StandardCopyOption.REPLACE_EXISTING);
         return fileToSave.getFilename();
     }
 
@@ -65,5 +76,10 @@ public class FileService {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public List<File> getAllFilesByUserUuid(UUID id){
+        return fileRepository.findAllByUser(id);
     }
 }

@@ -1,6 +1,6 @@
 package io.seoLeir.socialmedia.entity;
 
-import io.seoLeir.socialmedia.entity.keys.CommentLikeId;
+import io.seoLeir.socialmedia.entity.keys.PublicationCommentsLikeId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,18 +17,18 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "comment_likes")
+@Table(name = "publication_comments_likes")
 @EntityListeners(AuditingEntityListener.class)
-public class CommentLike implements BaseEntity<CommentLikeId>{
+public class PublicationCommentLike implements BaseEntity<PublicationCommentsLikeId>{
 
     @EmbeddedId
-    private CommentLikeId id;
+    private PublicationCommentsLikeId id;
 
     @Column(name = "like_datetime", nullable = false)
     @CreatedDate
     private Instant likeDateTime;
 
-    public CommentLike(CommentLikeId id) {
+    public PublicationCommentLike(PublicationCommentsLikeId id) {
         this.id = id;
     }
 
@@ -36,7 +36,7 @@ public class CommentLike implements BaseEntity<CommentLikeId>{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CommentLike that = (CommentLike) o;
+        PublicationCommentLike that = (PublicationCommentLike) o;
         return Objects.equals(id, that.id);
     }
 

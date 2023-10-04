@@ -1,12 +1,9 @@
 --liquibase formatted sql
 
 --changeset leir:1
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
---changeset leir:2
 CREATE TABLE users
 (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     username VARCHAR(32) UNIQUE NOT NULL,
     email VARCHAR(320) UNIQUE NOT NULL,
     password TEXT NOT NULL,
@@ -14,13 +11,13 @@ CREATE TABLE users
     modified_at TIMESTAMP
 );
 
---changeset leir:3
+--changeset leir:2
 CREATE TABLE publications
 (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     header TEXT NOT NULL,
     publication_text text NOT NULL,
-    publisher_uuid UUID REFERENCES users (id),
+    publisher_username VARCHAR(32) REFERENCES users (username),
     is_published BOOLEAN default false,
     is_draft BOOLEAN default false,
     is_hidden BOOLEAN default false,
@@ -29,18 +26,18 @@ CREATE TABLE publications
     modified_at TIMESTAMP
 );
 
---changeset leir:4
-CREATE TABLE user_comments
+--changeset leir:3
+CREATE TABLE publication_comments
 (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     user_uuid UUID REFERENCES users(id) NOT NULL,
     publication_uuid UUID REFERENCES publications(id),
-    parent_comment_uuid UUID REFERENCES user_comments(id),
+    parent_comment_uuid UUID REFERENCES publication_comments(id),
     comment_message TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
 
---changeset leir:5
+--changeset leir:4
 CREATE TABLE publication_likes
 (
     user_uuid UUID REFERENCES users(id),
@@ -49,27 +46,26 @@ CREATE TABLE publication_likes
     CONSTRAINT publication_likes_fk PRIMARY KEY (publication_uuid, user_uuid)
 );
 
---changeset leir:6
-CREATE TABLE comment_likes
+--changeset leir:5
+CREATE TABLE publication_comments_likes
 (
     user_uuid UUID REFERENCES users(id),
-    comment_uuid UUID REFERENCES user_comments (id),
+    comment_uuid UUID REFERENCES publication_comments (id),
     like_datetime TIMESTAMP NOT NULL,
     CONSTRAINT comments_likes_fk PRIMARY KEY (comment_uuid, user_uuid)
 );
 
---changeset leir:7
+--changeset leir:6
 CREATE TABLE files
 (
-    name UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name UUID PRIMARY KEY,
     real_name TEXT NOT NULL,
-    file_extension VARCHAR(7) NOT NULL,
     mime_type VARCHAR(64) NOT NULL,
     loaded_by UUID references users(id),
     loaded_time TIMESTAMP NOT NULL
 );
 
---changeset leir:8
+--changeset leir:7
 CREATE TABLE publication_files
 (
     publication_uuid UUID REFERENCES publications(id),
@@ -77,10 +73,10 @@ CREATE TABLE publication_files
     CONSTRAINT publication_files_pk PRIMARY KEY (publication_uuid, file_uuid)
 );
 
---changeset leir:9
+--changeset leir:8
 CREATE TABLE messages
 (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     user_from UUID references users (id) NOT NULL,
     user_to UUID references users(id) NOT NULL,
     sent_datetime TIMESTAMP NOT NULL,
@@ -95,7 +91,7 @@ CREATE TABLE messages
     parent_message UUID REFERENCES messages(id)
 );
 
---changeset leir:10
+--changeset leir:9
 CREATE TABLE message_files
 (
     message_uuid UUID REFERENCES messages(id),
@@ -103,7 +99,7 @@ CREATE TABLE message_files
     CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_uuid)
 );
 
---changeset leir:11
+--changeset leir:10
 CREATE TABLE subscriptions
 (
     subscriber_id UUID REFERENCES users(id),
