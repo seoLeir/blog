@@ -12,7 +12,6 @@ public class PublicationService {
     private FileService fileService;
 
     public void createPublication(CreatePublicationDto publicationDto){
-
+        fileService.getFile(publicationDto.filename());
     }
-
 }

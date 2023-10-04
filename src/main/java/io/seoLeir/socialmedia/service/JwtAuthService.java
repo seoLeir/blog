@@ -19,8 +19,10 @@ public class JwtAuthService {
     private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
-    public void registerUser(String username, String email, String password){
-        userService.save(new User(UUID.randomUUID(), username, email, passwordEncoder.encode(password)));
+    public UUID registerUser(String username, String email, String password){
+        UUID userUuid = UUID.randomUUID();
+        userService.save(new User(userUuid, username, email, passwordEncoder.encode(password)));
+        return userUuid;
     }
 
     @Transactional

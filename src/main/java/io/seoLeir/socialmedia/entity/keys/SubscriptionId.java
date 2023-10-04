@@ -25,7 +25,7 @@ public class SubscriptionId implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private User subscriber;
 
-    @JoinColumn(name = "follower_id")
+    @JoinColumn(name = "target_user")
     @ManyToOne(fetch = FetchType.LAZY)
     private User targetUser;
 

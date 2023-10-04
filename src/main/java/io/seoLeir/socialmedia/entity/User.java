@@ -22,7 +22,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "username", nullable = false, unique = true)
@@ -46,7 +45,7 @@ public class User {
     private List<File> files = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Comment> userComments = new ArrayList<>();
+    private List<PublicationComment> userPublicationComments = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Message> userMessages = new ArrayList<>();
