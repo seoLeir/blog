@@ -42,11 +42,11 @@ public class File{
     @Column(name = "loaded_time", nullable = false)
     private Instant loadedTime;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Message> messages = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Message> messages;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Publication> publications = new ArrayList<>();
+    private List<Publication> publications;
 
     public File(UUID name, String realName, String mimeType, User loadedBy) {
         this.filename = name;

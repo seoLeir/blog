@@ -1,31 +1,25 @@
 package io.seoLeir.socialmedia.repository;
 
 import io.seoLeir.socialmedia.entity.Publication;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Repository;
 
-
-import java.util.List;
 import java.util.UUID;
 
-@Repository
-public interface PublicationRepository extends JpaRepository<Publication, UUID> {
+public interface PublicationRepository extends JpaRepository<Publication, UUID>,
+        PagingAndSortingRepository<Publication, UUID> {
 
+//    @Query(name = "select * from publications where publisher_username in (:usernames);",
+//            countQuery = "select count(p.id) from Publication p")
+//    Page<Publication> getAllPublicationsFromUserFollowing(Pageable pageable, @Param("usernames") String... usernames);
 
-
-//    @Modifying(flushAutomatically = true)
-//    @Query("update Publication p set " +
-//            "p.files = :#{publication.files}, " +
-//            "p.header = :#{publication.header}, " +
-//            "p.text = :#{publication.text} " +
-//            "where p.id = :#{publication.id}")
-//    int update(@Param("publication") Publication publication);
-
-    @Modifying
+    @Modifying(flushAutomatically = true)
     void deleteById(@Nullable UUID id);
+
 }

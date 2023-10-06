@@ -18,7 +18,7 @@ CREATE TABLE publications
     header TEXT NOT NULL,
     publication_text text NOT NULL,
     publisher_username VARCHAR(32) REFERENCES users (username),
-    is_published BOOLEAN default false,
+    is_published BOOLEAN default true,
     is_draft BOOLEAN default false,
     is_hidden BOOLEAN default false,
     is_edited BOOLEAN default false,
@@ -50,9 +50,9 @@ CREATE TABLE publication_likes
 CREATE TABLE publication_comments_likes
 (
     user_uuid UUID REFERENCES users(id),
-    comment_uuid UUID REFERENCES publication_comments (id),
+    publication_comment_uuid UUID REFERENCES publication_comments (id),
     like_datetime TIMESTAMP NOT NULL,
-    CONSTRAINT comments_likes_fk PRIMARY KEY (comment_uuid, user_uuid)
+    CONSTRAINT comments_likes_fk PRIMARY KEY (publication_comment_uuid, user_uuid)
 );
 
 --changeset leir:6

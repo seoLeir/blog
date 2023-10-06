@@ -1,10 +1,8 @@
 package io.seoLeir.socialmedia.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,6 +20,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "publications")
 @EntityListeners(AuditingEntityListener.class)
+@FieldNameConstants
 public class Publication implements BaseEntity<UUID> {
 
     @Id
@@ -57,14 +56,18 @@ public class Publication implements BaseEntity<UUID> {
     @LastModifiedDate
     private Instant modifiedAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "publication_files",
-            joinColumns = {@JoinColumn(name = "publication_uuid")},
-            inverseJoinColumns = {@JoinColumn(name = "file_uuid")})
-    private List<File> files = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<File> files;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<PublicationComment> publicationComments = new ArrayList<>();
+
+    public Publication(UUID id, String header, String text, User user) {
+        this.id = id;
+        this.header = header;
+        this.text = text;
+        this.user = user;
+    }
 
     @Override
     public boolean equals(Object o) {

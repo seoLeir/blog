@@ -1,11 +1,11 @@
 package io.seoLeir.socialmedia.exception.file;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-public class UnsupportedFileExtension extends RuntimeException{
-    public UnsupportedFileExtension(String message) {
-        super(message);
+import io.seoLeir.socialmedia.exception.SocialMediaException;
+import org.springframework.http.HttpStatusCode;
+
+public class UnsupportedFileExtension extends SocialMediaException {
+    public UnsupportedFileExtension(String message, HttpStatusCode httpStatusCode) {
+        super(message, httpStatusCode);
     }
 }

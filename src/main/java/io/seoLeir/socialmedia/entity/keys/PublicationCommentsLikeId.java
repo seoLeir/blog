@@ -26,7 +26,7 @@ public class PublicationCommentsLikeId implements Serializable {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_uuid")
+    @JoinColumn(name = "publication_comment_uuid")
     private PublicationComment publicationComment;
 
     @Override
