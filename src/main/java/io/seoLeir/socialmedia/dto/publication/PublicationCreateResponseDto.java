@@ -3,5 +3,5 @@ package io.seoLeir.socialmedia.dto.publication;
 
 import java.util.UUID;
 
-public record PublicationResponseDto(UUID publicationUuid) {
+public record PublicationCreateResponseDto(UUID publicationUuid) {
 }

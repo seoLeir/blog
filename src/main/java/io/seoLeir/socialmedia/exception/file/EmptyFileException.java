@@ -1,11 +1,11 @@
 package io.seoLeir.socialmedia.exception.file;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-public class EmptyFileException extends RuntimeException{
-    public EmptyFileException(String message) {
-        super(message);
+import io.seoLeir.socialmedia.exception.SocialMediaException;
+import org.springframework.http.HttpStatusCode;
+
+public class EmptyFileException extends SocialMediaException {
+    public EmptyFileException(String message, HttpStatusCode httpStatusCode) {
+        super(message, httpStatusCode);
     }
 }

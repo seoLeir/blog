@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,16 +36,17 @@ public class FileService {
     @Transactional
     public UUID upload(MultipartFile multipartFile, String publisherName) throws IOException {
         User user = userService.findByUsername(publisherName).orElseThrow();
-        if(multipartFile.isEmpty()){
-            throw new EmptyFileException("multipartFile should not be empty");
-        }
+        if(multipartFile.isEmpty())
+            throw new EmptyFileException("The file cannot be empty", HttpStatusCode.valueOf(400));
         String fileExtension = ExtensionResolver
                 .getFileExtension(Objects.requireNonNull(multipartFile.getOriginalFilename()))
-                .orElseThrow(() -> new UnsupportedFileExtension("Unsupported file extension"));
+                .orElseThrow(() -> new UnsupportedFileExtension("This file extension is not supported",
+                        HttpStatusCode.valueOf(415)));
         Set<String> validExtensionForMimetype = properties.getValidExtensionForMimetype(multipartFile.getContentType())
-                .orElseThrow(() -> new InvalidMimeType("Invalid mime type"));
+                .orElseThrow(() -> new InvalidMimeType("Invalid mime type", HttpStatusCode.valueOf(415)));
         if (!validExtensionForMimetype.contains(fileExtension)){
-            throw new UnsupportedFileExtension("Unsupported multipartFile extension");
+            throw new UnsupportedFileExtension("Unsupported multipartFile extension",
+                    HttpStatusCode.valueOf(415));
         }
         File fileToSave = new File(
                 UUID.randomUUID(),
@@ -67,10 +69,10 @@ public class FileService {
             Resource resource = new UrlResource(properties.getBasicDirectory().resolve(fileUUID.toString()).toUri());
             FoundFile foundFile = fileRepository.findById(fileUUID)
                     .map(file -> new FoundFile(file.getRealName(), file.getMimeType(), resource))
-                    .orElseThrow(() -> new FileNotFoundException("File with uuid:" + fileUUID + " not found"));
+                    .orElseThrow(() -> new FileNotFoundException("File with uuid:" + fileUUID + " not found", HttpStatusCode.valueOf(404)));
             if (!resource.exists()){
                 log.error("File with UUID: {} exists in database but not in file system", fileUUID);
-                throw new FileNotFoundException("File with uuid:" + fileUUID + " not found");
+                throw new FileNotFoundException("File with uuid:" + fileUUID + " not found", HttpStatusCode.valueOf(500));
             }
             return foundFile;
         } catch (MalformedURLException e) {
@@ -81,5 +83,10 @@ public class FileService {
     @Transactional
     public List<File> getAllFilesByUserUuid(UUID id){
         return fileRepository.findAllByUser(id);
+    }
+
+    @Transactional
+    public boolean isExistById(UUID id){
+        return fileRepository.existsById(id);
     }
 }

@@ -1,8 +1,12 @@
 package io.seoLeir.socialmedia.exception.user;
 
-public class InvalidUsernameOrPassword extends RuntimeException{
-    public InvalidUsernameOrPassword(String message) {
-        super(message);
-    }
+import io.seoLeir.socialmedia.exception.SocialMediaException;
+import org.springframework.http.HttpStatusCode;
 
+public class InvalidUsernameOrPassword extends SocialMediaException {
+
+
+    public InvalidUsernameOrPassword(String message, HttpStatusCode httpStatusCode) {
+        super(message, httpStatusCode);
+    }
 }

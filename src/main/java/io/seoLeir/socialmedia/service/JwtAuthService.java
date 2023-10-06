@@ -4,6 +4,7 @@ import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.exception.user.InvalidUsernameOrPassword;
 import io.seoLeir.socialmedia.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class JwtAuthService {
         if (passwordEncoder.matches(password, userDetails.getPassword())){
             return jwtTokenUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), userDetails.getId());
         }else {
-            throw new InvalidUsernameOrPassword("Username or password are invalid");
+            throw new InvalidUsernameOrPassword("Username or password are invalid", HttpStatusCode.valueOf(401));
         }
     }
 }
