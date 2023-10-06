@@ -15,10 +15,11 @@ CREATE TABLE users
 CREATE TABLE publications
 (
     id UUID PRIMARY KEY,
-    header TEXT NOT NULL,
+    tittle TEXT NOT NULL,
     publication_text text NOT NULL,
     publisher_username VARCHAR(32) REFERENCES users (username),
     is_published BOOLEAN default true,
+    view_count bigint,
     is_draft BOOLEAN default false,
     is_hidden BOOLEAN default false,
     is_edited BOOLEAN default false,
@@ -27,6 +28,15 @@ CREATE TABLE publications
 );
 
 --changeset leir:3
+CREATE TABLE users_bookmarks
+(
+    user_username VARCHAR(32) REFERENCES users(username),
+    publication_uuid UUID REFERENCES publications(id),
+    bookmarked_date DATE NOT NULL,
+    CONSTRAINT users_bookmarks_pk PRIMARY KEY (user_username, publication_uuid)
+);
+
+--changeset leir:4
 CREATE TABLE publication_comments
 (
     id UUID PRIMARY KEY,
@@ -37,7 +47,7 @@ CREATE TABLE publication_comments
     created_at TIMESTAMP NOT NULL
 );
 
---changeset leir:4
+--changeset leir:5
 CREATE TABLE publication_likes
 (
     user_uuid UUID REFERENCES users(id),
@@ -46,7 +56,7 @@ CREATE TABLE publication_likes
     CONSTRAINT publication_likes_fk PRIMARY KEY (publication_uuid, user_uuid)
 );
 
---changeset leir:5
+--changeset leir:6
 CREATE TABLE publication_comments_likes
 (
     user_uuid UUID REFERENCES users(id),
@@ -55,7 +65,7 @@ CREATE TABLE publication_comments_likes
     CONSTRAINT comments_likes_fk PRIMARY KEY (publication_comment_uuid, user_uuid)
 );
 
---changeset leir:6
+--changeset leir:7
 CREATE TABLE files
 (
     name UUID PRIMARY KEY,
@@ -65,7 +75,7 @@ CREATE TABLE files
     loaded_time TIMESTAMP NOT NULL
 );
 
---changeset leir:7
+--changeset leir:8
 CREATE TABLE publication_files
 (
     publication_uuid UUID REFERENCES publications(id),
@@ -73,7 +83,7 @@ CREATE TABLE publication_files
     CONSTRAINT publication_files_pk PRIMARY KEY (publication_uuid, file_uuid)
 );
 
---changeset leir:8
+--changeset leir:9
 CREATE TABLE messages
 (
     id UUID PRIMARY KEY,
@@ -91,7 +101,7 @@ CREATE TABLE messages
     parent_message UUID REFERENCES messages(id)
 );
 
---changeset leir:9
+--changeset leir:10
 CREATE TABLE message_files
 (
     message_uuid UUID REFERENCES messages(id),
@@ -99,7 +109,7 @@ CREATE TABLE message_files
     CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_uuid)
 );
 
---changeset leir:10
+--changeset leir:11
 CREATE TABLE subscriptions
 (
     subscriber_id UUID REFERENCES users(id),
