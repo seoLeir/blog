@@ -35,16 +35,6 @@ public class PublicationRestController {
         return new PublicationCreateResponseDto(publicationUuid);
     }
 
-    /**
-     * The method is used to return all publications from the authors to which it is subscribed
-    * */
-    @GetMapping
-    public PageResponseDto<Publication> getAllUserFollowingPublications(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-            @RequestBody PageRequestDto pageRequestDto){
-        UUID userUuid = jwtTokenUtils.getUserUuid(authorizationHeader.substring(7));
-        return publicationService.getPublicationFromUserFollowing(pageRequestDto, userUuid);
-    }
 
     @GetMapping("/current/all")
     public PageResponseDto<Publication> getCurrentUserAllPublications(

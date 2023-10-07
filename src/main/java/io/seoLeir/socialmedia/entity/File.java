@@ -45,8 +45,9 @@ public class File{
     @OneToMany(fetch = FetchType.LAZY)
     private List<Message> messages;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Publication> publications;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "file")
+    private List<PublicationFile> publicationFiles;
+
 
     public File(UUID name, String realName, String mimeType, User loadedBy) {
         this.filename = name;

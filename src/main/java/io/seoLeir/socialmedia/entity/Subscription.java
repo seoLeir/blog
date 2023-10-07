@@ -23,6 +23,14 @@ public class Subscription implements BaseEntity<SubscriptionId>{
     @EmbeddedId
     private SubscriptionId id;
 
+    @MapsId("subscriberUserUuid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User subscriberUser;
+
+    @MapsId("targetUserUuid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User targetUser;
+
     @Column(name = "subscription_datetime")
     @CreatedDate
     private Instant subscriptionDate;
@@ -30,7 +38,9 @@ public class Subscription implements BaseEntity<SubscriptionId>{
     @Column(name = "is_mutual")
     private boolean isMutual;
 
-    public Subscription(SubscriptionId id) {
-        this.id = id;
+    public Subscription(User subscriberUser, User targetUser) {
+        this.subscriberUser = subscriberUser;
+        this.targetUser = targetUser;
+        this.id = new SubscriptionId(subscriberUser.getId(), targetUser.getId());
     }
 }

@@ -40,24 +40,36 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @Column(name = "modified_at")
     private Instant modifiedAt;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<File> files = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<File> files;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<PublicationComment> userPublicationComments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<PublicationLike> publicationLikes;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<PublicationComment> userPublicationComments = new ArrayList<>();
+    private List<Message> userMessages;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Publication> userPublications;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Message> userMessages = new ArrayList<>();
+    private List<Subscription> subscriptions;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Publication> userPublications = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "user")
+    private List<UserBookmark> userBookmarks;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
+        return Objects.equals(username, user.username) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(password, user.password);
     }
 
     @Override

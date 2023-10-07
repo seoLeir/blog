@@ -1,6 +1,6 @@
 package io.seoLeir.socialmedia.entity.keys;
 
-import io.seoLeir.socialmedia.entity.User;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,32 +22,30 @@ public class SubscriptionId implements Serializable {
     @Serial
     private static final long serialVersionUID = 989523136466448L;
 
-    @JoinColumn(name = "subscriber_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User subscriber;
+    @Column(name = "subscriber_id")
+    private UUID subscriberUserUuid;
 
-    @JoinColumn(name = "target_user")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User targetUser;
+    @Column(name = "target_user")
+    private UUID targetUserUuid;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubscriptionId that = (SubscriptionId) o;
-        return Objects.equals(subscriber, that.subscriber) && Objects.equals(targetUser, that.targetUser);
+        return Objects.equals(subscriberUserUuid, that.subscriberUserUuid) && Objects.equals(targetUserUuid, that.targetUserUuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subscriber, targetUser);
+        return Objects.hash(subscriberUserUuid, targetUserUuid);
     }
 
     @Override
     public String toString() {
         return "SubscriptionId{" +
-                "subscriber=" + subscriber +
-                ", follower=" + targetUser +
+                "subscriberUserUuid=" + subscriberUserUuid +
+                ", targetUserUuid=" + targetUserUuid +
                 '}';
     }
 }

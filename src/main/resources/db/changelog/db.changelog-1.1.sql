@@ -19,6 +19,6 @@ CREATE INDEX publication_comment_like_uuid_idx ON publication_comments_likes (pu
 
 CREATE INDEX message_files_idx ON message_files (message_uuid);
 
-CREATE INDEX users_bookmarks_user_username_idx ON users_bookmarks(user_username);
+CREATE INDEX users_bookmarks_user_username_idx ON user_bookmarks (user_username);
 
-CREATE INDEX users_bookmarks_publication_uuid_idx ON users_bookmarks(publication_uuid);
+CREATE INDEX users_bookmarks_publication_uuid_idx ON user_bookmarks (publication_uuid);

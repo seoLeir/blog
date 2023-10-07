@@ -24,12 +24,24 @@ public class PublicationCommentLike implements BaseEntity<PublicationCommentsLik
     @EmbeddedId
     private PublicationCommentsLikeId id;
 
+
+    @MapsId("userUuid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @MapsId("publicationCommentUuid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PublicationComment publicationComment;
+
+
     @Column(name = "like_datetime", nullable = false)
     @CreatedDate
     private Instant likeDateTime;
 
-    public PublicationCommentLike(PublicationCommentsLikeId id) {
-        this.id = id;
+    public PublicationCommentLike(User user, PublicationComment publicationComment) {
+        this.user = user;
+        this.publicationComment = publicationComment;
+        this.id = new PublicationCommentsLikeId(user.getId(), publicationComment.getId());
     }
 
     @Override

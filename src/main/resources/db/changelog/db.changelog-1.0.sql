@@ -28,7 +28,7 @@ CREATE TABLE publications
 );
 
 --changeset leir:3
-CREATE TABLE users_bookmarks
+CREATE TABLE user_bookmarks
 (
     user_username VARCHAR(32) REFERENCES users(username),
     publication_uuid UUID REFERENCES publications(id),
