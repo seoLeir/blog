@@ -1,6 +1,7 @@
 package io.seoLeir.socialmedia.entity;
 
-import io.seoLeir.socialmedia.entity.keys.PublicationLikeId;
+
+import io.seoLeir.socialmedia.entity.keys.UserBookmarksId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,23 +10,22 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Objects;
-
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "publication_likes")
+@Table(name = "users_bookmarks")
 @EntityListeners(AuditingEntityListener.class)
-public class PublicationLike implements BaseEntity<PublicationLikeId>{
+public class UserBookmark implements BaseEntity<UserBookmarksId> {
 
     @EmbeddedId
-    private PublicationLikeId id;
+    private UserBookmarksId id;
 
-    @MapsId("userUuid")
+    @MapsId("userUsername")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -33,21 +33,15 @@ public class PublicationLike implements BaseEntity<PublicationLikeId>{
     @ManyToOne(fetch = FetchType.LAZY)
     private Publication publication;
 
-    @Column(name = "like_datetime", nullable = false)
+    @Column(name = "bookmarked_date")
     @CreatedDate
-    private Instant likeDateTime;
-
-    public PublicationLike(User user, Publication publication) {
-        this.user = user;
-        this.publication = publication;
-        this.id = new PublicationLikeId(user.getId(), publication.getId());
-    }
+    private LocalDate bookmarkedDate;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PublicationLike that = (PublicationLike) o;
+        UserBookmark that = (UserBookmark) o;
         return Objects.equals(user, that.user) && Objects.equals(publication, that.publication);
     }
 
@@ -56,3 +50,4 @@ public class PublicationLike implements BaseEntity<PublicationLikeId>{
         return Objects.hash(user, publication);
     }
 }
+

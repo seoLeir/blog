@@ -26,8 +26,8 @@ public class Publication implements BaseEntity<UUID> {
     @Id
     private UUID id;
 
-    @Column(name = "header", nullable = false)
-    private String header;
+    @Column(name = "tittle", nullable = false)
+    private String tittle;
 
     @Column(name = "publication_text")
     private String text;
@@ -38,6 +38,9 @@ public class Publication implements BaseEntity<UUID> {
 
     @Column(name = "is_published")
     private Boolean isPublished;
+
+    @Column(name = "view_count")
+    private Long viewCount;
 
     @Column(name = "is_draft")
     private Boolean isDraft;
@@ -56,15 +59,15 @@ public class Publication implements BaseEntity<UUID> {
     @LastModifiedDate
     private Instant modifiedAt;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<File> files;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication")
+    private List<PublicationFile> publicationFiles;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<PublicationComment> publicationComments = new ArrayList<>();
+    private List<PublicationComment> publicationComments;
 
-    public Publication(UUID id, String header, String text, User user) {
+    public Publication(UUID id, String tittle, String text, User user) {
         this.id = id;
-        this.header = header;
+        this.tittle = tittle;
         this.text = text;
         this.user = user;
     }
@@ -86,11 +89,12 @@ public class Publication implements BaseEntity<UUID> {
     public String toString() {
         return "Publication{" +
                 "id=" + id +
-                ", header='" + header + '\'' +
+                ", tittle='" + tittle + '\'' +
                 ", text='" + text + '\'' +
                 ", user=" + user +
+                ", isPublished=" + isPublished +
+                ", viewCount=" + viewCount +
                 ", createdDate=" + createdDate +
-                ", modifiedAt=" + modifiedAt +
                 '}';
     }
 }

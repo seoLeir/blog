@@ -2,15 +2,13 @@ package io.seoLeir.socialmedia.entity.keys;
 
 import io.seoLeir.socialmedia.entity.PublicationComment;
 import io.seoLeir.socialmedia.entity.User;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,32 +19,24 @@ public class PublicationCommentsLikeId implements Serializable {
     @Serial
     private static final long serialVersionUID = 487863211454645L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_uuid")
-    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publication_comment_uuid")
-    private PublicationComment publicationComment;
+    @Column(name = "user_uuid")
+    private UUID userUuid;
+
+
+    @Column(name = "publication_comment_uuid")
+    private UUID publicationCommentUuid;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PublicationCommentsLikeId that = (PublicationCommentsLikeId) o;
-        return Objects.equals(user, that.user) && Objects.equals(publicationComment, that.publicationComment);
+        return Objects.equals(userUuid, that.userUuid) && Objects.equals(publicationCommentUuid, that.publicationCommentUuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, publicationComment);
-    }
-
-    @Override
-    public String toString() {
-        return "CommentLikeId{" +
-                "user=" + user +
-                ", comment=" + publicationComment +
-                '}';
+        return Objects.hash(userUuid, publicationCommentUuid);
     }
 }

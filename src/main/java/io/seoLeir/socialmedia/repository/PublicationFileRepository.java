@@ -11,6 +11,6 @@ import java.util.UUID;
 
 public interface PublicationFileRepository extends JpaRepository<PublicationFile, PublicationFileId> {
 
-    @Query(name = "select p.file_uuid from publication_files p where p.publication_uuid = :id")
+    @Query("select p.id.fileUuid from PublicationFile p where p.id.publicationUuid = :id")
     List<UUID> findAllByPublicationId(@Param("id")UUID id);
 }

@@ -10,14 +10,9 @@ import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.entity.keys.PublicationFileId;
 import io.seoLeir.socialmedia.exception.file.FileNotFoundException;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
-import io.seoLeir.socialmedia.repository.PublicationFileRepository;
 import io.seoLeir.socialmedia.repository.PublicationRepository;
-import io.seoLeir.socialmedia.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PublicationService {
     private final PublicationRepository publicationRepository;
-    private final PublicationFileRepository publicationFileRepository;
-    private final SubscriptionRepository subscriptionRepository;
+    private final PublicationFileService publicationFileService;
     private final FileService fileService;
     private final UserService userService;
 
@@ -45,17 +39,17 @@ public class PublicationService {
         fileService.getAllFilesByUserUuid(user.getId()).stream()
                 .map(file -> {
                     if (fileService.isExistById(file.getFilename())) {
-                        return new PublicationFile(new PublicationFileId(publication, file));
+                        return new PublicationFile(publication, file);
                     } else {
                         throw new FileNotFoundException("File not found. File UUID: " + file.getFilename(), HttpStatusCode.valueOf(404));
                     }
-                }).forEach(publicationFileRepository::save);
+                }).forEach(publicationFileService::save);
         return publication.getId();
     }
 
     @Transactional
     public Optional<PublicationGetResponseDto> getPublication(UUID publicationUuid){
-        List<UUID> fileList = publicationFileRepository.findAllByPublicationId(publicationUuid).stream()
+        List<UUID> fileList = publicationFileService.findByFileByPublicationId(publicationUuid).stream()
                 .map(uuid -> {
                     if (fileService.isExistById(uuid)) {
                         return uuid;
@@ -67,24 +61,18 @@ public class PublicationService {
         Publication publication = publicationRepository.getReferenceById(publicationUuid);
         return Optional.of(new PublicationGetResponseDto(
                 publication.getId(),
-                publication.getHeader(),
+                publication.getTittle(),
                 publication.getText(),
                 publication.getUser().getUsername(),
                 publication.getCreatedDate(), fileList));
     }
 
     @Transactional
-    public PageResponseDto<Publication> getPublicationFromUserFollowing(PageRequestDto dto, UUID userUuid){
-//        Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), dto.sort());
-//        Page<Publication> allPublicationsFromUserFollowing = publicationRepository.getAllPublicationsFromUserFollowing(pageable,
-//                subscriptionRepository.getAllBySubscriberId(userUuid));
-//        return PageResponseDto.of(allPublicationsFromUserFollowing);
-        return null;
-    }
-
-    @Transactional
     public PageResponseDto<Publication> getAllUserPublications(String publisherName, PageRequestDto dto){
-//        Pageable pageable = PageRequest.of(null);
+//        Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), dto.sort());
+//        Sort sort = Sort.by(Publication.Fields.createdDate);
+//        publicationRepository.getAllByUserId()
+//        return PageResponseDto.of()
         return null;
     }
 }

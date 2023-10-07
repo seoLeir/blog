@@ -1,7 +1,7 @@
 package io.seoLeir.socialmedia.entity.keys;
 
-
-
+import io.seoLeir.socialmedia.entity.Publication;
+import io.seoLeir.socialmedia.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,20 +13,18 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class PublicationLikeId implements Serializable {
+public class UserBookmarksId implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 79879165641645L;
+    private static final long serialVersionUID = 79131210545448L;
 
-    @Column(name = "user_uuid")
-    private UUID userUuid;
-
+    @Column(name = "user_username")
+    private String userUsername;
 
     @Column(name = "publication_uuid")
     private UUID publicationUuid;
@@ -35,19 +33,19 @@ public class PublicationLikeId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PublicationLikeId that = (PublicationLikeId) o;
-        return Objects.equals(userUuid, that.userUuid) && Objects.equals(publicationUuid, that.publicationUuid);
+        UserBookmarksId that = (UserBookmarksId) o;
+        return Objects.equals(userUsername, that.userUsername) && Objects.equals(publicationUuid, that.publicationUuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userUuid, publicationUuid);
+        return Objects.hash(userUsername, publicationUuid);
     }
 
     @Override
     public String toString() {
-        return "PublicationLikeId{" +
-                "userUuid=" + userUuid +
+        return "UserBookmarksId{" +
+                "userUsername='" + userUsername + '\'' +
                 ", publicationUuid=" + publicationUuid +
                 '}';
     }
