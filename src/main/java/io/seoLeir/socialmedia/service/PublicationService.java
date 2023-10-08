@@ -82,12 +82,12 @@ public class PublicationService {
     }
 
     @Transactional
-    public void delete(UUID id){
-        if(publicationRepository.existsById(id))
+    public void delete(UUID id, String username){
+        Publication publication = publicationRepository.findById(id).orElseThrow(() ->
+                new PublicationNotFound("Publication" + id + " not found", HttpStatusCode.valueOf(404)));
+        if (publication.getUser().getUsername().equals(username) || username.equals("admin")){
             publicationRepository.deleteById(id);
-        else
-            throw new PublicationNotFound("Publication with id:" + id + "not found",
-                    HttpStatusCode.valueOf(404));
+        }
     }
 
     @Transactional

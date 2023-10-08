@@ -1,5 +1,6 @@
 package io.seoLeir.socialmedia.service;
 
+import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.exception.user.InvalidUsernameOrPassword;
 import io.seoLeir.socialmedia.util.JwtTokenUtils;
@@ -22,7 +23,7 @@ public class JwtAuthService {
     @Transactional
     public UUID registerUser(String username, String email, String password){
         UUID userUuid = UUID.randomUUID();
-        userService.save(new User(userUuid, username, email, passwordEncoder.encode(password)));
+        userService.save(new User(userUuid, username, email, passwordEncoder.encode(password), Roles.ROLE_USER));
         return userUuid;
     }
 

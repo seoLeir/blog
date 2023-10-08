@@ -27,8 +27,8 @@ public class FileRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FileCreatedResponse uploadFile(@RequestParam("file") MultipartFile file,
-                                          @AuthenticationPrincipal Principal principal) throws IOException {
+    public FileCreatedResponse uploadFile(@RequestParam("file") MultipartFile file, Principal principal)
+            throws IOException {
         return new FileCreatedResponse(fileService.upload(file, principal.getName()));
     }
 

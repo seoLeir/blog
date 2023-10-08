@@ -7,6 +7,8 @@ CREATE TABLE users
     username VARCHAR(32) UNIQUE NOT NULL,
     email VARCHAR(320) UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    role varchar(16) default 'USER',
+    info text,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );

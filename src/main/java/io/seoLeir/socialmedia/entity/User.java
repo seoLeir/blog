@@ -32,6 +32,13 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Roles role;
+
+    @Column(name = "info")
+    private String info;
+
     @CreatedDate
     @Column(name = "created_at")
     private Instant createdAt;
@@ -77,28 +84,28 @@ public class User implements BaseEntity<UUID>, UserDetails {
         return Objects.hash(username, email, password);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", createdAt=" + createdAt +
-                ", modifiedAt=" + modifiedAt +
-                '}';
-    }
-
-    public User(UUID id, String username, String email, String password) {
+    public User(UUID id, String username, String email, String password, Roles role, String info, Instant createdAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
+        this.info = info;
+        this.createdAt = createdAt;
+    }
+
+    public User(UUID id, String username, String email, String password, Roles role, String info) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.info = info;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singleton(this.role);
     }
 
     @Override

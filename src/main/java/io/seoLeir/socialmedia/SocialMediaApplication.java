@@ -16,7 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class SocialMediaApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext run = SpringApplication.run(SocialMediaApplication.class, args);
-		System.out.println();
+		SpringApplication.run(SocialMediaApplication.class, args);
 	}
 }
