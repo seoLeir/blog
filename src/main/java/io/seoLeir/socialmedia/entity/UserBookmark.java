@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users_bookmarks")
+@Table(name = "user_bookmarks")
 @EntityListeners(AuditingEntityListener.class)
 public class UserBookmark implements BaseEntity<UserBookmarksId> {
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.UUID;
 
 
@@ -26,8 +27,9 @@ public class FileRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FileCreatedResponse uploadFile(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal UserDetails userDetails) throws IOException {
-        return new FileCreatedResponse(fileService.upload(file, userDetails.getUsername()));
+    public FileCreatedResponse uploadFile(@RequestParam("file") MultipartFile file,
+                                          @AuthenticationPrincipal Principal principal) throws IOException {
+        return new FileCreatedResponse(fileService.upload(file, principal.getName()));
     }
 
     @SneakyThrows
