@@ -7,13 +7,14 @@ import io.seoLeir.socialmedia.dto.publication.PublicationCreateResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
 import io.seoLeir.socialmedia.entity.Publication;
+import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
 import io.seoLeir.socialmedia.service.PublicationService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -30,16 +31,15 @@ public class PublicationRestController {
     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PublicationCreateResponseDto createPublication(@RequestBody PublicationCreateRequestDto dto,
-                                                          @AuthenticationPrincipal Principal principal){
+    public PublicationCreateResponseDto createPublication(@RequestBody PublicationCreateRequestDto dto, Principal principal){
         return new PublicationCreateResponseDto(publicationService.createPublication(dto, principal.getName()));
     }
 
 
     @DeleteMapping("/{publication-uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePublication(@NotBlank @PathVariable("publication-uuid") UUID publicationUuid){
-        publicationService.delete(publicationUuid);
+    public void deletePublication(@PathVariable("publication-uuid") UUID publicationUuid, Principal principal){
+        publicationService.delete(publicationUuid, principal.getName());
     }
 
     @PatchMapping("/{publication-uuid}")
@@ -64,5 +64,11 @@ public class PublicationRestController {
                 .orElseThrow(() -> new PublicationNotFound(
                         "Publication with id:" + publicationUuid.toString() + " not found",
                         HttpStatusCode.valueOf(404)));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/{username}")
+    public void updateRole(@PathVariable("username") String username, @RequestParam("role")Roles role) {
+
     }
 }

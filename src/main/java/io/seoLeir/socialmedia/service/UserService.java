@@ -1,5 +1,6 @@
 package io.seoLeir.socialmedia.service;
 
+import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.exception.user.EmailAlreadyExists;
 import io.seoLeir.socialmedia.exception.user.UsernameAlreadyExists;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.awt.*;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -40,6 +42,10 @@ public class UserService implements UserDetailsService {
                     log.debug("user with username: {} not found", username);
                     return new UsernameNotFoundException("User with username: " + username + "not found");
                 });
+    }
+
+    public void update(String username, Roles role){
+        userRepository.updateRole(username, role);
     }
 
     public Optional<User> findByUsername(String username){
