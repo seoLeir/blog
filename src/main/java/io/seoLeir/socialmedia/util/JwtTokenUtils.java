@@ -4,13 +4,13 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.time.Duration;
 import java.util.*;
 
-@Component
+@Service
 public class JwtTokenUtils {
 
     @Value("${socialmedia.jwt.lifetime}")
@@ -25,11 +25,10 @@ public class JwtTokenUtils {
                 .build();
     }
 
-    public String generateToken(String name, Collection<? extends GrantedAuthority> authorities, UUID userUuid){
+    public String generateToken(String name, Collection<? extends GrantedAuthority> authorities){
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = authorities.stream().map(GrantedAuthority::getAuthority).toList();
         claims.put("roles", roleList);
-        claims.put("user_uuid", userUuid);
         Date issDate = new Date(System.currentTimeMillis());
         Date expDate = new Date(issDate.getTime() + lifetime.toMillis());
         return Jwts.builder().setClaims(claims)
@@ -47,10 +46,6 @@ public class JwtTokenUtils {
 
     public String getUsername(String token){
         return getAllClaimsFromJwtToken(token).getSubject();
-    }
-
-    public UUID getUserUuid(String token){
-        return (UUID) getAllClaimsFromJwtToken(token).get("user_uuid");
     }
 
     @SuppressWarnings("unchecked")
