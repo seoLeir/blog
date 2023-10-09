@@ -12,6 +12,7 @@ public class AuthLoginRequestDto {
     String username;
 
     @NotBlank
+    @Size(min = 8)
     String password;
 
 }

@@ -11,10 +11,12 @@ import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
 import io.seoLeir.socialmedia.service.PublicationService;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -31,7 +33,8 @@ public class PublicationRestController {
     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PublicationCreateResponseDto createPublication(@RequestBody PublicationCreateRequestDto dto, Principal principal){
+    public PublicationCreateResponseDto createPublication(
+            @RequestBody @Validated PublicationCreateRequestDto dto, Principal principal){
         return new PublicationCreateResponseDto(publicationService.createPublication(dto, principal.getName()));
     }
 
@@ -44,31 +47,26 @@ public class PublicationRestController {
 
     @PatchMapping("/{publication-uuid}")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePublication(@NotBlank @PathVariable("publication-uuid") UUID publicationUuid,
+    public void updatePublication(@PathVariable("publication-uuid") @NotBlank UUID publicationUuid,
                                   @RequestBody PublicationUpdateRequestDto dto){
         publicationService.update(dto, publicationUuid);
     }
 
     @GetMapping("/{username}/all")
-    public PageResponseDto<Publication> getUserAllPublication(@PathVariable("username") String username,
+    public PageResponseDto<Publication> getUserAllPublication(@PathVariable("username")
+                                                              @NotBlank @Size(min = 5, max = 32) String username,
                                                               @RequestBody PageRequestDto dto,
-                                                              @RequestParam("text") String textToSearch){
+                                                              @RequestParam("text") String textToSearch) {
         return publicationService.getAllUserPublications(username, dto, textToSearch);
     }
 
     @GetMapping("/{username}/{publication-uuid}")
     public PublicationGetResponseDto getUserConcretePublication(
-            @PathVariable("username") String username,
+            @PathVariable("username") @NotBlank @Size(min = 5, max = 32) String username,
             @PathVariable("publication-uuid") UUID publicationUuid){
         return publicationService.getPublication(publicationUuid, username)
                 .orElseThrow(() -> new PublicationNotFound(
                         "Publication with id:" + publicationUuid.toString() + " not found",
                         HttpStatusCode.valueOf(404)));
-    }
-
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/{username}")
-    public void updateRole(@PathVariable("username") String username, @RequestParam("role")Roles role) {
-
     }
 }

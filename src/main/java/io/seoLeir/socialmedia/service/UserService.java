@@ -1,8 +1,10 @@
 package io.seoLeir.socialmedia.service;
 
+import io.seoLeir.socialmedia.dto.user.UserProfileResponseDto;
 import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.exception.user.EmailAlreadyExists;
+import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.exception.user.UsernameAlreadyExists;
 import io.seoLeir.socialmedia.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,14 @@ public class UserService implements UserDetailsService {
 
     public Optional<User> findByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public UserProfileResponseDto findUser(String username) {
+        return userRepository.findByUsername(username).stream()
+                .map(user -> new UserProfileResponseDto(
+                        user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt()))
+                .findFirst()
+                .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
+                        HttpStatusCode.valueOf(404)));
     }
 }
