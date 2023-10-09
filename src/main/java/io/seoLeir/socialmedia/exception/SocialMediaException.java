@@ -17,4 +17,12 @@ public abstract class SocialMediaException extends RuntimeException {
         this.httpStatusCode = httpStatusCode;
         this.timestamp = Instant.now();
     }
+
+    @Override
+    public String toString() {
+        return "SocialMediaException{" +
+                "httpStatusCode=" + httpStatusCode +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
