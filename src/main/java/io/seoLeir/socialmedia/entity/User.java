@@ -69,6 +69,14 @@ public class User implements BaseEntity<UUID>, UserDetails {
             mappedBy = "user")
     private List<UserBookmark> userBookmarks;
 
+    public User(UUID userUuid, String username, String email, String password, Roles userRole) {
+        this.id = userUuid;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = userRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

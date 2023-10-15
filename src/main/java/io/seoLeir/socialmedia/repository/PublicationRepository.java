@@ -10,18 +10,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface PublicationRepository extends JpaRepository<Publication, UUID>,
         PagingAndSortingRepository<Publication, UUID>, JpaSpecificationExecutor<Publication> {
 
-    @Query(value = "select p from Publication p where p.user.username in (:usernames)",
+    @Query(value = "select p from Publication p where p.id in (:ids)",
             countQuery = "select count(p.id) from Publication p")
-    Page<Publication> getAllPublicationsFromUserFollowing(Pageable pageable, @Param("usernames") String... usernames);
+    Page<Publication> getAllUserBookmarkedPublication(@Param("ids") List<UUID> uuids, Pageable pageable);
 
     @Query(value = "select p from Publication p where p.user.username = :username",
             countQuery = "select count (p.id) from Publication p where p.user.username = :username")
     Page<Publication> getByUserUsername(@Param("username") String username, Pageable pageable);
+
+    @Query(value = "select count (p.id) from Publication p where p.user.username = :username")
+    Long getPublicationCountByUserUsername(@Param("username") String username);
 
     @Modifying(flushAutomatically = true)
     @Query("delete from Publication p where p.id = :id")

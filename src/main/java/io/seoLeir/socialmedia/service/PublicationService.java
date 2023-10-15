@@ -53,7 +53,7 @@ public class PublicationService {
     }
 
     @Transactional
-    public Optional<PublicationGetResponseDto> getPublication(UUID publicationUuid, String username){
+    public Optional<PublicationGetResponseDto> getPublication(UUID publicationUuid){
         List<UUID> fileList = publicationFileService.findByFileByPublicationId(publicationUuid).stream()
                 .map(uuid -> {
                     if (fileService.isExistById(uuid)) {
@@ -64,9 +64,6 @@ public class PublicationService {
                     }
                 }).toList();
         Publication publication = publicationRepository.getById(publicationUuid);
-        if (!publication.getUser().getUsername().equals(username))
-            throw new PublicationNotFound("This username:"+ username + "is not the username of the owner: "
-                    + publication.getUser().getUsername() + "of this publication", HttpStatusCode.valueOf(403));
         Long newViewCount = publication.getViewCount() + 1;
         publicationRepository.updateViewCount(newViewCount);
         return Optional.of(PublicationGetResponseDto.of(publication, fileList));
@@ -77,7 +74,8 @@ public class PublicationService {
             String publisherName, PageRequestDto dto, String textToSearch){
         Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), dto.sort());
         Page<Publication> publicationPage = publicationRepository
-                .findAll(PublicationSpecification.publicationOrderBySpecification(textToSearch, publisherName), pageable);
+                .findAll(PublicationSpecification.publicationOrderBySpecification(textToSearch, publisherName),
+                        pageable);
         return PageResponseDto.of(publicationPage);
     }
 
@@ -91,11 +89,21 @@ public class PublicationService {
     }
 
     @Transactional
+    public Long getAllPublicationsByUsername(String username){
+        return publicationRepository.getPublicationCountByUserUsername(username);
+    }
+
+    @Transactional
     public void update(PublicationUpdateRequestDto dto, UUID id) {
         if (publicationRepository.existsById(id))
             publicationRepository.updateTittleAndText(dto.tittle(), dto.publicationText(), id);
         else
             throw new PublicationNotFound("Publication with id:" + id + "not found",
                     HttpStatusCode.valueOf(404));
+    }
+
+    @Transactional
+    public PageResponseDto<Publication> getAllUserBookmarkedPublication(List<UUID> publicationsUuid, Pageable pageable){
+        return PageResponseDto.of(publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, pageable));
     }
 }

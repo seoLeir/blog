@@ -1,21 +1,17 @@
 package io.seoLeir.socialmedia.controller;
 
-import io.seoLeir.socialmedia.dto.page.PageRequestDto;
+import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationCreateRequestDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationCreateResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
-import io.seoLeir.socialmedia.entity.Publication;
-import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
 import io.seoLeir.socialmedia.service.PublicationService;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,21 +48,18 @@ public class PublicationRestController {
         publicationService.update(dto, publicationUuid);
     }
 
-    @GetMapping("/{username}/all")
-    public PageResponseDto<Publication> getUserAllPublication(@PathVariable("username")
-                                                              @NotBlank @Size(min = 5, max = 32) String username,
-                                                              @RequestBody PageRequestDto dto,
-                                                              @RequestParam("text") String textToSearch) {
-        return publicationService.getAllUserPublications(username, dto, textToSearch);
-    }
-
-    @GetMapping("/{username}/{publication-uuid}")
-    public PublicationGetResponseDto getUserConcretePublication(
-            @PathVariable("username") @NotBlank @Size(min = 5, max = 32) String username,
-            @PathVariable("publication-uuid") UUID publicationUuid){
-        return publicationService.getPublication(publicationUuid, username)
+    @GetMapping("/{publication-uuid}")
+    public PublicationGetResponseDto getUserConcretePublication(@PathVariable("publication-uuid") UUID publicationUuid){
+        return publicationService.getPublication(publicationUuid)
                 .orElseThrow(() -> new PublicationNotFound(
                         "Publication with id:" + publicationUuid.toString() + " not found",
                         HttpStatusCode.valueOf(404)));
     }
+
+    @GetMapping("/{publication-uuid}/comments")
+    public PageResponseDto<PublicationUserCommentsDto> getPublicationAllComments(
+            @PathVariable("publication-uuid")UUID id){
+
+    }
+
 }

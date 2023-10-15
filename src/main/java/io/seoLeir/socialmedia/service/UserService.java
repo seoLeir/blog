@@ -14,18 +14,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final UserBookmarkService userBookmarkService;
+    private final PublicationCommentService publicationCommentService;
+    private final PublicationService publicationService;
 
+    @Transactional
     public void save(User user){
         if (userRepository.existsByUsername(user.getUsername())){
             throw new UsernameAlreadyExists("User with this username already exists", HttpStatusCode.valueOf(401));
@@ -36,6 +39,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
@@ -46,20 +50,34 @@ public class UserService implements UserDetailsService {
                 });
     }
 
+    @Transactional
     public void update(String username, Roles role){
         userRepository.updateRole(username, role);
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username){
         return userRepository.findByUsername(username);
     }
 
-    public UserProfileResponseDto findUser(String username) {
+    @Transactional
+    public UserProfileResponseDto findUserProfile(String username) {
+        long userAllPublicationsCount = userBookmarkService.getUseAllBookmarkedPublicationsUuid(username).size();
+        long userAllComments = publicationCommentService.publicationCommentsByUserUuid(
+                userRepository.getUserUuidByUsername(username)).size();
+        long allPublicationsByUsername = publicationService.getAllPublicationsByUsername(username);
+
         return userRepository.findByUsername(username).stream()
                 .map(user -> new UserProfileResponseDto(
-                        user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt()))
+                        user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt(),
+                        userAllPublicationsCount, userAllComments, allPublicationsByUsername))
                 .findFirst()
                 .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
                         HttpStatusCode.valueOf(404)));
+    }
+
+    @Transactional
+    public boolean isUserExists(String username){
+        return userRepository.existsByUsername(username);
     }
 }
