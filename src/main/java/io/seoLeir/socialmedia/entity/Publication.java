@@ -42,6 +42,9 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "view_count")
     private Long viewCount;
 
+    @Column(name = "time_to_read_in_minutes")
+    private Integer timeToReadInMinutes;
+
     @Column(name = "is_draft")
     private Boolean isDraft;
 
@@ -65,11 +68,12 @@ public class Publication implements BaseEntity<UUID> {
     @OneToMany(fetch = FetchType.LAZY)
     private List<PublicationComment> publicationComments;
 
-    public Publication(UUID id, String tittle, String text, User user) {
+    public Publication(UUID id, String tittle, String text, User user, Integer timeToReadInMinutes) {
         this.id = id;
         this.tittle = tittle;
         this.text = text;
         this.user = user;
+        this.timeToReadInMinutes = timeToReadInMinutes;
     }
 
     @Override
@@ -91,10 +95,14 @@ public class Publication implements BaseEntity<UUID> {
                 "id=" + id +
                 ", tittle='" + tittle + '\'' +
                 ", text='" + text + '\'' +
-                ", user=" + user +
                 ", isPublished=" + isPublished +
                 ", viewCount=" + viewCount +
+                ", timeToReadInMinutes=" + timeToReadInMinutes +
+                ", isDraft=" + isDraft +
+                ", isHidden=" + isHidden +
+                ", isEdited=" + isEdited +
                 ", createdDate=" + createdDate +
+                ", modifiedAt=" + modifiedAt +
                 '}';
     }
 }

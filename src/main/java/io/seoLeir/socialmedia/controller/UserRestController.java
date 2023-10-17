@@ -30,7 +30,7 @@ public class UserRestController {
 
     @GetMapping("/{username}/profile")
     public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
-        return userService.findUserProfile(username);
+        return userService.getUserProfile(username);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -47,7 +47,7 @@ public class UserRestController {
         return publicationService.getAllUserPublications(username, requestDto, textToSearch);
     }
 
-    @GetMapping("/messages")
+    @GetMapping("/{username}/messages")
     public PageResponseDto<MessageChatControllerDto> getUserAllDialogues(Principal principal,
                                                                          @RequestBody PageRequestDto pageRequestDto){
         return userMessageService.getUserDialogues(principal.getName(), pageRequestDto);

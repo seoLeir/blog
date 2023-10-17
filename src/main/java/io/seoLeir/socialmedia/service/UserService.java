@@ -61,16 +61,14 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserProfileResponseDto findUserProfile(String username) {
-        long userAllPublicationsCount = userBookmarkService.getUseAllBookmarkedPublicationsUuid(username).size();
-        long userAllComments = publicationCommentService.publicationCommentsByUserUuid(
-                userRepository.getUserUuidByUsername(username)).size();
-        long allPublicationsByUsername = publicationService.getAllPublicationsByUsername(username);
-
+    public UserProfileResponseDto getUserProfile(String username) {
+        long userBookmarkedPublicationsCount = userBookmarkService.getUserAllPublicationsCount(username);
+        long userAllCommentsCount = publicationCommentService.publicationCommentsByUserUuid(userRepository.getUserUuidByUsername(username));
+        long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(username);
         return userRepository.findByUsername(username).stream()
                 .map(user -> new UserProfileResponseDto(
                         user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt(),
-                        userAllPublicationsCount, userAllComments, allPublicationsByUsername))
+                        userBookmarkedPublicationsCount, userAllCommentsCount, allPublicationsByUsername))
                 .findFirst()
                 .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
                         HttpStatusCode.valueOf(404)));

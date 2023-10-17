@@ -39,7 +39,10 @@ public class PublicationService {
     public UUID createPublication(PublicationCreateRequestDto publicationDto, String publisherName){
         User user = userService.findByUsername(publisherName)
                 .orElseThrow(() -> new UserNotFountException("User with username " + publisherName + " not found", HttpStatusCode.valueOf(404)));
-        Publication publication = new Publication(UUID.randomUUID(), publicationDto.header(), publicationDto.text(), user);
+        long wordsCountInPublicationText = wordsCountInString(publicationDto.text());
+
+        Publication publication = new Publication(
+                UUID.randomUUID(), publicationDto.header(), publicationDto.text(), user, (int) wordsCountInPublicationText);
         publicationRepository.save(publication);
         fileService.getAllFilesByUserUuid(user.getId()).stream()
                 .map(file -> {
@@ -89,7 +92,7 @@ public class PublicationService {
     }
 
     @Transactional
-    public Long getAllPublicationsByUsername(String username){
+    public Long getAllPublicationsCountByUsername(String username){
         return publicationRepository.getPublicationCountByUserUsername(username);
     }
 
@@ -105,5 +108,32 @@ public class PublicationService {
     @Transactional
     public PageResponseDto<Publication> getAllUserBookmarkedPublication(List<UUID> publicationsUuid, Pageable pageable){
         return PageResponseDto.of(publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, pageable));
+    }
+
+    private long wordsCountInString(String publicationText){
+        final int WORD = 0;
+        final int SEPARATOR = 1;
+        if (publicationText == null) {
+            return 0;
+        }
+        int flag = SEPARATOR;
+        int count = 0;
+        int stringLength = publicationText.length();
+        int characterCounter = 0;
+
+        while (characterCounter < stringLength) {
+            if (isAllowedInWord(publicationText.charAt(characterCounter)) && flag == SEPARATOR) {
+                flag = WORD;
+                count++;
+            } else if (!isAllowedInWord(publicationText.charAt(characterCounter))) {
+                flag = SEPARATOR;
+            }
+            characterCounter++;
+        }
+        return count;
+    }
+
+    private boolean isAllowedInWord(char charAt) {
+        return charAt == '\'' || Character.isLetter(charAt);
     }
 }

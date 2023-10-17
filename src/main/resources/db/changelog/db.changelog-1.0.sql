@@ -22,6 +22,7 @@ CREATE TABLE publications
     publisher_username VARCHAR(32) REFERENCES users (username),
     is_published BOOLEAN default true,
     view_count bigint,
+    time_to_read_in_minutes int not null,
     is_draft BOOLEAN default false,
     is_hidden BOOLEAN default false,
     is_edited BOOLEAN default false,

@@ -4,9 +4,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record PublicationUserCommentsDto(UUID id,
-                                         UUID userUuid,
-                                         UUID publicationUuid,
-                                         UUID parentCommentUuid,
+                                         UUID userId,
+                                         UUID publicationId,
+                                         UUID parentCommentId,
                                          String commentMessage,
-                                         Instant createdDate) {
+                                         Instant createdAt) {
 }

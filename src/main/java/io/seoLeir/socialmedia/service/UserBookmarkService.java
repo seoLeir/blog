@@ -29,8 +29,8 @@ public class UserBookmarkService {
         return publicationService.getAllUserBookmarkedPublication(userAllBookmarkedPublications, pageable);
     }
 
-    public long getUserBookmarkedPublicationsCount(String username){
-
+    public long getUserAllPublicationsCount(String username){
+        return userBookmarkRepository.getUserAllBookmarkedPublicationsCount(username);
     }
 
     public List<String> getPublicationThatUsersBookmarked(UUID publicationUuid){

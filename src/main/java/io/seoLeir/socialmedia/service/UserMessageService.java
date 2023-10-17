@@ -21,6 +21,6 @@ public class UserMessageService {
     public PageResponseDto<MessageChatControllerDto> getUserDialogues(String username, PageRequestDto pageRequestDto) {
         Pageable pageable = PageRequest.of(pageRequestDto.pageNumber(), pageRequestDto.pageSize(), pageRequestDto.sort());
         Page<Message> messagePage = userMessageRepository.getUserAllDialoguesUsernameOrderBySentDateTime(username, pageable);
-
+        return null;
     }
 }

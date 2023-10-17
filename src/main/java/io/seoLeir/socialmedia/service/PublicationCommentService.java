@@ -1,6 +1,7 @@
 package io.seoLeir.socialmedia.service;
 
 import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsDto;
+import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsWithLikesDto;
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.entity.PublicationComment;
@@ -25,29 +26,18 @@ public class PublicationCommentService {
         return commentRepository.getAllByPublication(publicationUuid);
     }
 
-    public List<PublicationComment> publicationCommentsByUserUuid(UUID userUuid){
+    public long publicationCommentsByUserUuid(UUID userUuid){
         return commentRepository.getAllByUser(userUuid);
     }
 
     public PageResponseDto<PublicationUserCommentsDto> publicationCommentPageResponse(
-            UUID userUuid, PageRequestDto dto){
+            UUID userUuid, PageRequestDto dto) {
         Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), dto.sort());
-        List<PublicationUserCommentsDto> userCommentsDto = commentRepository.getAllByUserUsername(userUuid, pageable).getContent().stream()
-                .map(publicationComment -> new PublicationUserCommentsDto(publicationComment.getId(),
-                        publicationComment.getUser().getId(),
-                        publicationComment.getPublication().getId(),
-                        publicationComment.getParentPublicationComment().getId(),
-                        publicationComment.getCommentMessage(),
-                        publicationComment.getCreatedAt()))
-                .toList();
-        Page<PublicationComment> page = commentRepository.getAllByUserUsername(userUuid, pageable);
-        return new PageResponseDto<>(
-                userCommentsDto,
-                page.getTotalPages(),
-                page.getTotalElements(),
-                page.getSize(),
-                page.getNumber() + 1,
-                page.isLast(),
-                page.isFirst());
+        Page<PublicationUserCommentsDto> page = commentRepository.getAllByUserUsername(userUuid, pageable);
+        return PageResponseDto.of(page);
+    }
+
+    public PageResponseDto<PublicationUserCommentsWithLikesDto> publicationCommentWithLikesPageResponse(){
+        return null;
     }
 }

@@ -1,7 +1,5 @@
 package io.seoLeir.socialmedia.controller;
 
-import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsDto;
-import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationCreateRequestDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationCreateResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
@@ -54,12 +52,6 @@ public class PublicationRestController {
                 .orElseThrow(() -> new PublicationNotFound(
                         "Publication with id:" + publicationUuid.toString() + " not found",
                         HttpStatusCode.valueOf(404)));
-    }
-
-    @GetMapping("/{publication-uuid}/comments")
-    public PageResponseDto<PublicationUserCommentsDto> getPublicationAllComments(
-            @PathVariable("publication-uuid")UUID id){
-
     }
 
 }
