@@ -28,10 +28,11 @@ public class UserRestController {
     private final UserBookmarkService userBookmarkService;
     private final UserMessageService userMessageService;
 
-    @GetMapping("/{username}/profile")
-    public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
-        return userService.getUserProfile(username);
-    }
+//    @GetMapping("/{username}/profile")
+//    public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
+////        return userService.getUserProfile(username);
+//        return null;
+//    }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{username}/profile")

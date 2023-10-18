@@ -32,6 +32,7 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     void deleteById(@Nullable UUID id);
 
 
+
     @Modifying(flushAutomatically = true)
     @Query("update Publication p set p.viewCount = :newViewCount")
     void updateViewCount(@Param("newViewCount") Long newViewCount);

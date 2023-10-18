@@ -2,6 +2,7 @@ package io.seoLeir.socialmedia.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.seoLeir.socialmedia.entity.Roles;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;

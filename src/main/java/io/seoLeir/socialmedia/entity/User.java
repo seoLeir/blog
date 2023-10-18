@@ -21,6 +21,7 @@ import java.util.*;
 public class User implements BaseEntity<UUID>, UserDetails {
 
     @Id
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "username", nullable = false, unique = true)
@@ -59,7 +60,7 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @OneToMany(fetch = FetchType.LAZY)
     private List<Message> userMessages;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Publication> userPublications;
 
     @OneToMany(fetch = FetchType.LAZY)
@@ -113,7 +114,7 @@ public class User implements BaseEntity<UUID>, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(this.role);
+        return Collections.singletonList(this.getRole());
     }
 
     @Override

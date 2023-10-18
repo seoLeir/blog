@@ -21,7 +21,7 @@ CREATE TABLE publications
     publication_text text NOT NULL,
     publisher_username VARCHAR(32) REFERENCES users (username),
     is_published BOOLEAN default true,
-    view_count bigint,
+    view_count bigint default 0,
     time_to_read_in_minutes int not null,
     is_draft BOOLEAN default false,
     is_hidden BOOLEAN default false,
@@ -82,8 +82,8 @@ CREATE TABLE files
 CREATE TABLE publication_files
 (
     publication_uuid UUID REFERENCES publications(id),
-    file_uuid UUID REFERENCES files(name),
-    CONSTRAINT publication_files_pk PRIMARY KEY (publication_uuid, file_uuid)
+    file_name UUID REFERENCES files(name),
+    CONSTRAINT publication_files_pk PRIMARY KEY (publication_uuid, file_name)
 );
 
 --changeset leir:9
@@ -108,8 +108,8 @@ CREATE TABLE messages
 CREATE TABLE message_files
 (
     message_uuid UUID REFERENCES messages(id),
-    file_uuid UUID REFERENCES files(name),
-    CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_uuid)
+    file_name UUID REFERENCES files(name),
+    CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_name)
 );
 
 --changeset leir:11

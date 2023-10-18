@@ -19,14 +19,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserBookmarkService {
     private final UserBookmarkRepository userBookmarkRepository;
-    private final PublicationService publicationService;
+//    private final PublicationService publicationService;
 
     public PageResponseDto<Publication> getUseAllBookmarkedPublicationsUuid(
             String username,
             PageRequestDto pageRequestDto){
         Pageable pageable = PageRequest.of(pageRequestDto.pageNumber(), pageRequestDto.pageSize(), pageRequestDto.sort());
         List<UUID> userAllBookmarkedPublications = userBookmarkRepository.getAllPublicationsByUserUsername(username);
-        return publicationService.getAllUserBookmarkedPublication(userAllBookmarkedPublications, pageable);
+//         publicationService.getAllUserBookmarkedPublication(userAllBookmarkedPublications, pageable);
+        return null;
     }
 
     public long getUserAllPublicationsCount(String username){

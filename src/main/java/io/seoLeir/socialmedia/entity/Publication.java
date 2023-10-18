@@ -24,6 +24,7 @@ import java.util.UUID;
 public class Publication implements BaseEntity<UUID> {
 
     @Id
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "tittle", nullable = false)

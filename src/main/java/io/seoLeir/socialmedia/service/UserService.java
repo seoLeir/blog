@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserBookmarkService userBookmarkService;
     private final PublicationCommentService publicationCommentService;
-    private final PublicationService publicationService;
+//    private final PublicationService publicationService;
 
     @Transactional
     public void save(User user){
@@ -60,19 +60,19 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    @Transactional
-    public UserProfileResponseDto getUserProfile(String username) {
-        long userBookmarkedPublicationsCount = userBookmarkService.getUserAllPublicationsCount(username);
-        long userAllCommentsCount = publicationCommentService.publicationCommentsByUserUuid(userRepository.getUserUuidByUsername(username));
-        long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(username);
-        return userRepository.findByUsername(username).stream()
-                .map(user -> new UserProfileResponseDto(
-                        user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt(),
-                        userBookmarkedPublicationsCount, userAllCommentsCount, allPublicationsByUsername))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
-                        HttpStatusCode.valueOf(404)));
-    }
+//    @Transactional
+//    public UserProfileResponseDto getUserProfile(String username) {
+//        long userBookmarkedPublicationsCount = userBookmarkService.getUserAllPublicationsCount(username);
+//        long userAllCommentsCount = publicationCommentService.publicationCommentsByUserUuid(userRepository.getUserUuidByUsername(username));
+//        long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(username);
+//        return userRepository.findByUsername(username).stream()
+//                .map(user -> new UserProfileResponseDto(
+//                        user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt(),
+//                        userBookmarkedPublicationsCount, userAllCommentsCount, allPublicationsByUsername))
+//                .findFirst()
+//                .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
+//                        HttpStatusCode.valueOf(404)));
+//    }
 
     @Transactional
     public boolean isUserExists(String username){

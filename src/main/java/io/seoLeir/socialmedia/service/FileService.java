@@ -44,19 +44,17 @@ public class FileService {
                         HttpStatusCode.valueOf(415)));
         Set<String> validExtensionForMimetype = properties.getValidExtensionForMimetype(multipartFile.getContentType())
                 .orElseThrow(() -> new InvalidMimeType("Invalid mime type", HttpStatusCode.valueOf(415)));
-        if (!validExtensionForMimetype.contains(fileExtension)){
+        if (!validExtensionForMimetype.contains(fileExtension))
             throw new UnsupportedFileExtension("Unsupported multipartFile extension",
                     HttpStatusCode.valueOf(415));
-        }
         File fileToSave = new File(
                 UUID.randomUUID(),
                 multipartFile.getOriginalFilename(),
                 multipartFile.getContentType(),
                 user);
         fileRepository.save(fileToSave);
-        if (!Files.exists(properties.getBasicDirectory())){
+        if (!Files.exists(properties.getBasicDirectory()))
             Files.createDirectory(properties.getBasicDirectory());
-        }
         Files.copy(multipartFile.getInputStream(),
                 properties.getBasicDirectory().resolve(fileToSave.getFilename().toString()),
                 StandardCopyOption.REPLACE_EXISTING);
@@ -81,12 +79,20 @@ public class FileService {
     }
 
     @Transactional
-    public List<File> getAllFilesByUserUuid(UUID id){
-        return fileRepository.findAllByUser(id);
+    public boolean isExistById(UUID id){
+        return fileRepository.existsByFilename(id);
     }
 
     @Transactional
-    public boolean isExistById(UUID id){
-        return fileRepository.existsById(id);
+    public File findFileById(UUID id){
+        return fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException(
+                "File not found. File UUID: " + id, HttpStatusCode.valueOf(404)));
+    }
+
+    @Transactional
+    public boolean isFileRelatedToUser(UUID fileUuid, String username) {
+        File file = fileRepository.findById(fileUuid).orElseThrow(() -> new FileNotFoundException(
+                "File not found. File UUID: " + fileUuid, HttpStatusCode.valueOf(404)));
+        return username.equals(file.getUser().getUsername());
     }
 }

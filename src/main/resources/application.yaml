@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: leir
     password: 123
-    url: jdbc:postgresql://localhost:5432/socialmedia
+    url: jdbc:postgresql://localhost:5432/blog
   jpa:
     open-in-view: false
     properties:
@@ -23,6 +23,7 @@ spring:
 socialmedia:
   jwt:
     lifetime: 15m
+  "reading-speed": 250
   files:
     "basic-directory": D:\projects\social-media\s3files
     mime-type-to-valid-extension:
