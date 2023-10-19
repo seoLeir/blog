@@ -22,7 +22,6 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenUtils jwtTokenUtils;
 
-
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -37,8 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .setAuthentication(new UsernamePasswordAuthenticationToken(
                                 username,
                                 null,
-                                jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new)
-                                        .toList()));
+                                jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).toList()));
             }
         }
         filterChain.doFilter(request, response);

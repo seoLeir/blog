@@ -19,10 +19,8 @@ public class PublicationCommentsLikeId implements Serializable {
     @Serial
     private static final long serialVersionUID = 487863211454645L;
 
-
     @Column(name = "user_uuid")
     private UUID userUuid;
-
 
     @Column(name = "publication_comment_uuid")
     private UUID publicationCommentUuid;
@@ -38,5 +36,13 @@ public class PublicationCommentsLikeId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(userUuid, publicationCommentUuid);
+    }
+
+    @Override
+    public String toString() {
+        return "PublicationCommentsLikeId{" +
+                "userUuid=" + userUuid +
+                ", publicationCommentUuid=" + publicationCommentUuid +
+                '}';
     }
 }

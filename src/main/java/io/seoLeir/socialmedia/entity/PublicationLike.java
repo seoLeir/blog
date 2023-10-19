@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "publication_likes")
+@Table(name = "publications_likes")
 @EntityListeners(AuditingEntityListener.class)
 public class PublicationLike implements BaseEntity<PublicationLikeId>{
 
@@ -26,10 +26,12 @@ public class PublicationLike implements BaseEntity<PublicationLikeId>{
     private PublicationLikeId id;
 
     @MapsId("userUuid")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @MapsId("publicationUuid")
+    @JoinColumn(name = "publication_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Publication publication;
 

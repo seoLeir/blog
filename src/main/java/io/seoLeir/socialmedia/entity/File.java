@@ -35,7 +35,7 @@ public class File{
     private String mimeType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "loaded_by")
+    @JoinColumn(name = "loaded_by", referencedColumnName = "id")
     private User user;
 
     @CreatedDate

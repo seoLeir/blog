@@ -6,11 +6,13 @@ import io.seoLeir.socialmedia.exception.user.InvalidUsernameOrPassword;
 import io.seoLeir.socialmedia.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -18,12 +20,16 @@ import java.util.UUID;
 public class JwtAuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final RoleService roleService;
     private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
     public UUID registerUser(String username, String email, String password){
         UUID userUuid = UUID.randomUUID();
-        userService.save(new User(userUuid, username, email, passwordEncoder.encode(password), Roles.ROLE_USER));
+        Roles userRole = roleService.findByName("ROLE_USER");
+        User user = new User(userUuid, username, email, passwordEncoder.encode(password));
+        user.addRole(userRole);
+        userService.save(user);
         return userUuid;
     }
 

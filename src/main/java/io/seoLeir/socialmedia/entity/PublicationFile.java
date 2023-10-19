@@ -14,17 +14,19 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "publication_files")
+@Table(name = "publications_files")
 public class PublicationFile {
 
     @EmbeddedId
     private PublicationFileId id;
 
     @MapsId("publicationUuid")
+    @JoinColumn(name = "publication_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Publication publication;
 
     @MapsId("fileUuid")
+    @JoinColumn(name = "file_name", referencedColumnName = "name")
     @ManyToOne(fetch = FetchType.LAZY)
     private File file;
 
@@ -39,11 +41,11 @@ public class PublicationFile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PublicationFile that = (PublicationFile) o;
-        return Objects.equals(publication, that.publication) && Objects.equals(file, that.file);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(publication, file);
+        return Objects.hash(id);
     }
 }

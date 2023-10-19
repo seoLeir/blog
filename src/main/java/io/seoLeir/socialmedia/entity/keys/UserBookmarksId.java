@@ -23,7 +23,7 @@ public class UserBookmarksId implements Serializable {
     @Serial
     private static final long serialVersionUID = 79131210545448L;
 
-    @Column(name = "user_username")
+    @Column(name = "user_uuid")
     private String userUsername;
 
     @Column(name = "publication_uuid")

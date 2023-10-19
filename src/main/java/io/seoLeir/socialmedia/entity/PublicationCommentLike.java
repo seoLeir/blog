@@ -17,19 +17,20 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "publication_comments_likes")
+@Table(name = "publications_comments_likes")
 @EntityListeners(AuditingEntityListener.class)
 public class PublicationCommentLike implements BaseEntity<PublicationCommentsLikeId>{
 
     @EmbeddedId
     private PublicationCommentsLikeId id;
 
-
     @MapsId("userUuid")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @MapsId("publicationCommentUuid")
+    @JoinColumn(name = "publication_comment_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private PublicationComment publicationComment;
 

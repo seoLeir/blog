@@ -24,6 +24,7 @@ import java.util.UUID;
 public class Publication implements BaseEntity<UUID> {
 
     @Id
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "tittle", nullable = false)
@@ -32,7 +33,7 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "publication_text")
     private String text;
 
-    @JoinColumn(name = "publisher_username")
+    @JoinColumn(name = "publisher_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -41,6 +42,9 @@ public class Publication implements BaseEntity<UUID> {
 
     @Column(name = "view_count")
     private Long viewCount;
+
+    @Column(name = "time_to_read_in_minutes")
+    private Integer timeToReadInMinutes;
 
     @Column(name = "is_draft")
     private Boolean isDraft;
@@ -59,17 +63,18 @@ public class Publication implements BaseEntity<UUID> {
     @LastModifiedDate
     private Instant modifiedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication", cascade = CascadeType.REMOVE)
     private List<PublicationFile> publicationFiles;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PublicationComment> publicationComments;
 
-    public Publication(UUID id, String tittle, String text, User user) {
+    public Publication(UUID id, String tittle, String text, User user, Integer timeToReadInMinutes) {
         this.id = id;
         this.tittle = tittle;
         this.text = text;
         this.user = user;
+        this.timeToReadInMinutes = timeToReadInMinutes;
     }
 
     @Override
@@ -91,10 +96,14 @@ public class Publication implements BaseEntity<UUID> {
                 "id=" + id +
                 ", tittle='" + tittle + '\'' +
                 ", text='" + text + '\'' +
-                ", user=" + user +
                 ", isPublished=" + isPublished +
                 ", viewCount=" + viewCount +
+                ", timeToReadInMinutes=" + timeToReadInMinutes +
+                ", isDraft=" + isDraft +
+                ", isHidden=" + isHidden +
+                ", isEdited=" + isEdited +
                 ", createdDate=" + createdDate +
+                ", modifiedAt=" + modifiedAt +
                 '}';
     }
 }

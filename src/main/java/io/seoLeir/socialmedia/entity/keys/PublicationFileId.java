@@ -19,13 +19,21 @@ import java.util.UUID;
 public class PublicationFileId implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 9879230311230254L;
+    private static final long serialVersionUID = 798165981645L;
 
     @Column(name = "publication_uuid")
     private UUID publicationUuid;
 
-    @Column(name = "file_uuid")
+    @Column(name = "file_name")
     private UUID fileUuid;
+
+    @Override
+    public String toString() {
+        return "PublicationFileId{" +
+                "publicationUuid=" + publicationUuid +
+                ", fileUuid=" + fileUuid +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
