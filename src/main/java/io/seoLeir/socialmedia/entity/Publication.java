@@ -33,7 +33,7 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "publication_text")
     private String text;
 
-    @JoinColumn(name = "publisher_username")
+    @JoinColumn(name = "publisher_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -63,10 +63,10 @@ public class Publication implements BaseEntity<UUID> {
     @LastModifiedDate
     private Instant modifiedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication", cascade = CascadeType.REMOVE)
     private List<PublicationFile> publicationFiles;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PublicationComment> publicationComments;
 
     public Publication(UUID id, String tittle, String text, User user, Integer timeToReadInMinutes) {

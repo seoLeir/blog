@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_bookmarks")
+@Table(name = "users_bookmarks")
 @EntityListeners(AuditingEntityListener.class)
 public class UserBookmark implements BaseEntity<UserBookmarksId> {
 
@@ -26,10 +26,12 @@ public class UserBookmark implements BaseEntity<UserBookmarksId> {
     private UserBookmarksId id;
 
     @MapsId("userUsername")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @MapsId("publicationUuid")
+    @JoinColumn(name = "publication_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Publication publication;
 

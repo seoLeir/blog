@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select u.id from User u where u.username = :username")
     UUID getUserUuidByUsername(String username);
 
-    @Modifying(flushAutomatically = true)
-    @Query("update User u set u.role = :role where u.username = :username")
-    void updateRole(@Param("username") String username, @Param("role") Roles role);
+//    @Modifying(flushAutomatically = true)
+//    @Query("update User u set u.role = :role where u.username = :username")
+//    void updateRole(@Param("username") String username, @Param("role") Roles role);
 }

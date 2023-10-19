@@ -25,19 +25,19 @@ public class Message implements BaseEntity<UUID> {
     @Id
     private UUID id;
 
-    @JoinColumn(name = "user_from", nullable = false)
+    @JoinColumn(name = "user_from", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User userFrom;
 
-    @JoinColumn(name = "user_to", nullable = false)
+    @JoinColumn(name = "user_to", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User userTo;
 
-    @Column(name = "sent_datetime", nullable = false)
+    @Column(name = "sent_datetime")
     @CreatedDate
     private Instant sentDateTime;
 
-    @Column(name = "message_body", nullable = false)
+    @Column(name = "message_body")
     private String messageBody;
 
     @Column(name = "is_read")
@@ -65,7 +65,7 @@ public class Message implements BaseEntity<UUID> {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "message_files",
             joinColumns = {@JoinColumn(name = "message_uuid")},
-            inverseJoinColumns = {@JoinColumn(name = "file_uuid")})
+            inverseJoinColumns = {@JoinColumn(name = "file_name")})
     private List<File> file = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

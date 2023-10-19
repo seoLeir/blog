@@ -27,7 +27,6 @@ public class PublicationLikeId implements Serializable {
     @Column(name = "user_uuid")
     private UUID userUuid;
 
-
     @Column(name = "publication_uuid")
     private UUID publicationUuid;
 

@@ -38,7 +38,7 @@ public class UserRestController {
     @GetMapping("/{username}/profile")
     public void updateUserRole(@PathVariable("username") String username,
                                @RequestParam("role") Roles role){
-        userService.update(username, role);
+//        userService.update(username, role);
     }
 
     @GetMapping("/{username}/publications")

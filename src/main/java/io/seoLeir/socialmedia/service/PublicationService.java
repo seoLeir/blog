@@ -7,6 +7,7 @@ import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
 import io.seoLeir.socialmedia.entity.Publication;
 import io.seoLeir.socialmedia.entity.PublicationFile;
+import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.exception.file.FileNotFoundException;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
@@ -21,9 +22,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -88,9 +92,10 @@ public class PublicationService {
 
     @Transactional
     public void delete(UUID id, String username){
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         Publication publication = publicationRepository.findById(id).orElseThrow(() ->
                 new PublicationNotFound("Publication" + id + " not found", HttpStatusCode.valueOf(404)));
-        if (publication.getUser().getUsername().equals(username) || username.equals("admin")){
+        if (publication.getUser().getUsername().equals(username) || authorities.contains("ROLE_ADMIN")){
             publicationRepository.deleteById(id);
         }
     }

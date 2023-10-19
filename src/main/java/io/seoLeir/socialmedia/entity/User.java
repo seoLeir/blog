@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
@@ -33,9 +34,11 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private Roles role;
+    @ManyToMany
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_uuid"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Roles> roles = new HashSet<>();
 
     @Column(name = "info")
     private String info;
@@ -70,12 +73,19 @@ public class User implements BaseEntity<UUID>, UserDetails {
             mappedBy = "user")
     private List<UserBookmark> userBookmarks;
 
-    public User(UUID userUuid, String username, String email, String password, Roles userRole) {
+    public User(UUID userUuid, String username, String email, String password, String info) {
         this.id = userUuid;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = userRole;
+        this.info = info;
+    }
+
+    public User(UUID userUuid, String username, String email, String password) {
+        this.id = userUuid;
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
     @Override
@@ -93,28 +103,26 @@ public class User implements BaseEntity<UUID>, UserDetails {
         return Objects.hash(username, email, password);
     }
 
-    public User(UUID id, String username, String email, String password, Roles role, String info, Instant createdAt) {
+    public User(UUID id, String username, String email, String password, String info, Instant createdAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
         this.info = info;
         this.createdAt = createdAt;
     }
 
-    public User(UUID id, String username, String email, String password, Roles role, String info) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.info = info;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(this.getRole());
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Roles role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
+    }
+
+    public void addRole(Roles role){
+        this.roles.add(role);
     }
 
     @Override

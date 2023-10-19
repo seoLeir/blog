@@ -43,17 +43,16 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .map(user -> new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), Collections.emptyList()))
                 .orElseThrow(() -> {
                     log.debug("user with username: {} not found", username);
                     return new UsernameNotFoundException("User with username: " + username + "not found");
                 });
     }
 
-    @Transactional
-    public void update(String username, Roles role){
-        userRepository.updateRole(username, role);
-    }
+//    @Transactional
+//    public void update(String username, Roles role){
+//        userRepository.updateRole(username, role);
+//    }
 
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username){

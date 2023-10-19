@@ -32,7 +32,8 @@ public class JwtTokenUtils {
         claims.put("roles", roleList);
         Date issDate = new Date(System.currentTimeMillis());
         Date expDate = new Date(issDate.getTime() + lifetime.toMillis());
-        return Jwts.builder().setClaims(claims)
+        return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(name)
                 .setIssuedAt(issDate)
                 .setExpiration(expDate)

@@ -18,22 +18,22 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "publication_comments")
+@Table(name = "publications_comments")
 @EntityListeners(AuditingEntityListener.class)
 public class PublicationComment implements BaseEntity<UUID> {
 
     @Id
     private UUID id;
 
-    @JoinColumn(name = "user_uuid")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @JoinColumn(name = "publication_uuid")
+    @JoinColumn(name = "publication_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Publication publication;
 
-    @JoinColumn(name = "parent_comment_uuid")
+    @JoinColumn(name = "parent_comment_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private PublicationComment parentPublicationComment;
 

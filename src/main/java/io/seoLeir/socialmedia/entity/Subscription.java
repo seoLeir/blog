@@ -24,10 +24,12 @@ public class Subscription implements BaseEntity<SubscriptionId>{
     private SubscriptionId id;
 
     @MapsId("subscriberUserUuid")
+    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User subscriberUser;
 
     @MapsId("targetUserUuid")
+    @JoinColumn(name = "target_user", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User targetUser;
 
