@@ -19,10 +19,10 @@ CREATE TABLE publications
     id UUID PRIMARY KEY,
     tittle TEXT NOT NULL,
     publication_text text NOT NULL,
-    publisher_username VARCHAR(32) REFERENCES users (username),
+    publisher_uuid UUID REFERENCES users (id),
     is_published BOOLEAN default true,
-    view_count bigint default 0,
-    time_to_read_in_minutes int not null,
+    view_count BIGINT default 0,
+    time_to_read_in_minutes INT not null,
     is_draft BOOLEAN default false,
     is_hidden BOOLEAN default false,
     is_edited BOOLEAN default false,
@@ -33,7 +33,7 @@ CREATE TABLE publications
 --changeset leir:3
 CREATE TABLE user_bookmarks
 (
-    user_username VARCHAR(32) REFERENCES users(username),
+    user_username UUID REFERENCES users(id),
     publication_uuid UUID REFERENCES publications(id),
     bookmarked_date DATE NOT NULL,
     CONSTRAINT users_bookmarks_pk PRIMARY KEY (user_username, publication_uuid)

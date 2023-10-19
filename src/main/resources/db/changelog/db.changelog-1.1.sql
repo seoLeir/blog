@@ -7,7 +7,7 @@ CREATE INDEX subscriber_id_idx ON subscriptions (subscriber_id);
 
 CREATE INDEX target_user_idx ON subscriptions (target_user);
 
-CREATE INDEX publication_username_idx ON publications (publisher_username);
+CREATE INDEX publication_username_idx ON publications (publisher_uuid);
 
 CREATE INDEX publication_uuid_idx ON publication_likes (publication_uuid);
 
