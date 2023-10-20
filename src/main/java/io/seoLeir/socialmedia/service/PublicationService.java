@@ -101,11 +101,6 @@ public class PublicationService {
     }
 
     @Transactional
-    public Long getAllPublicationsCountByUsername(String username){
-        return publicationRepository.getPublicationCountByUserUsername(username);
-    }
-
-    @Transactional
     public void update(PublicationUpdateRequestDto dto, UUID id) {
         if (publicationRepository.existsById(id))
             publicationRepository.updateTittleAndText(dto.tittle(), dto.publicationText(), id);

@@ -1,7 +1,5 @@
 package io.seoLeir.socialmedia.entity.keys;
 
-
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +10,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
-
 
 @Getter
 @Setter

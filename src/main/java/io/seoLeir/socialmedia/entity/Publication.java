@@ -3,6 +3,7 @@ package io.seoLeir.socialmedia.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -55,8 +56,8 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "is_edited")
     private Boolean isEdited;
 
-    @Column(name = "created_date", nullable = false)
-    @CreatedDate
+    @Column(name = "created_date")
+    @CreationTimestamp
     private Instant createdDate;
 
     @Column(name = "modified_at")

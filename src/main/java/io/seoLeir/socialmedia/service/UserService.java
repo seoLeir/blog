@@ -3,9 +3,11 @@ package io.seoLeir.socialmedia.service;
 import io.seoLeir.socialmedia.dto.user.UserProfileResponseDto;
 import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.entity.User;
+import io.seoLeir.socialmedia.exception.role.RoleNotFoundException;
 import io.seoLeir.socialmedia.exception.user.EmailAlreadyExists;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.exception.user.UsernameAlreadyExists;
+import io.seoLeir.socialmedia.repository.RoleRepository;
 import io.seoLeir.socialmedia.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleService roleService;
+    private final UserRoleService userRoleService;
     private final UserBookmarkService userBookmarkService;
     private final PublicationCommentService publicationCommentService;
 //    private final PublicationService publicationService;
@@ -49,10 +55,14 @@ public class UserService implements UserDetailsService {
                 });
     }
 
-//    @Transactional
-//    public void update(String username, Roles role){
-//        userRepository.updateRole(username, role);
-//    }
+    @Transactional
+    public void update(String username, String role){
+        User foundUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
+                        HttpStatusCode.valueOf(404)));
+        Roles foundRole = roleService.findByName(role);
+        userRoleService.update(foundRole.getId(),foundUser.getId());
+    }
 
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username){

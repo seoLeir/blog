@@ -1,7 +1,5 @@
 package io.seoLeir.socialmedia.entity.keys;
 
-import io.seoLeir.socialmedia.entity.Publication;
-import io.seoLeir.socialmedia.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
