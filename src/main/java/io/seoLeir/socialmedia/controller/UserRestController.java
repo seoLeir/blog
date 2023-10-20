@@ -28,17 +28,17 @@ public class UserRestController {
     private final UserBookmarkService userBookmarkService;
     private final UserMessageService userMessageService;
 
-//    @GetMapping("/{username}/profile")
-//    public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
-////        return userService.getUserProfile(username);
-//        return null;
-//    }
+    /*@GetMapping("/{username}/profile")
+    public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
+        return userService.getUserProfile(username);
+        return null;
+    }*/
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/{username}/profile")
+    @PatchMapping("/{username}/profile")
     public void updateUserRole(@PathVariable("username") String username,
-                               @RequestParam("role") Roles role){
-//        userService.update(username, role);
+                               @RequestParam("role") String role){
+        userService.update(username, role);
     }
 
     @GetMapping("/{username}/publications")
@@ -49,9 +49,9 @@ public class UserRestController {
     }
 
     @GetMapping("/{username}/messages")
-    public PageResponseDto<MessageChatControllerDto> getUserAllDialogues(Principal principal,
+    public PageResponseDto<MessageChatControllerDto> getUserAllDialogues(@PathVariable("username") String username,
                                                                          @RequestBody PageRequestDto pageRequestDto){
-        return userMessageService.getUserDialogues(principal.getName(), pageRequestDto);
+        return userMessageService.getUserDialogues(username, pageRequestDto);
     }
 
     @GetMapping("/{username}/comments")
@@ -64,9 +64,8 @@ public class UserRestController {
     }
 
     @GetMapping("/{username}/bookmarks")
-    public PageResponseDto<Publication> getUserBookmarks(
-            @PathVariable("username") String username,
-            PageRequestDto requestDto){
+    public PageResponseDto<Publication> getUserBookmarks(@PathVariable("username") String username,
+                                                         PageRequestDto requestDto){
         if (userService.isUserExists(username))
             return userBookmarkService.getUseAllBookmarkedPublicationsUuid(username, requestDto);
         else

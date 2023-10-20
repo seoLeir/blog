@@ -21,16 +21,16 @@ public class AdminInitializer implements ApplicationListener<ContextRefreshedEve
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-//        userService.findByUsername("admin")
-//                .ifPresentOrElse(user -> {
-//                }, () -> {
-//                    User admin = new User(UUID.randomUUID(),
-//                            "admin",
-//                            "mirzayevmiralim28@gmail.com",
-//                            passwordEncoder.encode("admin"),
-//                            "Website Moderator");
-//                    userService.save(admin);
-//                    log.info("Save admin in database");
-//                });
+        /*userService.findByUsername("admin")
+                .ifPresentOrElse(user -> {
+                }, () -> {
+                    User admin = new User(UUID.randomUUID(),
+                            "admin",
+                            "mirzayevmiralim28@gmail.com",
+                            passwordEncoder.encode("admin"),
+                            "Website Moderator");
+                    userService.save(admin);
+                    log.info("Save admin in database");
+                });*/
     }
 }

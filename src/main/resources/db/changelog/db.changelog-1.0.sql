@@ -3,7 +3,7 @@
 --changeset leir:1
 CREATE TABLE roles
 (
-    id SMALLSERIAL PRIMARY KEY,
+    id SMALLINT PRIMARY KEY,
     name VARCHAR(50)
 );
 

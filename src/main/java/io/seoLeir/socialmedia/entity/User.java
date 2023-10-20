@@ -34,11 +34,8 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_uuid"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Roles> roles = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<UserRole> userRoles;
 
     @Column(name = "info")
     private String info;
@@ -115,14 +112,10 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (Roles role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        for (UserRole userRole : userRoles) {
+            authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName()));
         }
         return authorities;
-    }
-
-    public void addRole(Roles role){
-        this.roles.add(role);
     }
 
     @Override

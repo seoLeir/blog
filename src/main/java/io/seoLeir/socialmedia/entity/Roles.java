@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,14 +18,12 @@ import org.springframework.security.core.GrantedAuthority;
 public class Roles implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
 
     private String name;
 
-    public Roles(String name) {
-        this.name = name;
-    }
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<UserRole> userRole;
 
     @Override
     public String toString() {

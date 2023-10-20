@@ -21,7 +21,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthRestController {
     private final JwtAuthService authService;
-    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
