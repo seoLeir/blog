@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
+    @Query("select (count(u) > 0) from User u where u.username = ?1")
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
@@ -18,5 +19,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("select u.id from User u where u.username = :username")
     UUID getUserUuidByUsername(String username);
+
+    @Query("select u.id from User u where u.username = ?1")
+    Optional<UUID> getByUsername(String username);
 
 }

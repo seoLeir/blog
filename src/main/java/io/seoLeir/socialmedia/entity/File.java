@@ -42,9 +42,6 @@ public class File{
     @Column(name = "loaded_time", nullable = false)
     private Instant loadedTime;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Message> messages;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "file")
     private List<PublicationFile> publicationFiles;
 

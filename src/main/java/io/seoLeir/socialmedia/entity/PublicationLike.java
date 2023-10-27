@@ -35,9 +35,12 @@ public class PublicationLike implements BaseEntity<PublicationLikeId>{
     @ManyToOne(fetch = FetchType.LAZY)
     private Publication publication;
 
-    @Column(name = "like_datetime", nullable = false)
+    @Column(name = "action_datetime", nullable = false)
     @CreatedDate
     private Instant likeDateTime;
+
+    @Column(name = "is_like")
+    private Boolean isLike;
 
     public PublicationLike(User user, Publication publication) {
         this.user = user;

@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.UUID;
 
 public record PublicationGetResponseDto(UUID id,
-                                        String header,
-                                        String publicationText,
-                                        String publisherUsername,
+                                        String tittle,
+                                        String text,
+                                        String user,
                                         Instant createdDate,
-                                        List<UUID> detachedFiles) {
+                                        List<UUID> publicationFiles) {
     public static PublicationGetResponseDto of(Publication publication, List<UUID> fileList){
         return new PublicationGetResponseDto(publication.getId(),
                 publication.getTittle(),
