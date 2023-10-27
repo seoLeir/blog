@@ -69,7 +69,8 @@ CREATE TABLE publications_likes
 (
     user_uuid UUID REFERENCES users(id) ON DELETE CASCADE,
     publication_uuid UUID REFERENCES publications(id) ON DELETE CASCADE,
-    like_datetime TIMESTAMP NOT NULL,
+    action_datetime TIMESTAMP NOT NULL,
+    is_like BOOLEAN NOT NULL,
     CONSTRAINT publication_likes_fk PRIMARY KEY (publication_uuid, user_uuid)
 );
 
@@ -78,7 +79,8 @@ CREATE TABLE publications_comments_likes
 (
     user_uuid UUID REFERENCES users(id) ON DELETE CASCADE,
     publication_comment_uuid UUID REFERENCES publications_comments (id) ON DELETE CASCADE,
-    like_datetime TIMESTAMP NOT NULL,
+    action_datetime TIMESTAMP NOT NULL,
+    is_like BOOLEAN NOT NULL,
     CONSTRAINT comments_likes_fk PRIMARY KEY (publication_comment_uuid, user_uuid)
 );
 
@@ -101,32 +103,6 @@ CREATE TABLE publications_files
 );
 
 --changeset leir:11
-CREATE TABLE messages
-(
-    id UUID PRIMARY KEY,
-    user_from UUID references users (id) ON DELETE CASCADE NOT NULL,
-    user_to UUID references users(id) ON DELETE CASCADE NOT NULL,
-    sent_datetime TIMESTAMP NOT NULL,
-    message_body TEXT,
-    is_read BOOLEAN default false,
-    is_spam BOOLEAN default false,
-    is_deleted BOOLEAN default false,
-    not_delivered BOOLEAN default false,
-    is_postponed BOOLEAN default false,
-    is_edited BOOLEAN default false,
-    updated_at TIMESTAMP,
-    parent_message UUID REFERENCES messages(id)
-);
-
---changeset leir:12
-CREATE TABLE messages_files
-(
-    message_uuid UUID REFERENCES messages(id) ON DELETE CASCADE,
-    file_name UUID REFERENCES files(name) ON DELETE CASCADE,
-    CONSTRAINT message_files_pk PRIMARY KEY (message_uuid, file_name)
-);
-
---changeset leir:13
 CREATE TABLE subscriptions
 (
     subscriber_id UUID REFERENCES users(id) ON DELETE CASCADE,

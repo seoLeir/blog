@@ -22,7 +22,7 @@ public class UserBookmarksId implements Serializable {
     private static final long serialVersionUID = 79131210545448L;
 
     @Column(name = "user_uuid")
-    private String userUsername;
+    private UUID userUuid;
 
     @Column(name = "publication_uuid")
     private UUID publicationUuid;
@@ -32,18 +32,18 @@ public class UserBookmarksId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserBookmarksId that = (UserBookmarksId) o;
-        return Objects.equals(userUsername, that.userUsername) && Objects.equals(publicationUuid, that.publicationUuid);
+        return Objects.equals(userUuid, that.userUuid) && Objects.equals(publicationUuid, that.publicationUuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userUsername, publicationUuid);
+        return Objects.hash(userUuid, publicationUuid);
     }
 
     @Override
     public String toString() {
         return "UserBookmarksId{" +
-                "userUsername='" + userUsername + '\'' +
+                "userUsername='" + userUuid + '\'' +
                 ", publicationUuid=" + publicationUuid +
                 '}';
     }

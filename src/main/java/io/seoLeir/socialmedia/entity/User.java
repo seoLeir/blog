@@ -57,9 +57,6 @@ public class User implements BaseEntity<UUID>, UserDetails {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<PublicationLike> publicationLikes;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Message> userMessages;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Publication> userPublications;
 

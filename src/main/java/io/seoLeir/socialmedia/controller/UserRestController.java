@@ -1,20 +1,24 @@
 package io.seoLeir.socialmedia.controller;
 
 import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsDto;
-import io.seoLeir.socialmedia.dto.message.MessageChatControllerDto;
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
+import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.user.UserProfileResponseDto;
 import io.seoLeir.socialmedia.entity.*;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -26,13 +30,12 @@ public class UserRestController {
     private final PublicationService publicationService;
     private final PublicationCommentService publicationCommentService;
     private final UserBookmarkService userBookmarkService;
-    private final UserMessageService userMessageService;
+    private final UserInfoService userInfoService;
 
-    /*@GetMapping("/{username}/profile")
+    @GetMapping("/{username}/profile")
     public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
-        return userService.getUserProfile(username);
-        return null;
-    }*/
+        return userInfoService.getUserProfile(username);
+    }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PatchMapping("/{username}/profile")
@@ -48,27 +51,41 @@ public class UserRestController {
         return publicationService.getAllUserPublications(username, requestDto, textToSearch);
     }
 
-    @GetMapping("/{username}/messages")
-    public PageResponseDto<MessageChatControllerDto> getUserAllDialogues(@PathVariable("username") String username,
-                                                                         @RequestBody PageRequestDto pageRequestDto){
-        return userMessageService.getUserDialogues(username, pageRequestDto);
-    }
-
     @GetMapping("/{username}/comments")
-    public PageResponseDto<PublicationUserCommentsDto> getAllUserCommentsUnderPublication(
-            @PathVariable("username") String username,
-            @RequestBody PageRequestDto pageRequestDto){
+    public PageResponseDto<PublicationUserCommentsDto> getUserAllComments(@PathVariable("username") String username,
+                                                                          @RequestBody PageRequestDto pageRequestDto){
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
         return publicationCommentService.publicationCommentPageResponse(user.getId(), pageRequestDto);
     }
 
+
     @GetMapping("/{username}/bookmarks")
-    public PageResponseDto<Publication> getUserBookmarks(@PathVariable("username") String username,
-                                                         PageRequestDto requestDto){
-        if (userService.isUserExists(username))
-            return userBookmarkService.getUseAllBookmarkedPublicationsUuid(username, requestDto);
-        else
+    public PageResponseDto<PublicationGetResponseDto> getUserBookmarks(@PathVariable("username") String username,
+                                                                       @RequestBody PageRequestDto requestDto){
+        log.info("method getUserBookmarks() was called");
+        if (userService.isUserExists(username)) {
+            List<UUID> useAllBookmarkedPublicationsUuid =
+                    userBookmarkService.getUseAllBookmarkedPublicationsUuid(userService.getUserUuidFromUsername(username)
+                                    .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404))));
+            log.info("{}'s bookmarked publications uuids: {}", username, useAllBookmarkedPublicationsUuid);
+            Pageable pageable = PageRequest.of(requestDto.pageNumber(), requestDto.pageSize(),
+                    (requestDto.sort() != null) ? requestDto.sort() : Sort.unsorted());
+            return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageable);
+        } else{
             throw new UserNotFountException("User not found", HttpStatusCode.valueOf(404));
+        }
+    }
+
+    @GetMapping("/{username}/bookmarks/without-page")
+    public List<PublicationGetResponseDto> publicationGetResponseDtoList(@PathVariable("username") String username){
+        log.info("method publicationGetResponseDtoList() was called");
+        if(!userService.isUserExists(username))
+            throw new UserNotFountException("User not found", HttpStatusCode.valueOf(404));
+        List<UUID> useAllBookmarkedPublicationsUuid =
+                userBookmarkService.getUseAllBookmarkedPublicationsUuid(userService.getUserUuidFromUsername(username)
+                        .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404))));
+        log.info("{}'s bookmarked publications uuids: {}", username, useAllBookmarkedPublicationsUuid);
+        return publicationService.publicationGetResponseDtoList(useAllBookmarkedPublicationsUuid);
     }
 }

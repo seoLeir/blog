@@ -25,7 +25,7 @@ public class UserBookmark implements BaseEntity<UserBookmarksId> {
     @EmbeddedId
     private UserBookmarksId id;
 
-    @MapsId("userUsername")
+    @MapsId("userUuid")
     @JoinColumn(name = "user_uuid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

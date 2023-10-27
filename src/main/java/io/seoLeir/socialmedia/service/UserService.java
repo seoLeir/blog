@@ -1,13 +1,10 @@
 package io.seoLeir.socialmedia.service;
 
-import io.seoLeir.socialmedia.dto.user.UserProfileResponseDto;
 import io.seoLeir.socialmedia.entity.Roles;
 import io.seoLeir.socialmedia.entity.User;
-import io.seoLeir.socialmedia.exception.role.RoleNotFoundException;
 import io.seoLeir.socialmedia.exception.user.EmailAlreadyExists;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.exception.user.UsernameAlreadyExists;
-import io.seoLeir.socialmedia.repository.RoleRepository;
 import io.seoLeir.socialmedia.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,9 +25,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final UserRoleService userRoleService;
-    private final UserBookmarkService userBookmarkService;
-    private final PublicationCommentService publicationCommentService;
-//    private final PublicationService publicationService;
 
     @Transactional
     public void save(User user){
@@ -69,22 +61,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-//    @Transactional
-//    public UserProfileResponseDto getUserProfile(String username) {
-//        long userBookmarkedPublicationsCount = userBookmarkService.getUserAllPublicationsCount(username);
-//        long userAllCommentsCount = publicationCommentService.publicationCommentsByUserUuid(userRepository.getUserUuidByUsername(username));
-//        long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(username);
-//        return userRepository.findByUsername(username).stream()
-//                .map(user -> new UserProfileResponseDto(
-//                        user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt(),
-//                        userBookmarkedPublicationsCount, userAllCommentsCount, allPublicationsByUsername))
-//                .findFirst()
-//                .orElseThrow(() -> new UserNotFountException("User with username:" + username + " not found",
-//                        HttpStatusCode.valueOf(404)));
-//    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean isUserExists(String username){
         return userRepository.existsByUsername(username);
+    }
+
+    @Transactional
+    public Optional<UUID> getUserUuidFromUsername(String username){
+        return userRepository.getByUsername(username);
     }
 }

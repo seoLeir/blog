@@ -1,5 +1,6 @@
 package io.seoLeir.socialmedia.repository;
 
+import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.entity.Publication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +19,12 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
             countQuery = "select count(p.id) from Publication p")
     Page<Publication> getAllUserBookmarkedPublication(@Param("ids") List<UUID> uuids, Pageable pageable);
 
+    @Query(value = "select p from Publication p where p.id in (:ids)")
+    List<Publication> getAllUserBookmarkedPublications(@Param("ids") List<UUID> uuids);
+
     @Query(value = "select p from Publication p where p.user.username = :username",
             countQuery = "select count (p.id) from Publication p where p.user.username = :username")
-    Page<Publication> getByUserUsername(@Param("username") String username, Pageable pageable);
+    Page<PublicationGetResponseDto> getByUserUsername(@Param("username") String username, Pageable pageable);
 
     @Query(value = "select count (p.id) from Publication p where p.user.username = :username")
     Long getPublicationCountByUserUsername(@Param("username") String username);

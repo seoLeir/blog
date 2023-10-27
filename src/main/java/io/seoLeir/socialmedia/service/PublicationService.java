@@ -110,8 +110,36 @@ public class PublicationService {
     }
 
     @Transactional
-    public PageResponseDto<Publication> getAllUserBookmarkedPublication(List<UUID> publicationsUuid, Pageable pageable){
-        return PageResponseDto.of(publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, pageable));
+    public PageResponseDto<PublicationGetResponseDto> getAllUserBookmarkedPublication(List<UUID> publicationsUuid, Pageable pageable){
+        Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, pageable);
+        List<PublicationGetResponseDto> publicationGetResponseContent = allUserBookmarkedPublication.getContent().stream()
+                        .map(publication -> {
+            List<UUID> detachedFiles = publicationFileService.findByFileByPublicationId(publication.getId());
+            return new PublicationGetResponseDto(
+                    publication.getId(),
+                    publication.getTittle(),
+                    publication.getText(),
+                    publication.getUser().getUsername(),
+                    publication.getCreatedDate(),
+                    detachedFiles);
+        }).toList();
+        return PageResponseDto.of(allUserBookmarkedPublication, publicationGetResponseContent);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicationGetResponseDto> publicationGetResponseDtoList(List<UUID> publicationsUuid){
+        return publicationRepository.getAllUserBookmarkedPublications(publicationsUuid)
+                .stream()
+                .map(publication -> {
+                    List<UUID> detachedFiles = publicationFileService.findByFileByPublicationId(publication.getId());
+                    return new PublicationGetResponseDto(
+                            publication.getId(),
+                            publication.getTittle(),
+                            publication.getText(),
+                            publication.getUser().getUsername(),
+                            publication.getCreatedDate(),
+                            detachedFiles);
+                }).toList();
     }
 
     private int wordsCountInString(String publicationText){
@@ -139,5 +167,9 @@ public class PublicationService {
 
     private boolean isAllowedInWord(char charAt) {
         return charAt == '\'' || Character.isLetter(charAt);
+    }
+
+    public long getAllPublicationsCountByUsername(String username) {
+        return publicationRepository.getPublicationCountByUserUsername(username);
     }
 }

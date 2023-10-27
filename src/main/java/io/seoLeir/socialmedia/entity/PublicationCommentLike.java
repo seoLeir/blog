@@ -35,9 +35,12 @@ public class PublicationCommentLike implements BaseEntity<PublicationCommentsLik
     private PublicationComment publicationComment;
 
 
-    @Column(name = "like_datetime", nullable = false)
+    @Column(name = "action_datetime", nullable = false)
     @CreatedDate
     private Instant likeDateTime;
+
+    @Column(name = "is_like")
+    private Boolean isLike;
 
     public PublicationCommentLike(User user, PublicationComment publicationComment) {
         this.user = user;
