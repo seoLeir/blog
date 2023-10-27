@@ -69,8 +69,129 @@ VALUES
     ('b6d69615-8eac-41fb-856e-37e4c895e2e5', 'The World of War', 'In timeless wisdom on strategy and warfare continues to inspire leaders and military tacticians. This ancient text, dating back to the 5th century BC, explores the principles of conflict, diplomacy, and the art of gaining an advantage.', '5df3b797-b1cc-43c0-942a-06cdd30bdbfc', true, 900, 13, false, false, false, '2022-09-22 19:00:00'),
     ('3c59e157-05b9-4a00-a7d1-8fdebf0dcc1e', 'The World of Nanotechnology', 'Uncover the potential of nanotechnology and its applications in various fields.', '8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', true, 230, 13, false, false, false, '2021-09-16 19:00:00');
 
--- 3.141592653589 - PI: admin-3, test-username-1, 1-4, 2-1, 3-5, 4-9, 5-2, 6-6, 7-5, 8-3, 9-5, 10-8
 --changeset leir:5
+INSERT INTO files (name, real_name, mime_type, loaded_by, loaded_time)
+VALUES
+    ('5e91eacd-f43e-4f1f-bca2-fd586e3d7dfe', 'blockchain-revolution.jpg', 'image/jpeg', 'a871dbd6-7f14-467c-9ac2-d5a0e3963ab2', '2023-10-27 12:30:50.112374'),
+    ('b954542a-23ba-42f9-82c8-4092bc3583ac', 'Cybersecurity-best-practices.png', 'image/png', 'd0d8a85d-5e3b-4fc4-a2ec-0b6972440a42', '2023-10-27 12:15:00.989708'),
+    ('169b6c64-6db7-4d4d-b2d3-56000adeaa77', 'exploring-ancient-history.jpg', 'image/jpeg', 'a871dbd6-7f14-467c-9ac2-d5a0e3963ab2', '2023-10-27 12:35:41.076410'),
+    ('743fc708-082a-46d3-a7f1-73ce165d600b', 'exploring-renewable-energy.png', 'image/png', 'b1c7a27b-7a8b-4a39-9d1c-dbf1e3958911', '2023-10-27 12:01:22.271263'),
+    ('6a5e90ca-91fe-4826-a0cf-c46f86efa43d', 'future-of-artificial-intelligence.jpg', 'image/jpeg', 'cfab9d17-5342-4ca5-b0b8-2e1c15b70b21', '2023-10-27 12:11:22.041412'),
+    ('a3d48090-8e83-4663-be0e-4f21724dce97', 'machine-learning-insights.png', 'image/png', '4e2f28ab-6b33-45ed-8915-6d3a27cfa1cc', '2023-10-27 12:06:51.061906'),
+    ('2406ff0a-99c4-4af9-96cd-31c12aa55737', 'space-travel-and-beyond.jpg', 'image/jpeg', 'f8374eab-66a4-4daa-aa4f-e9d02b6eae4b', '2023-10-27 12:42:03.156671'),
+    ('63142b02-7171-40d0-be6d-a32838ce6f61', 'the-art-of-animation.jpg', 'image/jpeg', '36a9a74d-1c09-4ef7-bc89-865bb8dbf9cd', '2023-10-27 12:50:51.163260'),
+    ('6f66da7a-dc71-43e1-83b5-adb46cf8fef7', 'the-art-of-classical-music.jpg', 'image/jpeg', '4e2f28ab-6b33-45ed-8915-6d3a27cfa1cc', '2023-10-27 12:08:06.718589'),
+    ('92352591-9710-4a90-bb67-0b073c3b0e4f', 'the-art-of-coding.jpeg', 'image/jpeg', 'b1c7a27b-7a8b-4a39-9d1c-dbf1e3958911', '2023-10-27 11:57:57.787424'),
+    ('7fb783e2-3f31-4acb-a14b-c99c319f1e1b', 'the-art-of-culinary-mastery.avif', 'image/avif', '71edf8b7-8a4e-4f98-8e06-5d4e4c9f65f3', '2023-10-27 12:19:02.769054'),
+    ('b9926eb1-a2f3-4c7b-a6c5-050f496afbaa', 'the-art-of-dance.jpg', 'image/jpeg', 'a871dbd6-7f14-467c-9ac2-d5a0e3963ab2', '2023-10-27 12:35:57.145258'),
+    ('273f8b45-2235-4cef-a4c8-322c1f6cacf8', 'the-art-of-filmmaking.jpg', 'image/jpeg', '71edf8b7-8a4e-4f98-8e06-5d4e4c9f65f3', '2023-10-27 12:24:09.252422'),
+    ('48e625be-2142-4ebf-bc6d-48411eb8f59a', 'the-art-of-music.avif', 'image/avif', '36a9a74d-1c09-4ef7-bc89-865bb8dbf9cd', '2023-10-27 12:50:30.403354'),
+    ('44e4670b-bd5c-4d88-9fbb-a1f05d328d24', 'the-art-of-painting.webp', 'image/webp', '4e2f28ab-6b33-45ed-8915-6d3a27cfa1cc', '2023-10-27 12:07:32.758670'),
+    ('2d667871-4ff3-44af-9bdd-99649475abb5', 'the-art-of-photography.jpg', 'image/jpeg', '874aa7a0-2a48-4e9b-85f5-301419def21a', '2023-10-27 12:38:14.337697'),
+    ('82028429-d21d-4218-a3b2-67fb87484e39', 'the-art-of-strotytelling.webp', 'image/webp', '36a9a74d-1c09-4ef7-bc89-865bb8dbf9cd', '2023-10-27 12:49:54.916625'),
+    ('23a4eefb-6a71-484e-a60d-912fbad44d76', 'the-future-of-healthcare.webp', 'image/webp', 'cfab9d17-5342-4ca5-b0b8-2e1c15b70b21', '2023-10-27 12:12:05.289701'),
+    ('cbc73aca-5224-4c95-9aa0-2d0fea174110', 'the-future-of-robotics.jpg', 'image/jpeg', 'cfab9d17-5342-4ca5-b0b8-2e1c15b70b21', '2023-10-27 12:11:42.246554'),
+    ('41a0f079-b65a-4adf-a3d5-7f90d7ad85cb', 'the-future-of-transportation.jpg', 'image/jpeg', 'f8374eab-66a4-4daa-aa4f-e9d02b6eae4b', '2023-10-27 12:42:35.389179'),
+    ('d7603be1-e83e-4e68-891c-42a98b9beec0', 'The-power-of-data-analysis.png', 'image/png', '71edf8b7-8a4e-4f98-8e06-5d4e4c9f65f3', '2023-10-27 12:18:40.284002'),
+    ('0e44d5f6-d446-48a9-b1ca-d1360b44fec8', 'the-science-of-climate-change.jpg', 'image/jpeg', '8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', '2023-10-27 12:55:38.405118'),
+    ('24d33110-127c-4238-bef3-c4e2a1250ba0', 'the-wonders-of-nature.webp', 'image/webp', '874aa7a0-2a48-4e9b-85f5-301419def21a', '2023-10-27 12:38:33.728946'),
+    ('8c3682cc-7637-4d57-a395-677d11d77cc8', 'the-world-of-ai-ethics.jpg', 'image/jpeg', 'b1c7a27b-7a8b-4a39-9d1c-dbf1e3958911', '2023-10-27 12:01:58.212621'),
+    ('cf9ea899-ba87-446e-a542-ac74ff9866c4', 'the-world-of-nanotechnology.jpg', 'image/jpeg', '8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', '2023-10-27 12:55:54.514129'),
+    ('28bdda86-dfba-4ccd-9464-4502937bb8ad', 'the-world-of-philosophy.jpg', 'image/jpeg', '874aa7a0-2a48-4e9b-85f5-301419def21a', '2023-10-27 12:38:52.495413'),
+    ('2b9c1eff-ed94-4607-af67-46ee234a6c22', 'the-world-of-space-exploring.webp', 'image/webp', 'f8374eab-66a4-4daa-aa4f-e9d02b6eae4b', '2023-10-27 12:41:41.895297'),
+    ('e60c011d-6b30-47c2-8bba-96010f944450', 'the-world-of-sustainable-living.jpg', 'image/jpeg', 'd0d8a85d-5e3b-4fc4-a2ec-0b6972440a42', '2023-10-27 12:15:28.364305'),
+    ('5536bf3a-3742-46e3-8a0e-806cf9bf1b99', 'the-world-of-virtual-reality.jpg', 'image/jpeg', '8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', '2023-10-27 12:55:06.051996'),
+    ('c8c8f39b-bc06-45ba-b5c9-34b5684b76a8', 'the-world-of-war.jpg', 'image/jpeg', '5df3b797-b1cc-43c0-942a-06cdd30bdbfc', '2023-10-27 11:29:32.996624'),
+    ('7582acd2-c839-4410-9690-3bde608f4a19', 'understanding-of-quantum-computing.png', 'image/png', '8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', '2023-10-27 12:54:47.716588');
+
+--changeset leir:6
+INSERT INTO publications_files (publication_uuid, file_name)
+VALUES
+    --admin -> The World of war
+    ('b6d69615-8eac-41fb-856e-37e4c895e2e5', 'c8c8f39b-bc06-45ba-b5c9-34b5684b76a8'),
+
+    --user1 ->
+    -- The art of coding
+    ('3e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1', '92352591-9710-4a90-bb67-0b073c3b0e4f'),
+    -- Exploring renewable energy
+    ('41f4a3d7-1a4e-4a2d-9d8e-1f7d6d2c64b2', '743fc708-082a-46d3-a7f1-73ce165d600b'),
+    -- The world of AI Ethics
+    ('1e144963-5ffa-4e7f-bd74-e6c08af1583f', '8c3682cc-7637-4d57-a395-677d11d77cc8'),
+
+    -- user2 ->
+    -- Machine learning insights
+    ('0e7e4b2b-84e4-402d-b0f7-190d29e00a35', 'a3d48090-8e83-4663-be0e-4f21724dce97'),
+    -- The Art of Painting
+    ('4a3b2e4e-ca5c-4533-a3ea-a394fb1fb90e', '44e4670b-bd5c-4d88-9fbb-a1f05d328d24'),
+    -- The Art of Classical Music
+    ('1e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1', '6f66da7a-dc71-43e1-83b5-adb46cf8fef7'),
+
+    --user3 ->
+    --The Future of Artificial Intelligence
+    ('aa82a7c5-9aa5-4e2d-9863-fc69520c64c4', '6a5e90ca-91fe-4826-a0cf-c46f86efa43d'),
+    -- The Future of Robotics
+    ('dd4afc88-9022-471e-8190-0dda15b1fcbc', 'cbc73aca-5224-4c95-9aa0-2d0fea174110'),
+    -- The Future of Healthcare
+    ('a2c8a7c5-9aa5-4e2d-9863-fc69520c64c4', '23a4eefb-6a71-484e-a60d-912fbad44d76'),
+
+    --user4 ->
+    --Cybersecurity Best Practices
+    ('b0f2a3d7-7c4e-4a2d-9d8e-10d76d2c64b2', 'b954542a-23ba-42f9-82c8-4092bc3583ac'),
+    -- The World of Sustainable Living
+    ('d1d7a2d7-7c4e-4a2d-9d8e-10d76d2c64b2', 'e60c011d-6b30-47c2-8bba-96010f944450'),
+
+    --user5 ->
+    -- The Power of Data Analysis
+    ('04a1a8e9-8a4f-4f8d-8e16-5d3e4c9f65f9', 'd7603be1-e83e-4e68-891c-42a98b9beec0'),
+    -- The Art of Culinary Mastery
+    ('0d7b4a9b-8a4f-4f8d-8e16-5d3e4c9f65f9', '7fb783e2-3f31-4acb-a14b-c99c319f1e1b'),
+    -- The Art of Filmmaking
+    ('2cb3c7e9-ad24-466e-8882-6a53b62f99f8', '273f8b45-2235-4cef-a4c8-322c1f6cacf8'),
+
+    --user6 ->
+    -- Blockchain revolution
+    ('e0d0a4d6-7e14-4f7c-9ac3-15a0e3963ab6', '5e91eacd-f43e-4f1f-bca2-fd586e3d7dfe'),
+    -- Exploring Ancient History
+    ('8357e265-8175-492f-a7a7-7b81a5f9fb96', '169b6c64-6db7-4d4d-b2d3-56000adeaa77'),
+    -- The Art of Dance
+    ('e1d0a2d6-7e14-4f7c-9ac3-15a0e3963ab6', 'b9926eb1-a2f3-4c7b-a6c5-050f496afbaa'),
+
+    --user7
+    --The Art of Photography
+    ('a0e7e0a0-2e44-4e9b-85f9-30a119def21e', '2d667871-4ff3-44af-9bdd-99649475abb5'),
+    -- The Wonders of Nature
+    ('a0e3e0a0-2e44-4e9b-85f9-30a119def21e', '24d33110-127c-4238-bef3-c4e2a1250ba0'),
+    -- The World of Philosophy
+    ('8ec44680-42f7-4dbf-a1cb-bbff9160c679', '28bdda86-dfba-4ccd-9464-4502937bb8ad'),
+
+    --user8
+    -- The World of Space Exploration
+    ('f8e7e8ab-66a4-4d1a-aa4f-19d02b6eae4e', '2b9c1eff-ed94-4607-af67-46ee234a6c22'),
+    -- Space Travel and Beyond
+    ('09080b8c-2ea6-43a8-8b59-7446f56955ad', '2406ff0a-99c4-4af9-96cd-31c12aa55737'),
+    -- The Future of Transportation
+    ('f7e8e8ab-66a4-4d1a-aa4f-19d02b6eae4e', '41a0f079-b65a-4adf-a3d5-7f90d7ad85cb'),
+
+    --user9
+    -- The Art of Storytelling
+    ('3e4a9a7d-1e09-4ef7-bc89-86a9bb8dbf9d', '82028429-d21d-4218-a3b2-67fb87484e39'),
+    -- The Art of Music
+    ('3e4a1a7d-1e09-4ef7-bc89-86a9bb8dbf9d', '48e625be-2142-4ebf-bc6d-48411eb8f59a'),
+    -- The Art of Animation
+    ('3eaad095-47cf-4a3d-a697-d095ed5dc2be', '63142b02-7171-40d0-be6d-a32838ce6f61'),
+
+    --user10
+    -- Understanding Quantum Computing
+    ('78d0c387-77ab-4efb-b4a5-97b9999b969d', '7582acd2-c839-4410-9690-3bde608f4a19'),
+    -- The World of Virtual Reality
+    ('af918b35-c512-4934-942c-9a09d594a0cd', '5536bf3a-3742-46e3-8a0e-806cf9bf1b99'),
+    -- The Science of Climate Change
+    ('8c4e5ff9-8c4d-4ff3-9d5c-0d4b1ca14e3e', '0e44d5f6-d446-48a9-b1ca-d1360b44fec8'),
+    -- The World of Nanotechnology
+    ('3c59e157-05b9-4a00-a7d1-8fdebf0dcc1e', 'cf9ea899-ba87-446e-a542-ac74ff9866c4');
+
+-- 3.141592653589 - PI: admin-3, test-username-1, 1-4, 2-1, 3-5, 4-9, 5-2, 6-6, 7-5, 8-3, 9-5, 10-8
+--changeset leir:7
 INSERT INTO users_bookmarks (user_uuid, publication_uuid, bookmarked_date)
 VALUES
     -- Admin
@@ -149,7 +270,7 @@ VALUES
     ('8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', '1e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1', '2019-12-30'), --61
     ('8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', '41f4a3d7-1a4e-4a2d-9d8e-1f7d6d2c64b2', '2022-12-31'); --50
 
---changeset leir:6
+--changeset leir:8
 INSERT INTO publications_likes (user_uuid, publication_uuid, action_datetime, is_like)
 VALUES
     -- Admin

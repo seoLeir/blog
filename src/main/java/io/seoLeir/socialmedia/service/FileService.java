@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -56,8 +57,8 @@ public class FileService {
         if (!Files.exists(properties.getBasicDirectory()))
             Files.createDirectory(properties.getBasicDirectory());
         Files.copy(multipartFile.getInputStream(),
-                properties.getBasicDirectory().resolve(fileToSave.getFilename().toString()),
-                StandardCopyOption.REPLACE_EXISTING);
+                properties.getBasicDirectory()
+                        .resolve(fileToSave.getFilename().toString()), StandardCopyOption.REPLACE_EXISTING);
         return fileToSave.getFilename();
     }
 
