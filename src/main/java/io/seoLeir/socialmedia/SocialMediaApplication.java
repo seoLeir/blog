@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableMethodSecurity
 public class SocialMediaApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(SocialMediaApplication.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(SocialMediaApplication.class, args);
+		PasswordEncoder bean = context.getBean(PasswordEncoder.class);
+		String encode = bean.encode("Ты такая умница, я восхищен тобой. На возврат загадай желание и я исполню");
+		System.out.println(encode);
 	}
 }
