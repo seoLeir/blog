@@ -2,45 +2,52 @@ package io.seoLeir.socialmedia.service;
 
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
+import io.seoLeir.socialmedia.dto.publication.LikesAndDislikesDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationCreateRequestDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
-import io.seoLeir.socialmedia.entity.Publication;
-import io.seoLeir.socialmedia.entity.PublicationFile;
-import io.seoLeir.socialmedia.entity.Roles;
-import io.seoLeir.socialmedia.entity.User;
-import io.seoLeir.socialmedia.exception.file.FileNotFoundException;
+import io.seoLeir.socialmedia.entity.*;
+import io.seoLeir.socialmedia.exception.publication.AccessDeniedException;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
-import io.seoLeir.socialmedia.repository.PublicationFileRepository;
+import io.seoLeir.socialmedia.mapper.PublicationMapper;
 import io.seoLeir.socialmedia.repository.PublicationRepository;
 import io.seoLeir.socialmedia.specifications.PublicationSpecification;
+import io.seoLeir.socialmedia.util.JwtTokenUtils;
+import io.seoLeir.socialmedia.util.WordCounterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PublicationService {
-    private final PublicationFileRepository publicationFileRepository;
     private final PublicationRepository publicationRepository;
     private final PublicationFileService publicationFileService;
+    private final PublicationLikeService publicationLikeService;
+    private final UserBookmarkService userBookmarkService;
     private final FileService fileService;
     private final UserService userService;
+    private final JwtTokenUtils jwtTokenUtils;
+    private final PublicationMapper publicationMapper;
+    private final WordCounterUtils wordCounterUtils;
+
+    @Autowired
+    private PublicationService publicationService;
 
     @Value("${socialmedia.reading-speed}")
     private Integer averagePersonReadingSpeed;
@@ -49,7 +56,7 @@ public class PublicationService {
     public UUID createPublication(PublicationCreateRequestDto publicationDto, String publisherName){
         User user = userService.findByUsername(publisherName)
                 .orElseThrow(() -> new UserNotFountException("User with username " + publisherName + " not found", HttpStatusCode.valueOf(404)));
-        int wordsCountInPublicationText = wordsCountInString(publicationDto.text());
+        int wordsCountInPublicationText = wordCounterUtils.wordsCountInString(publicationDto.text());
         int minutesToRead = wordsCountInPublicationText / averagePersonReadingSpeed;
         Publication publication = new Publication(
                 UUID.randomUUID(), publicationDto.header(), publicationDto.text(), user, minutesToRead);
@@ -57,7 +64,7 @@ public class PublicationService {
         publicationDto.files().forEach(uuid -> {
             if (fileService.isExistById(uuid)) {
                 PublicationFile publicationFile = new PublicationFile(publication, fileService.findFileById(uuid));
-                publicationFileRepository.save(publicationFile);
+                publicationFileService.save(publicationFile);
             }
         });
         return publication.getId();
@@ -65,29 +72,25 @@ public class PublicationService {
 
     @Transactional
     public Optional<PublicationGetResponseDto> getPublication(UUID publicationUuid){
-        List<UUID> fileList = publicationFileService.findByFileByPublicationId(publicationUuid).stream()
-                .map(uuid -> {
-                    if (fileService.isExistById(uuid)) {
-                        return uuid;
-                    } else {
-                        log.error("File with this uuid: {} not found", uuid);
-                        throw new FileNotFoundException("File not found", HttpStatusCode.valueOf(404));
-                    }
-                }).toList();
-        Publication publication = publicationRepository.getById(publicationUuid);
+        Publication publication = publicationRepository.getPublicationById(publicationUuid)
+                .orElseThrow(() -> new PublicationNotFound(
+                        "Publication with uuid:" + publicationUuid + "not found",
+                        HttpStatusCode.valueOf(404)));
         Long newViewCount = publication.getViewCount() + 1;
         publicationRepository.updateViewCount(newViewCount);
-        return Optional.of(PublicationGetResponseDto.of(publication, fileList));
+        List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(List.of(publication));
+        return Optional.of(responseDtoList.get(0));
     }
 
     @Transactional
-    public PageResponseDto<Publication> getAllUserPublications(
+    public PageResponseDto<PublicationGetResponseDto> getAllUserPublications(
             String publisherName, PageRequestDto dto, String textToSearch){
-        Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), dto.sort());
+        UUID uuid = userService.getUserUuidFromUsername(publisherName).orElse(null);
+        Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), (dto.sort() == null) ? Sort.unsorted() : dto.sort());
         Page<Publication> publicationPage = publicationRepository
-                .findAll(PublicationSpecification.publicationOrderBySpecification(textToSearch, publisherName),
-                        pageable);
-        return PageResponseDto.of(publicationPage);
+                .findAll(PublicationSpecification.publicationOrderBySpecification(textToSearch, uuid), pageable);
+        List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(publicationPage.getContent());
+        return PageResponseDto.of(publicationPage, responseDtoList);
     }
 
     @Transactional
@@ -101,75 +104,38 @@ public class PublicationService {
     }
 
     @Transactional
-    public void update(PublicationUpdateRequestDto dto, UUID id) {
-        if (publicationRepository.existsById(id))
+    public void update(PublicationUpdateRequestDto dto, UUID id, String updaterName, String token) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!publicationRepository.existsById(id))
+            throw new PublicationNotFound("Publication with id:" + id + "not found", HttpStatusCode.valueOf(404));
+        if(authentication.getName().equals(publicationRepository.getPublicationPublisherNameByPublicationUuid(id))
+                || jwtTokenUtils.getRoles(token).contains("ROLE_ADMIN"))
             publicationRepository.updateTittleAndText(dto.tittle(), dto.publicationText(), id);
         else
-            throw new PublicationNotFound("Publication with id:" + id + "not found",
-                    HttpStatusCode.valueOf(404));
+            throw new AccessDeniedException("Access denied to update the publication: " + id, HttpStatusCode.valueOf(403));
     }
 
     @Transactional
     public PageResponseDto<PublicationGetResponseDto> getAllUserBookmarkedPublication(List<UUID> publicationsUuid, Pageable pageable){
         Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, pageable);
-        List<PublicationGetResponseDto> publicationGetResponseContent = allUserBookmarkedPublication.getContent().stream()
-                        .map(publication -> {
-            List<UUID> detachedFiles = publicationFileService.findByFileByPublicationId(publication.getId());
-            return new PublicationGetResponseDto(
-                    publication.getId(),
-                    publication.getTittle(),
-                    publication.getText(),
-                    publication.getUser().getUsername(),
-                    publication.getCreatedDate(),
-                    detachedFiles);
-        }).toList();
-        return PageResponseDto.of(allUserBookmarkedPublication, publicationGetResponseContent);
+        List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(allUserBookmarkedPublication.getContent());
+        return PageResponseDto.of(allUserBookmarkedPublication, responseDtoList);
     }
 
-    @Transactional(readOnly = true)
-    public List<PublicationGetResponseDto> publicationGetResponseDtoList(List<UUID> publicationsUuid){
-        return publicationRepository.getAllUserBookmarkedPublications(publicationsUuid)
-                .stream()
+    @Transactional
+    public long getAllPublicationsCountByUsername(UUID userUuid) {
+        return publicationRepository.getPublicationCountByUserUuid(userUuid);
+    }
+
+    @Transactional
+    public List<PublicationGetResponseDto> responseContentFromRawData(List<Publication> publicationList) {
+        return publicationList.stream()
                 .map(publication -> {
                     List<UUID> detachedFiles = publicationFileService.findByFileByPublicationId(publication.getId());
-                    return new PublicationGetResponseDto(
-                            publication.getId(),
-                            publication.getTittle(),
-                            publication.getText(),
-                            publication.getUser().getUsername(),
-                            publication.getCreatedDate(),
-                            detachedFiles);
+                    LikesAndDislikesDto likesAndDislikesDto = publicationLikeService.getPublicationLikesAndDislikesByPublicationUuid(publication.getId());
+                    boolean isUserLikedPost = publicationLikeService.isUserLikedThePost(publication.getUser().getId(), publication.getId());
+                    boolean isUserBookmarked = userBookmarkService.isUserBookmarkedPublication(publication.getUser().getId(), publication.getId());
+                    return publicationMapper.getResponseDtoFromPublication(publication, publication.getUser().getUsername(), detachedFiles, likesAndDislikesDto, isUserLikedPost, isUserBookmarked);
                 }).toList();
-    }
-
-    private int wordsCountInString(String publicationText){
-        final int WORD = 0;
-        final int SEPARATOR = 1;
-        if (publicationText == null) {
-            return 0;
-        }
-        int flag = SEPARATOR;
-        int count = 0;
-        int stringLength = publicationText.length();
-        int characterCounter = 0;
-
-        while (characterCounter < stringLength) {
-            if (isAllowedInWord(publicationText.charAt(characterCounter)) && flag == SEPARATOR) {
-                flag = WORD;
-                count++;
-            } else if (!isAllowedInWord(publicationText.charAt(characterCounter))) {
-                flag = SEPARATOR;
-            }
-            characterCounter++;
-        }
-        return count;
-    }
-
-    private boolean isAllowedInWord(char charAt) {
-        return charAt == '\'' || Character.isLetter(charAt);
-    }
-
-    public long getAllPublicationsCountByUsername(String username) {
-        return publicationRepository.getPublicationCountByUserUsername(username);
     }
 }

@@ -7,14 +7,15 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class PublicationSpecification{
-    public static Specification<Publication> publicationOrderBySpecification(String text, String publisherName){
+    public static Specification<Publication> publicationOrderBySpecification(String text, UUID id){
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (publisherName != null){
-                predicates.add(criteriaBuilder.equal(root.get("user.username"), publisherName));
+            if (id != null){
+                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
             }
             Predicate innerPredicate = null;
             if(text != null){
