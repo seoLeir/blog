@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserInfoService {
@@ -18,10 +20,11 @@ public class UserInfoService {
 
     @Transactional
     public UserProfileResponseDto getUserProfile(String username) {
+        UUID userUuid = userRepository.getUserUuidByUsername(username);
         long userBookmarkedPublicationsCount = userBookmarkService.getUserAllPublicationsCount(username);
         long userAllCommentsCount = publicationCommentService.publicationCommentsByUserUuid(
                 userRepository.getUserUuidByUsername(username));
-        long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(username);
+        long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(userUuid);
         return userRepository.findByUsername(username).stream()
                 .map(user -> new UserProfileResponseDto(
                         user.getUsername(), user.getEmail(), user.getInfo(), user.getCreatedAt(),

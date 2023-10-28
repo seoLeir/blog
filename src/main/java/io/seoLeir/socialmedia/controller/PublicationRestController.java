@@ -42,8 +42,9 @@ public class PublicationRestController {
     @PatchMapping("/{publication-uuid}")
     @ResponseStatus(HttpStatus.OK)
     public void updatePublication(@PathVariable("publication-uuid") @NotBlank UUID publicationUuid,
-                                  @RequestBody PublicationUpdateRequestDto dto){
-        publicationService.update(dto, publicationUuid);
+                                  @RequestBody PublicationUpdateRequestDto dto, Principal principal,
+                                  @RequestHeader("Authorization") String authorizationToken){
+        publicationService.update(dto, publicationUuid, principal.getName(), authorizationToken.substring(7));
     }
 
     @GetMapping("/{publication-uuid}")

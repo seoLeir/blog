@@ -1,6 +1,5 @@
 package io.seoLeir.socialmedia.repository;
 
-import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.entity.Publication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PublicationRepository extends JpaRepository<Publication, UUID>,
@@ -19,15 +19,14 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
             countQuery = "select count(p.id) from Publication p")
     Page<Publication> getAllUserBookmarkedPublication(@Param("ids") List<UUID> uuids, Pageable pageable);
 
-    @Query(value = "select p from Publication p where p.id in (:ids)")
-    List<Publication> getAllUserBookmarkedPublications(@Param("ids") List<UUID> uuids);
+    @Query(value = "select count (p.id) from Publication p where p.user.id = :id")
+    Long getPublicationCountByUserUuid(@Param("id") UUID userUid);
 
-    @Query(value = "select p from Publication p where p.user.username = :username",
-            countQuery = "select count (p.id) from Publication p where p.user.username = :username")
-    Page<PublicationGetResponseDto> getByUserUsername(@Param("username") String username, Pageable pageable);
+    @Query("select p.user.username from Publication p where p.id = :id")
+    String getPublicationPublisherNameByPublicationUuid(@Param("id") UUID publicationUuid);
 
-    @Query(value = "select count (p.id) from Publication p where p.user.username = :username")
-    Long getPublicationCountByUserUsername(@Param("username") String username);
+    @Query("select p from Publication p where p.id = :id")
+    Optional<Publication> getPublicationById(@Param("id") UUID publicationUuid);
 
     @Modifying(flushAutomatically = true)
     @Query("delete from Publication p where p.id = :id")
@@ -40,9 +39,5 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     @Modifying(flushAutomatically = true)
     @Query("update Publication p set p.tittle = :tittle, p.text = :text where p.id = :id")
     void updateTittleAndText(@Param("tittle") String tittle, @Param("text") String text, @Param("id") UUID id);
-
-    @EntityGraph(attributePaths = "user")
-    @Query(value = "select p from Publication p where p.id = :id")
-    Publication getById(@Nullable @Param("id") UUID publicationId);
 
 }

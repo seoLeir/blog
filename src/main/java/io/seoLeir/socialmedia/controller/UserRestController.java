@@ -10,11 +10,8 @@ import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +34,6 @@ public class UserRestController {
         return userInfoService.getUserProfile(username);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PatchMapping("/{username}/profile")
     public void updateUserRole(@PathVariable("username") String username,
                                @RequestParam("role") String role){
@@ -45,9 +41,9 @@ public class UserRestController {
     }
 
     @GetMapping("/{username}/publications")
-    public PageResponseDto<Publication> getUsersAllPublication(@PathVariable("username") String username,
+    public PageResponseDto<PublicationGetResponseDto> getUsersAllPublication(@PathVariable("username") String username,
                                                                @RequestBody PageRequestDto requestDto,
-                                                               @RequestParam("text") String textToSearch){
+                                                               @RequestParam(value = "text", required = false) String textToSearch){
         return publicationService.getAllUserPublications(username, requestDto, textToSearch);
     }
 
@@ -62,30 +58,14 @@ public class UserRestController {
 
     @GetMapping("/{username}/bookmarks")
     public PageResponseDto<PublicationGetResponseDto> getUserBookmarks(@PathVariable("username") String username,
-                                                                       @RequestBody PageRequestDto requestDto){
+                                                                       Pageable pageable){
         log.info("method getUserBookmarks() was called");
-        if (userService.isUserExists(username)) {
-            List<UUID> useAllBookmarkedPublicationsUuid =
-                    userBookmarkService.getUseAllBookmarkedPublicationsUuid(userService.getUserUuidFromUsername(username)
-                                    .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404))));
-            log.info("{}'s bookmarked publications uuids: {}", username, useAllBookmarkedPublicationsUuid);
-            Pageable pageable = PageRequest.of(requestDto.pageNumber(), requestDto.pageSize(),
-                    (requestDto.sort() != null) ? requestDto.sort() : Sort.unsorted());
-            return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageable);
-        } else{
-            throw new UserNotFountException("User not found", HttpStatusCode.valueOf(404));
-        }
-    }
-
-    @GetMapping("/{username}/bookmarks/without-page")
-    public List<PublicationGetResponseDto> publicationGetResponseDtoList(@PathVariable("username") String username){
-        log.info("method publicationGetResponseDtoList() was called");
-        if(!userService.isUserExists(username))
+        if (!userService.isUserExists(username))
             throw new UserNotFountException("User not found", HttpStatusCode.valueOf(404));
         List<UUID> useAllBookmarkedPublicationsUuid =
                 userBookmarkService.getUseAllBookmarkedPublicationsUuid(userService.getUserUuidFromUsername(username)
                         .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404))));
         log.info("{}'s bookmarked publications uuids: {}", username, useAllBookmarkedPublicationsUuid);
-        return publicationService.publicationGetResponseDtoList(useAllBookmarkedPublicationsUuid);
+        return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageable);
     }
 }
