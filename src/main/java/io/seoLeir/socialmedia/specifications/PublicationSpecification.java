@@ -2,31 +2,40 @@ package io.seoLeir.socialmedia.specifications;
 
 
 import io.seoLeir.socialmedia.entity.Publication;
-import jakarta.persistence.criteria.Predicate;
+import lombok.Getter;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 
 public class PublicationSpecification{
-    public static Specification<Publication> publicationOrderBySpecification(String text, UUID id){
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            if (id != null){
-                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
-            }
-            Predicate innerPredicate = null;
-            if(text != null){
-                Predicate textSearchPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("text")), "%" + text.toLowerCase() + "%");
-                Predicate tittleSearchPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("tittle")), "%" + text.toLowerCase() + "%");
-                innerPredicate = criteriaBuilder.or(textSearchPredicate, tittleSearchPredicate);
-            }
-            if (innerPredicate != null)
-                predicates.add(innerPredicate);
 
-            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
-        };
+    @Getter
+    private Specification<Publication> publicationSpecification;
+
+    public PublicationSpecification(Map<String, Object> predicateMap) {
+        publicationSpecification = Specification.where(null);
+        predicateMap.forEach((key, value) ->
+                publicationSpecification = switch (key) {
+                    case "id" -> idPredicate(value);
+                    case "text" -> textLike(value);
+                    case "title" -> titleLike(value);
+                    default -> publicationSpecification;
+                });
+    }
+
+    public static Specification<Publication> idPredicate(Object id){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("user").get("id"), id);
+    }
+
+    public static Specification<Publication> textLike(Object stringToFindInText){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("text")), "%" + String.valueOf(stringToFindInText).toLowerCase() + "%");
+    }
+
+    public static Specification<Publication> titleLike(Object stringToFindInTitle){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("tittle")), "%" + String.valueOf(stringToFindInTitle).toLowerCase() + "%");
     }
 }

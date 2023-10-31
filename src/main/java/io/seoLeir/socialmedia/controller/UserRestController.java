@@ -10,6 +10,7 @@ import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
@@ -58,14 +59,12 @@ public class UserRestController {
 
     @GetMapping("/{username}/bookmarks")
     public PageResponseDto<PublicationGetResponseDto> getUserBookmarks(@PathVariable("username") String username,
-                                                                       Pageable pageable){
-        log.info("method getUserBookmarks() was called");
+                                                                       @RequestBody PageRequestDto pageRequestDto ){
         if (!userService.isUserExists(username))
             throw new UserNotFountException("User not found", HttpStatusCode.valueOf(404));
         List<UUID> useAllBookmarkedPublicationsUuid =
                 userBookmarkService.getUseAllBookmarkedPublicationsUuid(userService.getUserUuidFromUsername(username)
                         .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404))));
-        log.info("{}'s bookmarked publications uuids: {}", username, useAllBookmarkedPublicationsUuid);
-        return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageable);
+        return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageRequestDto);
     }
 }

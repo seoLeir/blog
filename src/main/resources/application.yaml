@@ -9,7 +9,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: validate
-        format_sql: true
+#        format_sql: true
         show_sql: true
   servlet:
     multipart:

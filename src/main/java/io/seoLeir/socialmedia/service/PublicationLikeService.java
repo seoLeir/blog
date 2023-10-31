@@ -1,6 +1,6 @@
 package io.seoLeir.socialmedia.service;
 
-import io.seoLeir.socialmedia.dto.publication.LikesAndDislikesDto;
+import io.seoLeir.socialmedia.dto.publication.PublicationLikeAndDislikeDto;
 import io.seoLeir.socialmedia.repository.PublicationLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class PublicationLikeService {
     private final PublicationLikeRepository publicationLikeRepository;
 
     @Transactional(readOnly = true)
-    public LikesAndDislikesDto getPublicationLikesAndDislikesByPublicationUuid(UUID publicationUuid){
+    public PublicationLikeAndDislikeDto getPublicationLikesAndDislikesByPublicationUuid(UUID publicationUuid){
         return publicationLikeRepository.getPublicationLikesAndDislikesByPublicationUuid(publicationUuid);
     }
 

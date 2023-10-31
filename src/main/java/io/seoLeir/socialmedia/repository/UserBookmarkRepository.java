@@ -22,6 +22,13 @@ public interface UserBookmarkRepository extends JpaRepository<UserBookmark, User
     @Query("select ub.user from UserBookmark ub where ub.id.publicationUuid = :uuid")
     List<String> getAllUsernameByPublicationUuid(@Param("uuid") UUID publicationUuid);
 
+    @Query("select count(ub.id.userUuid) from UserBookmark ub where ub.id.publicationUuid = :id")
+    Long getPublicationBookmarksCount(@Param("id") UUID publicationUuid);
+
+    @Query("select count(ub.id.publicationUuid) from UserBookmark ub where ub.id.userUuid = " +
+            "(select u.id from User u where u.username = :username)")
+    Long getUserBookmarkedPublicationsCount(@Param("username") String username);
+
     @Query("select exists(select 1 from UserBookmark ub " +
             "where ub.id.userUuid = :userId " +
             "and ub.id.publicationUuid = :publicationId)")
