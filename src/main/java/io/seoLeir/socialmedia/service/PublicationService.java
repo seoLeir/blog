@@ -2,7 +2,7 @@ package io.seoLeir.socialmedia.service;
 
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
-import io.seoLeir.socialmedia.dto.publication.LikesAndDislikesDto;
+import io.seoLeir.socialmedia.dto.publication.PublicationLikeAndDislikeDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationCreateRequestDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
@@ -19,10 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +48,8 @@ public class PublicationService {
     private final PublicationMapper publicationMapper;
     private final WordCounterUtils wordCounterUtils;
 
+    @Lazy
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private PublicationService publicationService;
 
@@ -86,9 +90,9 @@ public class PublicationService {
     public PageResponseDto<PublicationGetResponseDto> getAllUserPublications(
             String publisherName, PageRequestDto dto, String textToSearch){
         UUID uuid = userService.getUserUuidFromUsername(publisherName).orElse(null);
-        Pageable pageable = PageRequest.of(dto.pageNumber(), dto.pageSize(), (dto.sort() == null) ? Sort.unsorted() : dto.sort());
         Page<Publication> publicationPage = publicationRepository
-                .findAll(PublicationSpecification.publicationOrderBySpecification(textToSearch, uuid), pageable);
+                .findAll(new PublicationSpecification(Map.of("title", textToSearch, "id", uuid)).getPublicationSpecification(), PageRequestDto.toPageable(dto));
+//        TODO 31.10.2023
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(publicationPage.getContent());
         return PageResponseDto.of(publicationPage, responseDtoList);
     }
@@ -104,7 +108,7 @@ public class PublicationService {
     }
 
     @Transactional
-    public void update(PublicationUpdateRequestDto dto, UUID id, String updaterName, String token) {
+    public void update(PublicationUpdateRequestDto dto, UUID id, String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!publicationRepository.existsById(id))
             throw new PublicationNotFound("Publication with id:" + id + "not found", HttpStatusCode.valueOf(404));
@@ -116,8 +120,21 @@ public class PublicationService {
     }
 
     @Transactional
-    public PageResponseDto<PublicationGetResponseDto> getAllUserBookmarkedPublication(List<UUID> publicationsUuid, Pageable pageable){
-        Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, pageable);
+    public PageResponseDto<PublicationGetResponseDto> getFeedWithSpecification(PageRequestDto pageRequestDto,
+                                                                            Specification<Publication> specification){
+        Page<Publication> page;
+        if(specification == null)
+            page = publicationRepository.findAll(PageRequestDto.toPageable(pageRequestDto));
+        else
+            page = publicationRepository.findAll(specification, PageRequestDto.toPageable(pageRequestDto));
+        List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(page.getContent());
+        return PageResponseDto.of(page, responseDtoList);
+    }
+
+    @Transactional
+    public PageResponseDto<PublicationGetResponseDto> getAllUserBookmarkedPublication(List<UUID> publicationsUuid,
+                                                                                      PageRequestDto pageDto){
+        Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, PageRequestDto.toPageable(pageDto));
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(allUserBookmarkedPublication.getContent());
         return PageResponseDto.of(allUserBookmarkedPublication, responseDtoList);
     }
@@ -132,10 +149,19 @@ public class PublicationService {
         return publicationList.stream()
                 .map(publication -> {
                     List<UUID> detachedFiles = publicationFileService.findByFileByPublicationId(publication.getId());
-                    LikesAndDislikesDto likesAndDislikesDto = publicationLikeService.getPublicationLikesAndDislikesByPublicationUuid(publication.getId());
+                    PublicationLikeAndDislikeDto publicationLikeAndDislikeDto = publicationLikeService.getPublicationLikesAndDislikesByPublicationUuid(publication.getId());
+                    Long publicationBookmarkedCount = userBookmarkService.getPublicationBookmarkedCount(publication.getId());
                     boolean isUserLikedPost = publicationLikeService.isUserLikedThePost(publication.getUser().getId(), publication.getId());
                     boolean isUserBookmarked = userBookmarkService.isUserBookmarkedPublication(publication.getUser().getId(), publication.getId());
-                    return publicationMapper.getResponseDtoFromPublication(publication, publication.getUser().getUsername(), detachedFiles, likesAndDislikesDto, isUserLikedPost, isUserBookmarked);
+                    return publicationMapper.getResponseDtoFromPublication(
+                            publication,
+                            publication.getUser().getUsername(),
+                            detachedFiles,
+                            publicationLikeAndDislikeDto,
+                            publicationBookmarkedCount,
+                            isUserLikedPost,
+                            isUserBookmarked
+                    );
                 }).toList();
     }
 }

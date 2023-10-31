@@ -1,14 +1,13 @@
 package io.seoLeir.socialmedia.controller;
 
 
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.service.PublicationCommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -22,6 +21,11 @@ public class PublicationCommentRestController {
     public PageResponseDto<PublicationUserCommentsDto> getPublicationAllComments(
             @PathVariable("publication-uuid") UUID id){
         return null;
+//        TODO 31.10.2023
     }
 
+    @PostMapping
+    public void updateComment(@PathVariable("publication-uuid") UUID id){
+//        TODO 31.10.2023
+    }
 }

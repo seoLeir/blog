@@ -1,6 +1,6 @@
 package io.seoLeir.socialmedia.mapper;
 
-import io.seoLeir.socialmedia.dto.publication.LikesAndDislikesDto;
+import io.seoLeir.socialmedia.dto.publication.PublicationLikeAndDislikeDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.entity.Publication;
 import io.seoLeir.socialmedia.service.UserService;
@@ -26,11 +26,13 @@ public abstract class PublicationMapper {
     @Mapping(target = "timeToRead", source = "publication.timeToReadInMinutes")
     @Mapping(target = "isBookmarkedByCurrentUser", source = "isBookmarkedByUser")
     @Mapping(target = "isLikedByCurrentUser", source = "isLikedByUser")
+    @Mapping(target = "bookmarksCount", source = "bookmarksCount")
     public abstract PublicationGetResponseDto getResponseDtoFromPublication(
             Publication publication,
             String username,
             List<UUID> detachedFiles,
-            LikesAndDislikesDto dto,
+            PublicationLikeAndDislikeDto dto,
+            Long bookmarksCount,
             Boolean isLikedByUser,
             Boolean isBookmarkedByUser);
 }

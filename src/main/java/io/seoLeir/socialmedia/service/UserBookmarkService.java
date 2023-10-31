@@ -24,14 +24,12 @@ public class UserBookmarkService {
 
     @Transactional
     public long getUserAllPublicationsCount(String username){
-//        return userBookmarkRepository.getUserAllBookmarkedPublicationsCount(username);
-//        TODO implement this method 26.10.2023
-        return 0;
+        return userBookmarkRepository.getUserBookmarkedPublicationsCount(username);
     }
 
     @Transactional
-    public List<String> getPublicationThatUsersBookmarked(UUID publicationUuid){
-        return userBookmarkRepository.getAllUsernameByPublicationUuid(publicationUuid);
+    public Long getPublicationBookmarkedCount(UUID publicationUuid){
+        return userBookmarkRepository.getPublicationBookmarksCount(publicationUuid);
     }
 
     @Transactional(readOnly = true)
