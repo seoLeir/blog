@@ -47,6 +47,21 @@ public class PublicationComment implements BaseEntity<UUID> {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    public PublicationComment(UUID id, User user, Publication publication, PublicationComment parentPublicationComment, String commentMessage) {
+        this.id = id;
+        this.user = user;
+        this.publication = publication;
+        this.parentPublicationComment = parentPublicationComment;
+        this.commentMessage = commentMessage;
+    }
+
+    public PublicationComment(UUID id, User user, Publication publication, String commentMessage) {
+        this.id = id;
+        this.user = user;
+        this.publication = publication;
+        this.commentMessage = commentMessage;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +

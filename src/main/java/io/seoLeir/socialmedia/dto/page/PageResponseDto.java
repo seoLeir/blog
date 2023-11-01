@@ -14,7 +14,7 @@ public class PageResponseDto<T> {
     boolean last;
     boolean first;
 
-    public PageResponseDto(List<T> content, int totalPages, long totalElements, int pageSize, int number, boolean last, boolean first) {
+    private PageResponseDto(List<T> content, int totalPages, long totalElements, int pageSize, int number, boolean last, boolean first) {
         this.content = content;
         this.totalPages = totalPages;
         this.totalElements = totalElements;

@@ -1,6 +1,6 @@
 package io.seoLeir.socialmedia.controller;
 
-import io.seoLeir.socialmedia.dto.comment.PublicationUserCommentsDto;
+import io.seoLeir.socialmedia.dto.comment.PublicationCommentGetResponseDto;
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
@@ -10,8 +10,6 @@ import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,11 +47,11 @@ public class UserRestController {
     }
 
     @GetMapping("/{username}/comments")
-    public PageResponseDto<PublicationUserCommentsDto> getUserAllComments(@PathVariable("username") String username,
-                                                                          @RequestBody PageRequestDto pageRequestDto){
+    public PageResponseDto<PublicationCommentGetResponseDto> getUserAllComments(@PathVariable("username") String username,
+                                                                                @RequestBody PageRequestDto pageRequestDto){
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
-        return publicationCommentService.publicationCommentPageResponse(user.getId(), pageRequestDto);
+        return publicationCommentService.getUserComments(user.getId(), pageRequestDto);
     }
 
 
