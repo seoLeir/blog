@@ -8,7 +8,7 @@ import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
 import io.seoLeir.socialmedia.entity.*;
 import io.seoLeir.socialmedia.exception.publication.AccessDeniedException;
-import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
+import io.seoLeir.socialmedia.exception.publication.PublicationNotFoundException;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.mapper.PublicationMapper;
 import io.seoLeir.socialmedia.repository.PublicationRepository;
@@ -21,9 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
@@ -33,6 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static io.seoLeir.socialmedia.dto.page.PageRequestDto.toPageable;
+import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
 @Slf4j
 @Service
@@ -75,9 +75,9 @@ public class PublicationService {
     }
 
     @Transactional
-    public Optional<PublicationGetResponseDto> getPublication(UUID publicationUuid){
+    public Optional<PublicationGetResponseDto> getPublicationResponseDto(UUID publicationUuid){
         Publication publication = publicationRepository.getPublicationById(publicationUuid)
-                .orElseThrow(() -> new PublicationNotFound(
+                .orElseThrow(() -> new PublicationNotFoundException(
                         "Publication with uuid:" + publicationUuid + "not found",
                         HttpStatusCode.valueOf(404)));
         Long newViewCount = publication.getViewCount() + 1;
@@ -87,12 +87,26 @@ public class PublicationService {
     }
 
     @Transactional
+    public Publication getPublication(UUID publicationUuid){
+        return publicationRepository.getPublicationById(publicationUuid)
+                .orElseThrow(() -> new PublicationNotFoundException(
+                        "Publication with uuid:" + publicationUuid + "not found",
+                        HttpStatusCode.valueOf(404)));
+    }
+
+    @Transactional
     public PageResponseDto<PublicationGetResponseDto> getAllUserPublications(
             String publisherName, PageRequestDto dto, String textToSearch){
-        UUID uuid = userService.getUserUuidFromUsername(publisherName).orElse(null);
-        Page<Publication> publicationPage = publicationRepository
-                .findAll(new PublicationSpecification(Map.of("title", textToSearch, "id", uuid)).getPublicationSpecification(), PageRequestDto.toPageable(dto));
-//        TODO 31.10.2023
+        UUID uuid = userService.getUserUuidFromUsername(publisherName)
+                .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
+        PublicationSpecification publicationSpecification;
+        if (textToSearch == null){
+            publicationSpecification = new PublicationSpecification(Map.of( "id", uuid));
+        }else {
+            publicationSpecification = new PublicationSpecification(Map.of( "id", uuid, "title", textToSearch));
+        }
+        Page<Publication> publicationPage = publicationRepository.findAll(
+                publicationSpecification.getPublicationSpecification(), PageRequestDto.toPageable(dto));
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(publicationPage.getContent());
         return PageResponseDto.of(publicationPage, responseDtoList);
     }
@@ -101,7 +115,7 @@ public class PublicationService {
     public void delete(UUID id, String username){
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         Publication publication = publicationRepository.findById(id).orElseThrow(() ->
-                new PublicationNotFound("Publication" + id + " not found", HttpStatusCode.valueOf(404)));
+                new PublicationNotFoundException("Publication" + id + " not found", HttpStatusCode.valueOf(404)));
         if (publication.getUser().getUsername().equals(username) || authorities.contains("ROLE_ADMIN")){
             publicationRepository.deleteById(id);
         }
@@ -111,7 +125,7 @@ public class PublicationService {
     public void update(PublicationUpdateRequestDto dto, UUID id, String token) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!publicationRepository.existsById(id))
-            throw new PublicationNotFound("Publication with id:" + id + "not found", HttpStatusCode.valueOf(404));
+            throw new PublicationNotFoundException("Publication with id:" + id + "not found", HttpStatusCode.valueOf(404));
         if(authentication.getName().equals(publicationRepository.getPublicationPublisherNameByPublicationUuid(id))
                 || jwtTokenUtils.getRoles(token).contains("ROLE_ADMIN"))
             publicationRepository.updateTittleAndText(dto.tittle(), dto.publicationText(), id);
@@ -124,9 +138,9 @@ public class PublicationService {
                                                                             Specification<Publication> specification){
         Page<Publication> page;
         if(specification == null)
-            page = publicationRepository.findAll(PageRequestDto.toPageable(pageRequestDto));
+            page = publicationRepository.findAll(toPageable(pageRequestDto));
         else
-            page = publicationRepository.findAll(specification, PageRequestDto.toPageable(pageRequestDto));
+            page = publicationRepository.findAll(specification, toPageable(pageRequestDto));
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(page.getContent());
         return PageResponseDto.of(page, responseDtoList);
     }
@@ -134,7 +148,7 @@ public class PublicationService {
     @Transactional
     public PageResponseDto<PublicationGetResponseDto> getAllUserBookmarkedPublication(List<UUID> publicationsUuid,
                                                                                       PageRequestDto pageDto){
-        Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, PageRequestDto.toPageable(pageDto));
+        Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, toPageable(pageDto));
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(allUserBookmarkedPublication.getContent());
         return PageResponseDto.of(allUserBookmarkedPublication, responseDtoList);
     }

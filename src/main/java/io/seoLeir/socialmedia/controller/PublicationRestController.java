@@ -1,7 +1,7 @@
 package io.seoLeir.socialmedia.controller;
 
 import io.seoLeir.socialmedia.dto.publication.*;
-import io.seoLeir.socialmedia.exception.publication.PublicationNotFound;
+import io.seoLeir.socialmedia.exception.publication.PublicationNotFoundException;
 import io.seoLeir.socialmedia.service.PublicationService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class PublicationRestController {
     }
 
     @PatchMapping("/{publication-uuid}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void updatePublication(@PathVariable("publication-uuid") @NotBlank UUID publicationUuid,
                                   @RequestBody PublicationUpdateRequestDto dto,
                                   @RequestHeader("Authorization") String authorizationToken){
@@ -48,8 +48,8 @@ public class PublicationRestController {
 
     @GetMapping("/{publication-uuid}")
     public PublicationGetResponseDto getUserConcretePublication(@PathVariable("publication-uuid") UUID publicationUuid){
-        return publicationService.getPublication(publicationUuid)
-                .orElseThrow(() -> new PublicationNotFound(
+        return publicationService.getPublicationResponseDto(publicationUuid)
+                .orElseThrow(() -> new PublicationNotFoundException(
                         "Publication with id:" + publicationUuid.toString() + " not found",
                         HttpStatusCode.valueOf(404)));
     }
