@@ -10,9 +10,11 @@ import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,18 +29,48 @@ public class UserRestController {
     private final PublicationCommentService publicationCommentService;
     private final UserBookmarkService userBookmarkService;
     private final UserInfoService userInfoService;
+    private final SubscriptionService subscriptionService;
 
+    /**
+    * Approved
+    */
     @GetMapping("/{username}/profile")
-    public UserProfileResponseDto getUserProfile(@PathVariable("username") String username){
-        return userInfoService.getUserProfile(username);
+    public UserProfileResponseDto getUserProfile(@PathVariable("username") String username, Principal principal){
+        return userInfoService.getUserProfile(username, principal.getName());
     }
 
-    @PatchMapping("/{username}/profile")
+    /**
+    * Approved
+    */
+    @PostMapping("/{username}/subscribe")
+    @ResponseStatus(HttpStatus.OK)
+    public void follow(@PathVariable("username") String username, Principal principal){
+        if (!username.equals(principal.getName()))
+            subscriptionService.subscribe(principal.getName(), username);
+    }
+
+    /**
+     * Approved
+     */
+    @PostMapping("/{username}/unsubscribe")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unfollow(@PathVariable("username") String username, Principal principal){
+        if (!username.equals(principal.getName()))
+            subscriptionService.unsubscribe(principal.getName(), username);
+    }
+
+    /**
+     * Approved
+     */
+    @PatchMapping("/{username}/role")
     public void updateUserRole(@PathVariable("username") String username,
                                @RequestParam("role") String role){
         userService.update(username, role);
     }
 
+    /**
+     * Approved
+     */
     @GetMapping("/{username}/publications")
     public PageResponseDto<PublicationGetResponseDto> getUsersAllPublication(@PathVariable("username") String username,
                                                                @RequestBody PageRequestDto requestDto,
@@ -64,5 +96,15 @@ public class UserRestController {
                 userBookmarkService.getUseAllBookmarkedPublicationsUuid(userService.getUserUuidFromUsername(username)
                         .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404))));
         return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageRequestDto);
+    }
+
+    @GetMapping("/{username}/followers")
+    PageResponseDto<String> getUserFollowers(@PathVariable("username") String username, @RequestBody PageRequestDto dto){
+        return subscriptionService.getUserFollowers(username, dto);
+    }
+    
+    @GetMapping("/{username}/following")
+    PageResponseDto<String> getUserFollowing(@PathVariable("username") String username, @RequestBody PageRequestDto dto){
+        return subscriptionService.getUserFollowing(username, dto);
     }
 }

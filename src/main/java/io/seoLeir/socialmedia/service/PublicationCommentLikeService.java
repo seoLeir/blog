@@ -15,7 +15,6 @@ import java.util.UUID;
 public class PublicationCommentLikeService {
     private final PublicationCommentLikeRepository commentLikeRepository;
 
-
     @Transactional
     public boolean isUserLiked(UUID userUuid, UUID commentUuid){
         return commentLikeRepository.isUserLikedComment(userUuid, commentUuid);

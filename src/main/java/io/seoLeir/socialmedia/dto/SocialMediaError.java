@@ -1,10 +1,10 @@
 package io.seoLeir.socialmedia.dto;
 
 import lombok.Builder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Builder
 public class SocialMediaError {

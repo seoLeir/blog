@@ -9,7 +9,6 @@ spring:
     properties:
       hibernate:
         ddl-auto: validate
-#        format_sql: true
         show_sql: true
   servlet:
     multipart:
@@ -19,7 +18,6 @@ spring:
   web:
     resources:
       static-locations: classpath:/static/
-
 socialmedia:
   jwt:
     lifetime: 15m
@@ -32,5 +30,7 @@ socialmedia:
       "[image/webp]": [".webp", ".WEBP"]
       "[image/avif]" : [".avif", ".AVIF"]
       "[image/gif]": [".gif"]
-
+server:
+  error:
+    include-message: always
 

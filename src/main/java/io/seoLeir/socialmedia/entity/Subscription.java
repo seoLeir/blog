@@ -45,4 +45,11 @@ public class Subscription implements BaseEntity<SubscriptionId>{
         this.targetUser = targetUser;
         this.id = new SubscriptionId(subscriberUser.getId(), targetUser.getId());
     }
+
+    public Subscription(User subscriberUser, User targetUser, Boolean isMutual) {
+        this.subscriberUser = subscriberUser;
+        this.targetUser = targetUser;
+        this.isMutual = isMutual;
+        this.id = new SubscriptionId(subscriberUser.getId(), targetUser.getId());
+    }
 }
