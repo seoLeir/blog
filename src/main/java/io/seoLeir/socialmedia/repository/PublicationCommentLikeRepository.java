@@ -18,8 +18,8 @@ public interface PublicationCommentLikeRepository extends JpaRepository<Publicat
 
     @Query("select new io.seoLeir.socialmedia.dto.comment.CommentLikeAndDislikeDto(" +
             "pcl.id.publicationCommentUuid, " +
-            "sum(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
-            "sum(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END ) )"+
+            "SUM(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END) )"+
             "from PublicationCommentLike pcl " +
             "where pcl.id.publicationCommentUuid = :commentUuid " +
             "group by pcl.id.publicationCommentUuid")

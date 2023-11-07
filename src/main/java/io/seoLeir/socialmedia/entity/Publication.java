@@ -70,12 +70,22 @@ public class Publication implements BaseEntity<UUID> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PublicationComment> publicationComments;
 
-    public Publication(UUID id, String tittle, String text, User user, Integer timeToReadInMinutes) {
+    public Publication(UUID id, String tittle, String text, User user, Long viewCount, Integer timeToReadInMinutes, Instant createdDate) {
         this.id = id;
         this.tittle = tittle;
         this.text = text;
         this.user = user;
+        this.viewCount = viewCount;
         this.timeToReadInMinutes = timeToReadInMinutes;
+        this.createdDate = createdDate;
+    }
+
+    public Publication(UUID uuid, String header, String text, User user, int minutesToRead) {
+        this.id = uuid;
+        this.tittle = header;
+        this.text = text;
+        this.user = user;
+        this.timeToReadInMinutes = minutesToRead;
     }
 
     @Override

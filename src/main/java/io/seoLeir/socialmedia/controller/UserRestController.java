@@ -5,7 +5,6 @@ import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.user.UserProfileResponseDto;
-import io.seoLeir.socialmedia.entity.*;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
 import lombok.RequiredArgsConstructor;
@@ -78,15 +77,19 @@ public class UserRestController {
         return publicationService.getAllUserPublications(username, requestDto, textToSearch);
     }
 
+    /**
+     * Approved
+     */
     @GetMapping("/{username}/comments")
     public PageResponseDto<PublicationCommentGetResponseDto> getUserAllComments(@PathVariable("username") String username,
-                                                                                @RequestBody PageRequestDto pageRequestDto){
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
-        return publicationCommentService.getUserComments(user.getId(), pageRequestDto);
+                                                                                @RequestBody PageRequestDto pageRequestDto,
+                                                                                Principal principal){
+        return publicationCommentService.getUserComments(username, pageRequestDto, principal.getName());
     }
 
-
+    /**
+     * Approved
+     */
     @GetMapping("/{username}/bookmarks")
     public PageResponseDto<PublicationGetResponseDto> getUserBookmarks(@PathVariable("username") String username,
                                                                        @RequestBody PageRequestDto pageRequestDto ){
@@ -98,11 +101,17 @@ public class UserRestController {
         return publicationService.getAllUserBookmarkedPublication(useAllBookmarkedPublicationsUuid, pageRequestDto);
     }
 
+    /**
+    * Approved
+    */
     @GetMapping("/{username}/followers")
     PageResponseDto<String> getUserFollowers(@PathVariable("username") String username, @RequestBody PageRequestDto dto){
         return subscriptionService.getUserFollowers(username, dto);
     }
-    
+
+    /**
+     * Approved
+     */
     @GetMapping("/{username}/following")
     PageResponseDto<String> getUserFollowing(@PathVariable("username") String username, @RequestBody PageRequestDto dto){
         return subscriptionService.getUserFollowing(username, dto);

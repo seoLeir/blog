@@ -2,13 +2,12 @@ package io.seoLeir.socialmedia.service;
 
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
-import io.seoLeir.socialmedia.dto.publication.PublicationLikeAndDislikeDto;
-import io.seoLeir.socialmedia.dto.publication.PublicationCreateRequestDto;
-import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
-import io.seoLeir.socialmedia.dto.publication.PublicationUpdateRequestDto;
+import io.seoLeir.socialmedia.dto.publication.*;
 import io.seoLeir.socialmedia.entity.*;
 import io.seoLeir.socialmedia.exception.publication.AccessDeniedException;
+import io.seoLeir.socialmedia.exception.publication.InvalidPeriodType;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFoundException;
+import io.seoLeir.socialmedia.exception.publication.UnsupportedOrderType;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.mapper.PublicationMapper;
 import io.seoLeir.socialmedia.repository.PublicationRepository;
@@ -21,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,10 +28,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static io.seoLeir.socialmedia.dto.page.PageRequestDto.toPageable;
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
+import static java.time.temporal.ChronoUnit.*;
 
 @Slf4j
 @Service
@@ -49,7 +51,7 @@ public class PublicationService {
     private final WordCounterUtils wordCounterUtils;
 
     @Lazy
-    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @SuppressWarnings(value = "SpringJavaAutowiringInspection")
     @Autowired
     private PublicationService publicationService;
 
@@ -75,7 +77,7 @@ public class PublicationService {
     }
 
     @Transactional
-    public Optional<PublicationGetResponseDto> getPublicationResponseDto(UUID publicationUuid){
+    public Optional<PublicationGetResponseDto> getConcretePublication(UUID publicationUuid){
         Publication publication = publicationRepository.getPublicationById(publicationUuid)
                 .orElseThrow(() -> new PublicationNotFoundException(
                         "Publication with uuid:" + publicationUuid + "not found",
@@ -133,21 +135,93 @@ public class PublicationService {
             throw new AccessDeniedException("Access denied to update the publication: " + id, HttpStatusCode.valueOf(403));
     }
 
+    /*
+    * Accepted
+    * */
     @Transactional
-    public PageResponseDto<PublicationGetResponseDto> getFeedWithSpecification(PageRequestDto pageRequestDto,
-                                                                            Specification<Publication> specification){
-        Page<Publication> page;
-        if(specification == null)
-            page = publicationRepository.findAll(toPageable(pageRequestDto));
-        else
-            page = publicationRepository.findAll(specification, toPageable(pageRequestDto));
-        List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(page.getContent());
-        return PageResponseDto.of(page, responseDtoList);
+    public PageResponseDto<PublicationGetResponseDto> getUserFeedByTop(PeriodType period, PageRequestDto pageRequestDto){
+        Pageable pageable = PageRequestDto.toPageable(pageRequestDto);
+        Instant start;
+        switch (period){
+            case daily ->
+                start = Instant.now().minus(1, DAYS);
+            case weekly ->
+                start = Instant.now().minus(7, DAYS);
+            case monthly ->
+                start = LocalDateTime.now().minus(1, MONTHS).toInstant(ZoneOffset.UTC);
+            case yearly ->
+                start = LocalDateTime.now().minus(1, YEARS).toInstant(ZoneOffset.UTC);
+            case alltime ->{
+                Page<FeedDto> topPublicationsAllTime = publicationRepository.getTopPublicationsAllTime(pageable);
+                List<Publication> raw = topPublicationsAllTime.getContent().stream()
+                        .map(feedDto -> {
+                            UUID publicationUuid = feedDto.getPublicationUuid();
+                            return publicationService.getPublication(publicationUuid);
+                        })
+                        .toList();
+                List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(raw);
+                return PageResponseDto.of(topPublicationsAllTime, responseDtoList);
+            }
+            default ->
+                throw new InvalidPeriodType("Illegal argument", HttpStatusCode.valueOf(400));
+        }
+        Instant end = Instant.now();
+        Page<FeedDto> topPublicationsByPeriod = publicationRepository.getTopPublicationsByPeriod(start, end, pageable);
+        List<Publication> raw = topPublicationsByPeriod.getContent().stream()
+                .map(feedDto -> publicationService.getPublication(feedDto.getPublicationUuid()))
+                .toList();
+        List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(raw);
+        return PageResponseDto.of(topPublicationsByPeriod, responseDtoList);
+    }
+
+    @Transactional
+    public PageResponseDto<PublicationGetResponseDto> getUserFeedByNew(Integer rangeFilter, PageRequestDto page){
+        Pageable pageable = toPageable(page);
+        if (rangeFilter == null){
+            Page<FeedDto> defaultFeeder = publicationRepository.getNewPublicationsDefaultFeeder(pageable);
+            List<Publication> raw = defaultFeeder.getContent().stream()
+                    .map(feedDto -> publicationService.getPublication(feedDto.getPublicationUuid()))
+                    .toList();
+            List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(raw);
+            return PageResponseDto.of(defaultFeeder, responseDtoList);
+        }else {
+            Page<FeedDto> defaultFeeder = publicationRepository.getNewPublicationsByRangeFilter(rangeFilter, pageable);
+            List<Publication> raw = defaultFeeder.getContent().stream()
+                    .map(feedDto -> publicationService.getPublication(feedDto.getPublicationUuid()))
+                    .toList();
+            List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(raw);
+            return PageResponseDto.of(defaultFeeder, responseDtoList);
+        }
+    }
+
+    @Transactional
+    public PageResponseDto<PublicationGetResponseDto> getPublicationsWithSearchFilter(String textToSearch,
+                                                                                      OrderType orderType,
+                                                                                      PageRequestDto pageRequestDto){
+        Pageable pageable = PageRequestDto.toPageable(pageRequestDto);
+        switch (orderType){
+            case popularity -> {
+
+                Page<FeedDto> page = publicationRepository.searchPublicationByPopularityOrder(textToSearch, pageable);
+                List<Publication> raw = page.getContent().stream()
+                        .map(feedDto -> publicationService.getPublication(feedDto.getPublicationUuid()))
+                        .toList();
+                List<PublicationGetResponseDto> response = publicationService.responseContentFromRawData(raw);
+                return PageResponseDto.of(page, response);
+            }
+            case date -> {
+                Page<Publication> page = publicationRepository.searchPublicationByCreatedDateOrder(textToSearch, pageable);
+                List<PublicationGetResponseDto> response = publicationService.responseContentFromRawData(page.getContent());
+                return PageResponseDto.of(page, response);
+            }
+            default ->
+                throw new UnsupportedOrderType("This order type not supported", HttpStatusCode.valueOf(400));
+        }
     }
 
     @Transactional
     public PageResponseDto<PublicationGetResponseDto> getAllUserBookmarkedPublication(List<UUID> publicationsUuid,
-                                                                                      PageRequestDto pageDto){
+                                                                                      PageRequestDto pageDto) {
         Page<Publication> allUserBookmarkedPublication = publicationRepository.getAllUserBookmarkedPublication(publicationsUuid, toPageable(pageDto));
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(allUserBookmarkedPublication.getContent());
         return PageResponseDto.of(allUserBookmarkedPublication, responseDtoList);

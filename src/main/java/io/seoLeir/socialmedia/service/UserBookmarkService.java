@@ -18,7 +18,6 @@ public class UserBookmarkService {
 
     @Transactional
     public List<UUID> getUseAllBookmarkedPublicationsUuid(UUID userUuid){
-        log.info("method getUseAllBookmarkedPublicationsUuid() was called with parameter: {}", userUuid);
         return userBookmarkRepository.getAllPublicationsByUserUsername(userUuid);
     }
 

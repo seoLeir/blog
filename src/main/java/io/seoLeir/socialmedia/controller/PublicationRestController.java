@@ -1,5 +1,7 @@
 package io.seoLeir.socialmedia.controller;
 
+import io.seoLeir.socialmedia.dto.page.PageRequestDto;
+import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.dto.publication.*;
 import io.seoLeir.socialmedia.exception.publication.PublicationNotFoundException;
 import io.seoLeir.socialmedia.service.PublicationService;
@@ -22,7 +24,7 @@ public class PublicationRestController {
     private final PublicationService publicationService;
 
     /**
-    * The method is used to create a publication
+    * The method is used to create a publication. Approved
     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,12 +34,18 @@ public class PublicationRestController {
     }
 
 
+    /**
+     * Approved
+     */
     @DeleteMapping("/{publication-uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePublication(@PathVariable("publication-uuid") UUID publicationUuid, Principal principal){
         publicationService.delete(publicationUuid, principal.getName());
     }
 
+    /**
+     * Approved
+     */
     @PatchMapping("/{publication-uuid}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updatePublication(@PathVariable("publication-uuid") @NotBlank UUID publicationUuid,
@@ -46,11 +54,38 @@ public class PublicationRestController {
         publicationService.update(dto, publicationUuid, authorizationToken.substring(7));
     }
 
+    /**
+    * Approved
+    */
     @GetMapping("/{publication-uuid}")
     public PublicationGetResponseDto getUserConcretePublication(@PathVariable("publication-uuid") UUID publicationUuid){
-        return publicationService.getPublicationResponseDto(publicationUuid)
+        return publicationService.getConcretePublication(publicationUuid)
                 .orElseThrow(() -> new PublicationNotFoundException(
                         "Publication with id:" + publicationUuid.toString() + " not found",
                         HttpStatusCode.valueOf(404)));
+    }
+
+    @GetMapping
+    public PageResponseDto<PublicationGetResponseDto> defaultFeed(PageRequestDto pageRequestDto) {
+        return publicationService.getUserFeedByNew( null, pageRequestDto);
+    }
+
+    @GetMapping("/rated{range}")
+    public PageResponseDto<PublicationGetResponseDto> feedWithRangeByNewPost(PageRequestDto pageRequestDto,
+                                                                             @PathVariable("range") Integer rangeFilter) {
+        return publicationService.getUserFeedByNew(rangeFilter, pageRequestDto);
+    }
+
+    @GetMapping("/top/{period}")
+    public PageResponseDto<PublicationGetResponseDto> feedWithPeriodByPopularPost(PageRequestDto pageRequestDto,
+                                                                                  @PathVariable("period") PeriodType period) {
+        return publicationService.getUserFeedByTop(period, pageRequestDto);
+    }
+
+    @GetMapping("/search")
+    public PageResponseDto<PublicationGetResponseDto> searchPosts(PageRequestDto pageRequestDto,
+                                                                  @RequestParam("q") String searchFilterText,
+                                                                  @RequestParam("order") OrderType orderType) {
+        return publicationService.getPublicationsWithSearchFilter(searchFilterText, orderType, pageRequestDto);
     }
 }
