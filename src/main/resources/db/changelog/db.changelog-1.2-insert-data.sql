@@ -35,7 +35,7 @@ VALUES ('5df3b797-b1cc-43c0-942a-06cdd30bdbfc', 1),
        ('8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36', 2);
 
 --changeset leir:4
-INSERT INTO publications (id, tittle, publication_text, publisher_uuid, is_published, view_count, time_to_read_in_minutes, is_draft, is_hidden, is_edited, created_date)
+INSERT INTO publications (id, title, publication_text, publisher_uuid, is_published, view_count, time_to_read_in_minutes, is_draft, is_hidden, is_edited, created_date)
 VALUES
     ('3e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1', 'The Art of Coding', 'In this publication, we delve into the world of coding and its creative aspects.', 'b1c7a27b-7a8b-4a39-9d1c-dbf1e3958911', true, 100, 5, false, false, false, '2023-04-30 10:00:00'),
     ('0e7e4b2b-84e4-402d-b0f7-190d29e00a35', 'Machine Learning Insights', 'Explore the latest trends and insights in machine learning technology.', '4e2f28ab-6b33-45ed-8915-6d3a27cfa1cc', true, 150, 7, false, false, false, '2023-05-25 11:00:00'),

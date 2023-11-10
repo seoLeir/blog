@@ -66,7 +66,7 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByUsername(username);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<UUID> getUserUuidFromUsername(String username){
         return userRepository.getByUsername(username);
     }

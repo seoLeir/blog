@@ -51,5 +51,11 @@ public class UserBookmark implements BaseEntity<UserBookmarksId> {
     public int hashCode() {
         return Objects.hash(user, publication);
     }
+
+    public UserBookmark(User user, Publication publication) {
+        this.id = new UserBookmarksId(user.getId(), publication.getId());
+        this.user = user;
+        this.publication = publication;
+    }
 }
 

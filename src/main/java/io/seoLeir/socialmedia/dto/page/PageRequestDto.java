@@ -9,7 +9,7 @@ public record PageRequestDto(int pageNumber, int pageSize, Sort sort) {
     public static Pageable toPageable(PageRequestDto pageRequestDto){
         return PageRequest.of(
                 pageRequestDto.pageNumber(),
-                pageRequestDto.pageNumber(),
+                pageRequestDto.pageSize(),
                 (pageRequestDto.sort() == null) ? Sort.unsorted() : pageRequestDto.sort()
         );
     }

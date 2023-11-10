@@ -17,7 +17,7 @@ public abstract class PublicationMapper {
 
     @Mappings({
             @Mapping(target = "id", source = "publication.id"),
-            @Mapping(target = "tittle", source = "publication.tittle"),
+            @Mapping(target = "title", source = "publication.title"),
             @Mapping(target = "user", source = "username"),
             @Mapping(target = "publicationFiles", source = "detachedFiles"),
             @Mapping(target = "likes", source = "dto.likes"),

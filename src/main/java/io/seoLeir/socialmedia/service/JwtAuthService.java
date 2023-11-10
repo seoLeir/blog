@@ -8,7 +8,6 @@ import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +36,7 @@ public class JwtAuthService {
         return user.getId();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String login(String username, String password){
         UserDetails userDetails = userService.loadUserByUsername(username);
         User foundUser = userService.findByUsername(username)

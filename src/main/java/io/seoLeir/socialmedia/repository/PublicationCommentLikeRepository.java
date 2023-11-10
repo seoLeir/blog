@@ -4,6 +4,7 @@ import io.seoLeir.socialmedia.dto.comment.CommentLikeAndDislikeDto;
 import io.seoLeir.socialmedia.entity.PublicationCommentLike;
 import io.seoLeir.socialmedia.entity.keys.PublicationCommentsLikeId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,11 +19,14 @@ public interface PublicationCommentLikeRepository extends JpaRepository<Publicat
 
     @Query("select new io.seoLeir.socialmedia.dto.comment.CommentLikeAndDislikeDto(" +
             "pcl.id.publicationCommentUuid, " +
-            "sum(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
-            "sum(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END ) )"+
+            "SUM(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END) )"+
             "from PublicationCommentLike pcl " +
             "where pcl.id.publicationCommentUuid = :commentUuid " +
             "group by pcl.id.publicationCommentUuid")
     CommentLikeAndDislikeDto getPublicationCommentLikesAndDislikes(@Param("commentUuid") UUID commentUuid);
 
+    @Modifying(flushAutomatically = true)
+    @Query("update PublicationCommentLike pcl set pcl.isLike = :status where pcl.id = :id")
+    void updateLikeStatus(@Param("status") Boolean status, @Param("id") PublicationCommentsLikeId id);
 }

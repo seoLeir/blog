@@ -20,19 +20,43 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
     @Query("select count(p.id) from PublicationComment p where p.user.id = :uuid")
     Long getAllByUser(@Param("uuid") UUID userUuid);
 
-    @Query(value = "select pc " +
+    @Query("select new io.seoLeir.socialmedia.dto.comment.PublicationCommentGetResponseDto(" +
+            "pc.id, " +
+            "pc.user.id, " +
+            "pc.publication.id, " +
+            "pc.parentPublicationComment.id, " +
+            "pc.commentMessage, " +
+            "pc.createdAt, " +
+            "SUM(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END), " +
+            "exists(select 1 from PublicationCommentLike plcml " +
+            "where plcml.id.userUuid = :userUuid and plcml.id.publicationCommentUuid = pc.id))" +
             "from PublicationComment pc " +
-            "where pc.publication.id in (:publicationUuid)",
-            countQuery = "select count(pc.id) from PublicationComment pc where pc.publication.id = :publicationUuid")
-    Page<PublicationComment> getPublicationCommentsAndItsLikesByPublicationUuid(@Param("publicationUuid") UUID publicationUuid,
-                                                                                              Pageable pageable);
+            "left join PublicationCommentLike pcl on pc.id = pcl.id.publicationCommentUuid " +
+            "where pc.publication.id = :publicationUuid " +
+            "group by pc.id")
+    Page<PublicationCommentGetResponseDto> getPublicationComments(@Param("publicationUuid") UUID publicationUuid,
+                                                                  @Param("userUuid") UUID userUuid,
+                                                                  Pageable pageable);
 
-    @Query(value = "select pc " +
+    @Query("select new io.seoLeir.socialmedia.dto.comment.PublicationCommentGetResponseDto(" +
+            "pc.id, " +
+            "pc.user.id, " +
+            "pc.publication.id, " +
+            "pc.parentPublicationComment.id, " +
+            "pc.commentMessage, " +
+            "pc.createdAt, " +
+            "SUM(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END), " +
+            "exists(select 1 from PublicationCommentLike plcml " +
+            "where plcml.id.userUuid = :currentUser and plcml.id.publicationCommentUuid = pc.id))" +
             "from PublicationComment pc " +
-            "where pc.user.id = :userUuid",
-            countQuery = "select pc from PublicationComment pc " +
-                    "where pc.user.id = :userUuid ")
-    Page<PublicationComment> getUserCommentsAndItsLikesByUserUuid(@Param("userUuid") UUID uuid, Pageable pageable);
+            "left join PublicationCommentLike pcl on pc.id = pcl.id.publicationCommentUuid " +
+            "where pc.user.id = :userUuid " +
+            "group by pc.id")
+    Page<PublicationCommentGetResponseDto> getUserComments(@Param("userUuid") UUID uuid,
+                                                           @Param("currentUser") UUID currentUser,
+                                                           Pageable pageable);
 
     @Modifying(flushAutomatically = true)
     @Query("update PublicationComment pc set pc.commentMessage = :text where pc.id = :commentUuid")

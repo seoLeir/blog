@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -28,8 +26,8 @@ public class Publication implements BaseEntity<UUID> {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "tittle", nullable = false)
-    private String tittle;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @Column(name = "publication_text")
     private String text;
@@ -70,12 +68,22 @@ public class Publication implements BaseEntity<UUID> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "publication", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PublicationComment> publicationComments;
 
-    public Publication(UUID id, String tittle, String text, User user, Integer timeToReadInMinutes) {
+    public Publication(UUID id, String title, String text, User user, Long viewCount, Integer timeToReadInMinutes, Instant createdDate) {
         this.id = id;
-        this.tittle = tittle;
+        this.title = title;
         this.text = text;
         this.user = user;
+        this.viewCount = viewCount;
         this.timeToReadInMinutes = timeToReadInMinutes;
+        this.createdDate = createdDate;
+    }
+
+    public Publication(UUID uuid, String header, String text, User user, int minutesToRead) {
+        this.id = uuid;
+        this.title = header;
+        this.text = text;
+        this.user = user;
+        this.timeToReadInMinutes = minutesToRead;
     }
 
     @Override
@@ -95,7 +103,7 @@ public class Publication implements BaseEntity<UUID> {
     public String toString() {
         return "Publication{" +
                 "id=" + id +
-                ", tittle='" + tittle + '\'' +
+                ", tittle='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", isPublished=" + isPublished +
                 ", viewCount=" + viewCount +

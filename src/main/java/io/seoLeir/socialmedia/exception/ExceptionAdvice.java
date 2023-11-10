@@ -1,5 +1,6 @@
 package io.seoLeir.socialmedia.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.seoLeir.socialmedia.dto.SocialMediaError;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +28,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionAdvice {
     @ExceptionHandler(SocialMediaException.class)
-    public SocialMediaError handleSocialMediaException(SocialMediaException ex, WebRequest webRequest) {
+    @ResponseStatus()
+    public ResponseEntity<SocialMediaError> handleSocialMediaException(SocialMediaException ex, WebRequest webRequest) {
         log.error("Social media exception was caught: ", ex);
-        return SocialMediaError.builder()
-                .statusCode(ex.getHttpStatusCode())
-                .errorDateTime(ex.getTimestamp())
-                .errorDescription(ex.getMessage())
-                .path(webRequest.getContextPath())
-                .build();
+        return ResponseEntity
+                .status(ex.getHttpStatusCode().value())
+                .body(SocialMediaError.builder()
+                        .statusCode(ex.getHttpStatusCode().value())
+                        .errorDateTime(ex.getTimestamp())
+                        .errorDescription(ex.getMessage())
+                        .path(webRequest.getContextPath())
+                        .build());
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
@@ -56,6 +62,7 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        log.error("MethodArgumentNotValidException was thrown: {}", ex.getMessage());
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -63,5 +70,30 @@ public class ExceptionAdvice {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<SocialMediaError> handleExpiredJwtException(ExpiredJwtException exception, WebRequest webRequest) {
+        log.error("ExpiredJwtException was thrown: {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value())
+                .body(SocialMediaError.builder()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
+                        .path(webRequest.getContextPath())
+                        .errorDateTime(Instant.now())
+                        .errorDescription(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public SocialMediaError handleDefaultExceptions(RuntimeException exception, WebRequest webRequest){
+        log.error("RuntimeException was thrown: {}", exception.getMessage());
+        return SocialMediaError.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .path(webRequest.getContextPath())
+                .errorDateTime(Instant.now())
+                .errorDescription(exception.getMessage())
+                .build();
     }
 }

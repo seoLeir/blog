@@ -24,7 +24,7 @@ public class UserRoleService {
         userRoleRepository.updateUserRole(newRoleId, userUuid);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<String> getUserAuthorities(UUID userUuid){
         return userRoleRepository.getUserRoleById(userUuid);
     }

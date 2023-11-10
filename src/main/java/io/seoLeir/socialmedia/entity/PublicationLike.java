@@ -42,10 +42,17 @@ public class PublicationLike implements BaseEntity<PublicationLikeId>{
     @Column(name = "is_like")
     private Boolean isLike;
 
-    public PublicationLike(User user, Publication publication) {
+    public PublicationLike(User user, Publication publication, Boolean isLike) {
+        this.id = new PublicationLikeId(user.getId(), publication.getId());
         this.user = user;
         this.publication = publication;
+        this.isLike = isLike;
+    }
+
+    public PublicationLike(User user, Publication publication) {
         this.id = new PublicationLikeId(user.getId(), publication.getId());
+        this.user = user;
+        this.publication = publication;
     }
 
     @Override

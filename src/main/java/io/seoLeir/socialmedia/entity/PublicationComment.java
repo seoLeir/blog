@@ -37,9 +37,6 @@ public class PublicationComment implements BaseEntity<UUID> {
     @ManyToOne(fetch = FetchType.LAZY)
     private PublicationComment parentPublicationComment;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
-    private List<PublicationComment> childPublicationComments;
-
     @Column(name = "comment_message")
     private String commentMessage;
 

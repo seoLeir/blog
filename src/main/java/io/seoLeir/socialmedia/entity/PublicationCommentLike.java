@@ -42,10 +42,17 @@ public class PublicationCommentLike implements BaseEntity<PublicationCommentsLik
     @Column(name = "is_like")
     private Boolean isLike;
 
-    public PublicationCommentLike(User user, PublicationComment publicationComment) {
+    public PublicationCommentLike(User user, PublicationComment publicationComment, Boolean isLike) {
+        this.id = new PublicationCommentsLikeId(user.getId(), publicationComment.getId());
         this.user = user;
         this.publicationComment = publicationComment;
+        this.isLike = isLike;
+    }
+
+    public PublicationCommentLike(User user, PublicationComment publicationComment) {
         this.id = new PublicationCommentsLikeId(user.getId(), publicationComment.getId());
+        this.user = user;
+        this.publicationComment = publicationComment;
     }
 
     @Override
