@@ -28,7 +28,7 @@ public class UserInfoService {
         UUID principleUuid = userRepository.getUserUuidByUsername(principleName)
                 .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
         long userBookmarkedPublicationsCount = userBookmarkService.getUserAllPublicationsCount(username);
-        long userAllCommentsCount = publicationCommentService.publicationCommentsByUserUuid(userUuid);
+        long userAllCommentsCount = publicationCommentService.getPublicationCommentsCountByUserUuid(userUuid);
         long allPublicationsByUsername = publicationService.getAllPublicationsCountByUsername(userUuid);
         long userFollowers = subscriptionService.getUserFollowersCount(userUuid);
         long userFollowing = subscriptionService.getUserFollowingCount(userUuid);

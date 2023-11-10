@@ -18,7 +18,7 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
         PagingAndSortingRepository<Publication, UUID>, JpaSpecificationExecutor<Publication> {
 
     @Query(value = "select new Publication(" +
-            "p.id, p.tittle, SUBSTRING(p.text, 1, 100), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate) " +
+            "p.id, p.title, SUBSTRING(p.text, 1, 100), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate) " +
             "from Publication p where p.id in (:ids)",
             countQuery = "select count(p.id) from Publication p")
     Page<Publication> getAllUserBookmarkedPublication(@Param("ids") List<UUID> uuids, Pageable pageable);
@@ -32,6 +32,13 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     @Query("select p from Publication p where p.id = :id")
     Optional<Publication> getPublicationById(@Param("id") UUID publicationUuid);
 
+    @Query(value = """
+     select new io.seoLeir.socialmedia.entity.Publication(
+     p.id, p.title, SUBSTRING(p.text, 1, 20), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate) 
+     from Publication p where p.id = :id
+     """)
+    Publication getPublicationForFeeder(@Param("id") UUID publicationUuid);
+
     @Modifying(flushAutomatically = true)
     @Query("delete from Publication p where p.id = :id")
     void deleteById(@Nullable @Param("id") UUID id);
@@ -41,78 +48,87 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     void updateViewCount(@Param("newViewCount") Long newViewCount);
 
     @Modifying(flushAutomatically = true)
-    @Query("update Publication p set p.tittle = :tittle, p.text = :text where p.id = :id")
+    @Query("update Publication p set p.title = :tittle, p.text = :text where p.id = :id")
     void updateTittleAndText(@Param("tittle") String tittle, @Param("text") String text, @Param("id") UUID id);
 
-    @Query(value = "select " +
-            "p.id as publicationUuid, " +
-            "       (select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = true) * 0.5 + " +
-            "       (select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = false) * (-0.1) + " +
-            "       (select count(pc.id) from publications_comments pc where pc.publication_uuid = p.id) * 0.2 + " +
-            "       (select count(ub.user_uuid) from users_bookmarks ub where ub.publication_uuid = p.id) * 0.3 + " +
-            "       p.view_count * 0.1 as score " +
-            "FROM publications p " +
-            "WHERE " +
-            "    p.created_date between :startDate and :endDate " +
-            "order by score desc", nativeQuery = true)
+
+    /**
+    * Accepted
+    */
+    @Query(value = """
+            select 
+                    p.id as publicationUuid, 
+                    get_publication_score(p.id) as score 
+                    FROM publications p 
+                    WHERE 
+                        p.created_date between :startDate and :endDate 
+                    order by score desc
+            """, nativeQuery = true)
     Page<FeedDto> getTopPublicationsByPeriod(@Param("startDate")Instant start, @Param("endDate") Instant end, Pageable pageable);
 
-
+    /**
+    * Accepted
+    */
     @Query(value = """
-            select p.id as publicationUuid,
-                sum(CASE WHEN (l.publication_uuid = p.id and l.is_like = true) THEN 1 ELSE 0 END) * 0.5 +
-                sum(CASE WHEN (l.publication_uuid = p.id and l.is_like = false) THEN 1 ELSE 0 END) * -0.1 +
-                (select count(pc.id) from publications_comments pc where pc.publication_uuid = p.id) * 0.2 +
-                (select count(ub.user_uuid) from users_bookmarks ub where ub.publication_uuid = p.id) * 0.3 +
-                p.view_count * 0.1 as score
-            from publications p
-                left join publications_likes l on p.id = l.publication_uuid
-            group by p.id
-            order by score desc
+            select 
+                    p.id as publicationUuid, 
+                    get_publication_score(p.id) as score 
+                    FROM publications p 
+                    WHERE 
+                        p.created_date <= :startDate
+                    order by score desc
             """, nativeQuery = true)
-    Page<FeedDto> getTopPublicationsAllTime(Pageable pageable);
+    Page<FeedDto> getTopPublicationsAllTime(@Param("startDate") Instant start, Pageable pageable);
 
-    @Query(value = "select " +
-            "p.id as publicationUuid, " +
-            "       ((select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = true) * 0.5 + " +
-            "       (select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = false) * (-0.1) + " +
-            "       (select count(pc.id) from publications_comments pc where pc.publication_uuid = p.id) * 0.2 + " +
-            "       (select count(ub.user_uuid) from users_bookmarks ub where ub.publication_uuid = p.id) * 0.3 + " +
-            "       p.view_count * 0.1) as score " +
-            "FROM publications p " +
-            "WHERE score >= :range " +
-            "order by p.created_date desc", nativeQuery = true)
-    Page<FeedDto> getNewPublicationsByRangeFilter(@Param("range") Integer range, Pageable pageable);
+    /**
+    * Accepted
+    */
+    @Query(value = """
+            select 
+                pub.publicationUuid, 
+                pub.score
+            from (select 
+                p.id as publicationUuid,
+                p.created_date, 
+                get_publication_score(p.id) as score
+            from publications p) as pub
+            where pub.score >= ?1
+            order by pub.created_date desc """, nativeQuery = true, countQuery = """
+            select count(pub.publicationUuid)
+            from (select 
+                p.id as publicationUuid,
+                get_publication_score(p.id) as score
+            from publications p) as pub
+            where pub.score >= ?1
+            """)
+    Page<FeedDto> getNewPublicationsByRangeFilter(Integer range, Pageable pageable);
 
-    @Query(value = "select " +
-            "p.id as publicationUuid, " +
-            "       ((select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = true) * 0.5 + " +
-            "       (select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = false) * (-0.1) + " +
-            "       (select count(pc.id) from publications_comments pc where pc.publication_uuid = p.id) * 0.2 + " +
-            "       (select count(ub.user_uuid) from users_bookmarks ub where ub.publication_uuid = p.id) * 0.3 + " +
-            "       p.view_count * 0.1) as score " +
-            "FROM publications p " +
-            "order by p.created_date desc", nativeQuery = true)
-    Page<FeedDto> getNewPublicationsDefaultFeeder(Pageable pageable);
+    /**
+    * Accepted
+    */
+    @Query(value = """
+            select
+                p.id as publicationUuid, 
+                get_publication_score(p.id) as score 
+            FROM publications p 
+            WHERE 
+                p.publication_text like CONCAT('%', :textToSearch, '%')
+            group by p.id 
+            order by score desc 
+    """, nativeQuery = true)
+    Page<FeedDto> searchPublicationByPopularityOrder(@Param("textToSearch") String text, Pageable pageable);
 
-    @Query(value = "select " +
-            "p.id as publicationUuid, " +
-            "       (select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = true) * 0.5 + " +
-            "       (select count(pl.user_uuid) from publications_likes pl where pl.publication_uuid = p.id and pl.is_like = false) * (-0.1) + " +
-            "       (select count(pc.id) from publications_comments pc where pc.publication_uuid = p.id) * 0.2 + " +
-            "       (select count(ub.user_uuid) from users_bookmarks ub where ub.publication_uuid = p.id) * 0.3 + " +
-            "       p.view_count * 0.1 as score " +
-            "FROM publications p " +
-            "WHERE " +
-            "    p.publication_text like CONCAT('%', :searchText, '%') " +
-            "group by p.id " +
-            "order by score desc ", nativeQuery = true)
-    Page<FeedDto> searchPublicationByPopularityOrder(@Param("searchText") String text, Pageable pageable);
+    /**
+    * Accepted
+    */
 
-    @Query("select p from Publication p where p.text like :textToSearch order by p.createdDate desc")
+    @Query("""
+       select new io.seoLeir.socialmedia.entity.Publication(
+     p.id, p.title, SUBSTRING(p.text, 1, 20), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate) 
+     from Publication p where p.text like CONCAT('%', :textToSearch, '%') OR p.title like CONCAT('%', :textToSearch, '%')
+     order by p.createdDate
+       """)
     Page<Publication> searchPublicationByCreatedDateOrder(@Param("textToSearch") String text, Pageable pageable);
-
-
 
 
 }

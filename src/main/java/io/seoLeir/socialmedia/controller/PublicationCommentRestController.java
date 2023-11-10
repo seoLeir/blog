@@ -4,9 +4,11 @@ package io.seoLeir.socialmedia.controller;
 import io.seoLeir.socialmedia.dto.comment.*;
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
+import io.seoLeir.socialmedia.dto.publication.PublicationActionWithStatusRequest;
 import io.seoLeir.socialmedia.service.PublicationCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -57,4 +59,13 @@ public class PublicationCommentRestController {
         publicationCommentService.deleteComment(publicationUuid, dto.commentUuid());
     }
 
+    /**
+    * Done implementing
+    */
+    @PostMapping("/likes")
+    public ResponseEntity<?> likeOrDislikeComment(@PathVariable("publication-uuid") UUID commentUuid,
+                                                  @RequestBody PublicationActionWithStatusRequest dto,
+                                                  Principal principal) {
+        return publicationCommentService.likeOrDislikeOrUpdateComment(commentUuid, principal.getName(), dto);
+    }
 }

@@ -23,7 +23,7 @@ public class PublicationFileService {
         publicationFileRepository.save(publicationFile);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UUID> findByFileByPublicationId(UUID uuid){
         return publicationFileRepository.findAllByPublicationId(uuid);
     }

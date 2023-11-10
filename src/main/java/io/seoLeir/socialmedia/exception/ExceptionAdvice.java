@@ -28,14 +28,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionAdvice {
     @ExceptionHandler(SocialMediaException.class)
-    public SocialMediaError handleSocialMediaException(SocialMediaException ex, WebRequest webRequest) {
+    @ResponseStatus()
+    public ResponseEntity<SocialMediaError> handleSocialMediaException(SocialMediaException ex, WebRequest webRequest) {
         log.error("Social media exception was caught: ", ex);
-        return SocialMediaError.builder()
-                .statusCode(ex.getHttpStatusCode())
-                .errorDateTime(ex.getTimestamp())
-                .errorDescription(ex.getMessage())
-                .path(webRequest.getContextPath())
-                .build();
+        return ResponseEntity
+                .status(ex.getHttpStatusCode().value())
+                .body(SocialMediaError.builder()
+                        .statusCode(ex.getHttpStatusCode().value())
+                        .errorDateTime(ex.getTimestamp())
+                        .errorDescription(ex.getMessage())
+                        .path(webRequest.getContextPath())
+                        .build());
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
@@ -71,14 +74,15 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public SocialMediaError handleExpiredJwtException(ExpiredJwtException exception, WebRequest webRequest){
+    public ResponseEntity<SocialMediaError> handleExpiredJwtException(ExpiredJwtException exception, WebRequest webRequest) {
         log.error("ExpiredJwtException was thrown: {}", exception.getMessage());
-        return SocialMediaError.builder()
-                .statusCode(HttpStatus.UNAUTHORIZED)
-                .path(webRequest.getContextPath())
-                .errorDateTime(Instant.now())
-                .errorDescription(exception.getMessage())
-                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value())
+                .body(SocialMediaError.builder()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
+                        .path(webRequest.getContextPath())
+                        .errorDateTime(Instant.now())
+                        .errorDescription(exception.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -86,7 +90,7 @@ public class ExceptionAdvice {
     public SocialMediaError handleDefaultExceptions(RuntimeException exception, WebRequest webRequest){
         log.error("RuntimeException was thrown: {}", exception.getMessage());
         return SocialMediaError.builder()
-                .statusCode(HttpStatus.UNAUTHORIZED)
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .path(webRequest.getContextPath())
                 .errorDateTime(Instant.now())
                 .errorDescription(exception.getMessage())

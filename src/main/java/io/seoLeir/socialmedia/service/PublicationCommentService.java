@@ -3,11 +3,14 @@ package io.seoLeir.socialmedia.service;
 import io.seoLeir.socialmedia.dto.comment.*;
 import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
+import io.seoLeir.socialmedia.dto.publication.ActionType;
+import io.seoLeir.socialmedia.dto.publication.PublicationActionWithStatusRequest;
 import io.seoLeir.socialmedia.entity.Publication;
 import io.seoLeir.socialmedia.entity.PublicationComment;
 import io.seoLeir.socialmedia.entity.User;
 import io.seoLeir.socialmedia.exception.comment.CommentNotFoundException;
 import io.seoLeir.socialmedia.exception.publication.AccessDeniedException;
+import io.seoLeir.socialmedia.exception.publication.InvalidActionType;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.repository.PublicationCommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,12 +31,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PublicationCommentService {
     private final PublicationCommentRepository commentRepository;
+    private final PublicationCommentLikeService publicationCommentLikeService;
     private final PublicationService publicationService;
     private final UserService userService;
 
 
-    @Transactional
-    public long publicationCommentsByUserUuid(UUID userUuid){
+    @Transactional(readOnly = true)
+    public long getPublicationCommentsCountByUserUuid(UUID userUuid){
         return commentRepository.getAllByUser(userUuid);
     }
 
@@ -65,6 +70,36 @@ public class PublicationCommentService {
         }
         commentRepository.save(publicationComment);
         return new CommentCreateResponseDto(publicationComment.getId());
+    }
+
+    @Transactional
+    public ResponseEntity<?> likeOrDislikeOrUpdateComment(UUID commentUuid, String username, PublicationActionWithStatusRequest dto){
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
+        PublicationComment publicationComment = commentRepository.getReferenceById(commentUuid);
+        ActionType actionType = ActionType.valueOf(dto.action().toUpperCase());
+        switch (actionType){
+            case CREATE ->{
+                publicationCommentLikeService.create(user, publicationComment, dto.status());
+                return ResponseEntity
+                        .status(HttpStatusCode.valueOf(201))
+                        .build();
+            }
+            case UPDATE ->{
+                publicationCommentLikeService.update(user, publicationComment, dto.status());
+                return ResponseEntity
+                        .status(HttpStatusCode.valueOf(202))
+                        .build();
+            }
+            case DELETE ->{
+                publicationCommentLikeService.remove(user, publicationComment);
+                return ResponseEntity
+                        .status(HttpStatusCode.valueOf(204))
+                        .build();
+            }
+            default ->
+                throw new InvalidActionType("Invalid action type: " + actionType, HttpStatusCode.valueOf(400));
+        }
     }
 
 

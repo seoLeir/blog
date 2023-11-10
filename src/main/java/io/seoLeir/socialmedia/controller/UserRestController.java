@@ -72,8 +72,8 @@ public class UserRestController {
      */
     @GetMapping("/{username}/publications")
     public PageResponseDto<PublicationGetResponseDto> getUsersAllPublication(@PathVariable("username") String username,
-                                                               @RequestBody PageRequestDto requestDto,
-                                                               @RequestParam(value = "text", required = false) String textToSearch){
+                                                                             @RequestBody PageRequestDto requestDto,
+                                                                             @RequestParam(value = "text", required = false) String textToSearch) {
         return publicationService.getAllUserPublications(username, requestDto, textToSearch);
     }
 

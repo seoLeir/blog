@@ -8,8 +8,6 @@ import io.seoLeir.socialmedia.exception.subscription.SubscriptionNotFoundExcepti
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
@@ -25,12 +23,12 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final UserService userService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Long getUserFollowersCount(UUID userUuid){
         return subscriptionRepository.getUserFollowersCount(userUuid);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Boolean isUserFollowed(UUID subscriber, UUID target){
         return subscriptionRepository.isSubscriptionExists(subscriber, target);
     }
@@ -67,12 +65,12 @@ public class SubscriptionService {
         subscriptionRepository.delete(subscription);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Long getUserFollowingCount(UUID userUuid){
         return subscriptionRepository.getUserFollowingCount(userUuid);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PageResponseDto<String> getUserFollowers(String username, PageRequestDto dto){
         Pageable pageable = PageRequestDto.toPageable(dto);
         UUID userUuid = userService.getUserUuidFromUsername(username)
@@ -83,7 +81,7 @@ public class SubscriptionService {
                 .toList();
         return PageResponseDto.of(userFollowers, responseContentList);
     }
-    @Transactional
+    @Transactional(readOnly = true)
     public PageResponseDto<String> getUserFollowing(String  username, PageRequestDto dto){
         Pageable pageable = PageRequestDto.toPageable(dto);
         UUID userUuid = userService.getUserUuidFromUsername(username)

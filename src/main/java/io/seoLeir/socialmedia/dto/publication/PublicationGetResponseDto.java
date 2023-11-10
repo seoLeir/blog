@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PublicationGetResponseDto {
     UUID id;
-    String tittle;
+    String title;
     String text;
     String user;
     Instant createdDate;

@@ -31,7 +31,7 @@ CREATE TABLE users_roles
 CREATE TABLE publications
 (
     id UUID PRIMARY KEY,
-    tittle TEXT NOT NULL,
+    title TEXT NOT NULL,
     publication_text text NOT NULL,
     publisher_uuid UUID REFERENCES users (id) ON DELETE CASCADE,
     is_published BOOLEAN default true,

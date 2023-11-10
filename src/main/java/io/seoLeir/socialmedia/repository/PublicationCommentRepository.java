@@ -33,10 +33,11 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
             "where plcml.id.userUuid = :userUuid and plcml.id.publicationCommentUuid = pc.id))" +
             "from PublicationComment pc " +
             "left join PublicationCommentLike pcl on pc.id = pcl.id.publicationCommentUuid " +
-            "where pc.publication.id = :publicationUuid")
+            "where pc.publication.id = :publicationUuid " +
+            "group by pc.id")
     Page<PublicationCommentGetResponseDto> getPublicationComments(@Param("publicationUuid") UUID publicationUuid,
-                                                                 @Param("userUuid") UUID userUuid,
-                                                                 Pageable pageable);
+                                                                  @Param("userUuid") UUID userUuid,
+                                                                  Pageable pageable);
 
     @Query("select new io.seoLeir.socialmedia.dto.comment.PublicationCommentGetResponseDto(" +
             "pc.id, " +
@@ -51,8 +52,11 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
             "where plcml.id.userUuid = :currentUser and plcml.id.publicationCommentUuid = pc.id))" +
             "from PublicationComment pc " +
             "left join PublicationCommentLike pcl on pc.id = pcl.id.publicationCommentUuid " +
-            "where pc.user.id = :userUuid")
-    Page<PublicationCommentGetResponseDto> getUserComments(@Param("userUuid") UUID uuid, @Param("currentUser") UUID currentUser, Pageable pageable);
+            "where pc.user.id = :userUuid " +
+            "group by pc.id")
+    Page<PublicationCommentGetResponseDto> getUserComments(@Param("userUuid") UUID uuid,
+                                                           @Param("currentUser") UUID currentUser,
+                                                           Pageable pageable);
 
     @Modifying(flushAutomatically = true)
     @Query("update PublicationComment pc set pc.commentMessage = :text where pc.id = :commentUuid")

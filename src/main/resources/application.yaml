@@ -15,9 +15,6 @@ spring:
       enabled: true
       max-request-size: 200MB
       max-file-size: 215MB
-  web:
-    resources:
-      static-locations: classpath:/static/
 socialmedia:
   jwt:
     lifetime: 15m
