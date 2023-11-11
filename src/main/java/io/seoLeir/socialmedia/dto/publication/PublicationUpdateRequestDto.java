@@ -1,7 +1,9 @@
 package io.seoLeir.socialmedia.dto.publication;
 
-import jakarta.validation.constraints.NotBlank;
+import io.seoLeir.socialmedia.validation.publication.PublicationText;
+import io.seoLeir.socialmedia.validation.publication.PublicationTitle;
 
-public record PublicationUpdateRequestDto(@NotBlank String tittle,
-                                          @NotBlank String publicationText) {
+public record PublicationUpdateRequestDto(
+        @PublicationTitle String tittle,
+        @PublicationText String publicationText) {
 }
