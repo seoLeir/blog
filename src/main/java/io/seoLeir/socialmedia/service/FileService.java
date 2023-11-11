@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.FileAttribute;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -88,12 +86,5 @@ public class FileService {
     public File findFileById(UUID id){
         return fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException(
                 "File not found. File UUID: " + id, HttpStatusCode.valueOf(404)));
-    }
-
-    @Transactional
-    public boolean isFileRelatedToUser(UUID fileUuid, String username) {
-        File file = fileRepository.findById(fileUuid).orElseThrow(() -> new FileNotFoundException(
-                "File not found. File UUID: " + fileUuid, HttpStatusCode.valueOf(404)));
-        return username.equals(file.getUser().getUsername());
     }
 }

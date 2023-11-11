@@ -57,7 +57,7 @@ public class UserBookmarkService {
     public void delete(Publication publication, User user) {
         UserBookmark userBookmark = new UserBookmark(user, publication);
         if (!userBookmarkRepository.existsById(userBookmark.getId())){
-            throw new UserBookmarkNotFound("Userbookmark not found", HttpStatusCode.valueOf(404));
+            throw new UserBookmarkNotFound("User bookmark not found", HttpStatusCode.valueOf(404));
         }
         userBookmarkRepository.delete(userBookmark);
     }

@@ -43,9 +43,7 @@ public class JwtAuthService {
                 .orElseThrow(() -> new UserNotFountException("User not found", HttpStatusCode.valueOf(404)));
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         userRoleService.getUserAuthorities(foundUser.getId())
-                .forEach(authority -> {
-                    authorities.add(new SimpleGrantedAuthority(authority));
-                });
+                .forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority)));
         if (passwordEncoder.matches(password, userDetails.getPassword()))
             return jwtTokenUtils.generateToken(userDetails.getUsername(), authorities);
         else
