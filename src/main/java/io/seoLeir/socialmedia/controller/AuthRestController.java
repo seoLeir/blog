@@ -7,9 +7,6 @@ import io.seoLeir.socialmedia.dto.authentication.AuthRegistrationResponseDto;
 import io.seoLeir.socialmedia.service.JwtAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
