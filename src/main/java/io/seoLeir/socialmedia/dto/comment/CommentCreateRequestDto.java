@@ -1,4 +1,8 @@
 package io.seoLeir.socialmedia.dto.comment;
 
-public record CommentCreateRequestDto(String commentText) {
+import io.seoLeir.socialmedia.validation.comment.CommentText;
+
+public record CommentCreateRequestDto(
+        @CommentText
+        String commentText) {
 }

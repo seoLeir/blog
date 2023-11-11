@@ -1,18 +1,16 @@
 package io.seoLeir.socialmedia.dto.authentication;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import io.seoLeir.socialmedia.validation.user.Password;
+import io.seoLeir.socialmedia.validation.user.Username;
 import lombok.Value;
 
 @Value
 public class AuthLoginRequestDto {
 
-    @NotBlank
-    @Size(min = 5, max = 32)
+    @Username
     String username;
 
-    @NotBlank
-    @Size(min = 8)
+    @Password
     String password;
 
 }

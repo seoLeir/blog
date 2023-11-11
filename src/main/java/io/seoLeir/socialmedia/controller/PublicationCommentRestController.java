@@ -6,6 +6,7 @@ import io.seoLeir.socialmedia.dto.page.PageRequestDto;
 import io.seoLeir.socialmedia.dto.page.PageResponseDto;
 import io.seoLeir.socialmedia.dto.publication.PublicationActionWithStatusRequest;
 import io.seoLeir.socialmedia.service.PublicationCommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,9 @@ public class PublicationCommentRestController {
     */
     @GetMapping
     public PageResponseDto<PublicationCommentGetResponseDto> getPublicationAllComments(
-            @PathVariable("publication-uuid") UUID publicationUuid, @RequestBody PageRequestDto dto, Principal principal){
+            @PathVariable("publication-uuid") UUID publicationUuid,
+            @Valid @RequestBody PageRequestDto dto,
+            Principal principal){
         return publicationCommentService.getPublicationComments(publicationUuid, dto, principal.getName());
     }
 
@@ -35,7 +38,7 @@ public class PublicationCommentRestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CommentCreateResponseDto createComment(@PathVariable("publication-uuid") UUID publicationUuid,
-                                                  @RequestBody CommentCreateRequestDto dto,
+                                                  @Valid @RequestBody CommentCreateRequestDto dto,
                                                   @RequestParam(value = "parentComment", required = false) UUID parentCommentUuid,
                                                   Principal principal){
         return publicationCommentService.createComment(publicationUuid, dto, parentCommentUuid, principal.getName());
@@ -46,7 +49,8 @@ public class PublicationCommentRestController {
      */
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateComment(@PathVariable("publication-uuid") UUID publicationUuid, @RequestBody CommentUpdateDto dto){
+    public void updateComment(@PathVariable("publication-uuid") UUID publicationUuid,
+                              @Valid @RequestBody CommentUpdateDto dto){
         publicationCommentService.updateComment(publicationUuid, dto);
     }
 
@@ -55,7 +59,8 @@ public class PublicationCommentRestController {
      */
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComment(@PathVariable("publication-uuid") UUID publicationUuid, @RequestBody CommentDeleteDto dto){
+    public void deleteComment(@PathVariable("publication-uuid") UUID publicationUuid,
+                              @Valid @RequestBody CommentDeleteDto dto){
         publicationCommentService.deleteComment(publicationUuid, dto.commentUuid());
     }
 
@@ -64,7 +69,7 @@ public class PublicationCommentRestController {
     */
     @PostMapping("/likes")
     public ResponseEntity<?> likeOrDislikeComment(@PathVariable("publication-uuid") UUID commentUuid,
-                                                  @RequestBody PublicationActionWithStatusRequest dto,
+                                                  @Valid @RequestBody PublicationActionWithStatusRequest dto,
                                                   Principal principal) {
         return publicationCommentService.likeOrDislikeOrUpdateComment(commentUuid, principal.getName(), dto);
     }

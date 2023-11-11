@@ -7,6 +7,7 @@ import io.seoLeir.socialmedia.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.socialmedia.dto.user.UserProfileResponseDto;
 import io.seoLeir.socialmedia.exception.user.UserNotFountException;
 import io.seoLeir.socialmedia.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -72,7 +73,7 @@ public class UserRestController {
      */
     @GetMapping("/{username}/publications")
     public PageResponseDto<PublicationGetResponseDto> getUsersAllPublication(@PathVariable("username") String username,
-                                                                             @RequestBody PageRequestDto requestDto,
+                                                                             @Valid @RequestBody PageRequestDto requestDto,
                                                                              @RequestParam(value = "text", required = false) String textToSearch) {
         return publicationService.getAllUserPublications(username, requestDto, textToSearch);
     }

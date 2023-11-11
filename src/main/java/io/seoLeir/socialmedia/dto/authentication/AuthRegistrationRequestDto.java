@@ -1,5 +1,7 @@
 package io.seoLeir.socialmedia.dto.authentication;
 
+import io.seoLeir.socialmedia.validation.user.Password;
+import io.seoLeir.socialmedia.validation.user.Username;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,15 +11,12 @@ import lombok.Value;
 @Value
 public class AuthRegistrationRequestDto {
 
-
-    @NotNull(message = "Username should not be null")
-    @Size(min = 5, max = 32, message = "Username must have at least 5 characters and no more than 32 characters")
+    @Username
     String username;
 
-    @Email
+    @Email(message = "Invalid email")
     String email;
 
-    @NotBlank
-    @Size(min = 8)
+    @Password
     String password;
 }
