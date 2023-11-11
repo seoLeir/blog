@@ -1,0 +1,1171 @@
+{
+  "collection": {
+    "info": {
+      "_postman_id": "c99f7070-a798-4956-8195-43cc54a783f7",
+      "name": "blog-api",
+      "description": "Collection to test endpoints of blog api",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "updatedAt": "2023-11-08T12:41:44.000Z",
+      "uid": "22684598-c99f7070-a798-4956-8195-43cc54a783f7"
+    },
+    "item": [
+      {
+        "name": "user",
+        "item": [
+          {
+            "name": "user registration",
+            "id": "bccb7be2-c704-4fcf-af91-1e15a21aaf1e",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true,
+              "disabledSystemHeaders": {}
+            },
+            "request": {
+              "auth": {
+                "type": "noauth"
+              },
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"username\":\"ivanonv\",\r\n    \"email\":\"ivan@gmail.com\",\r\n    \"password\":\"123456789\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/registration",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "registration"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-bccb7be2-c704-4fcf-af91-1e15a21aaf1e"
+          },
+          {
+            "name": "user login",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "f95fdfb3-cba5-443a-853a-107a48819d58",
+                  "exec": [
+                    "pm.test(\"Status code is 200\", function () {\r",
+                    "    const response = pm.response;\r",
+                    "    if(response.code == 200){\r",
+                    "        postman.setEnvironmentVariable(\"jwt_token\", response.json().jwtToken);    \r",
+                    "    }\r",
+                    "});\r",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "id": "e4641a9e-91f9-4b30-8828-12e8c4ec9a49",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "auth": {
+                "type": "noauth"
+              },
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"username\":\"admin\", \r\n    \"password\":\"secret-admin-password\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/login",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "login"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-e4641a9e-91f9-4b30-8828-12e8c4ec9a49"
+          },
+          {
+            "name": "user profile get",
+            "id": "48cc65ef-ae5a-4c96-8089-4c38b929be82",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/profile",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "profile"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-48cc65ef-ae5a-4c96-8089-4c38b929be82"
+          },
+          {
+            "name": "user subscribe",
+            "id": "1d13b3b5-111e-4a50-ac9c-be735ec83ebc",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/subscribe",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "subscribe"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-1d13b3b5-111e-4a50-ac9c-be735ec83ebc"
+          },
+          {
+            "name": "user unsubscribe",
+            "id": "ac76eacf-3b17-4b7e-8f5f-97a8ddb90836",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/unsubscribe",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "unsubscribe"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-ac76eacf-3b17-4b7e-8f5f-97a8ddb90836"
+          },
+          {
+            "name": "user publications",
+            "id": "378e15a4-2fda-4507-b698-ddfa55b8e74d",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}\r\n\r\n",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/users/user10/publications",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "user10",
+                  "publications"
+                ],
+                "query": [
+                  {
+                    "key": "text",
+                    "value": "Quantum",
+                    "disabled": true
+                  }
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-378e15a4-2fda-4507-b698-ddfa55b8e74d"
+          },
+          {
+            "name": "user comments",
+            "id": "471652dc-44bc-4b92-a31a-0f288ebb46a5",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/comments",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "comments"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-471652dc-44bc-4b92-a31a-0f288ebb46a5"
+          },
+          {
+            "name": "user bookmarks",
+            "id": "4066e9b4-6c2a-46cb-a05e-972f521c6f09",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/bookmarks",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "bookmarks"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-4066e9b4-6c2a-46cb-a05e-972f521c6f09"
+          },
+          {
+            "name": "user followers",
+            "id": "69c9925e-28bd-40e4-b336-44997d7da511",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/followers",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "followers"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-69c9925e-28bd-40e4-b336-44997d7da511"
+          },
+          {
+            "name": "user following",
+            "id": "e18a2686-5b21-45c0-b03d-1fea59a22efc",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/users/admin/following",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "admin",
+                  "following"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-e18a2686-5b21-45c0-b03d-1fea59a22efc"
+          },
+          {
+            "name": "user role update",
+            "id": "cc1e6aa3-cec2-4b20-a838-b97bd91d3411",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "PATCH",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/users/test-username/role?role=ROLE_ADMIN",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "users",
+                  "test-username",
+                  "role"
+                ],
+                "query": [
+                  {
+                    "key": "role",
+                    "value": "ROLE_ADMIN"
+                  }
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-cc1e6aa3-cec2-4b20-a838-b97bd91d3411"
+          }
+        ],
+        "id": "e7b3f9bf-3be1-468d-a517-750be81a711f",
+        "description": "folder with user endpoints",
+        "uid": "22684598-e7b3f9bf-3be1-468d-a517-750be81a711f"
+      },
+      {
+        "name": "publication",
+        "item": [
+          {
+            "name": "publication create",
+            "id": "ab786fd9-129f-4632-9763-41bc03552569",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"text\": \"Publication text to create\",\r\n    \"header\": \"Publication header\",\r\n    \"files\": [\"fd3ba574-a0ed-487e-a0c8-4c3041ef6004\"]\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-ab786fd9-129f-4632-9763-41bc03552569"
+          },
+          {
+            "name": "pubication delete",
+            "id": "d2d8fcb7-2161-42b9-91da-af9eb7af4489",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/3daf7f07-4546-403c-8d37-55b3fa306856",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "3daf7f07-4546-403c-8d37-55b3fa306856"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-d2d8fcb7-2161-42b9-91da-af9eb7af4489"
+          },
+          {
+            "name": "publication update",
+            "id": "ab1060d1-685b-4504-9d11-eda6f9950794",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "PATCH",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"tittle\": \"Updated publication tittle\",\r\n    \"publicationText\": \"Updated publication text\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/3daf7f07-4546-403c-8d37-55b3fa306856",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "3daf7f07-4546-403c-8d37-55b3fa306856"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-ab1060d1-685b-4504-9d11-eda6f9950794"
+          },
+          {
+            "name": "publication get",
+            "id": "927deed8-24eb-49f2-9337-1d3ebe0cdc6f",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/f8e7e8ab-66a4-4d1a-aa4f-19d02b6eae4e",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "f8e7e8ab-66a4-4d1a-aa4f-19d02b6eae4e"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-927deed8-24eb-49f2-9337-1d3ebe0cdc6f"
+          },
+          {
+            "name": "bookmark publication",
+            "id": "29c2e988-ad49-4869-b412-844d20b60161",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/3e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1/bookmarks",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "3e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1",
+                  "bookmarks"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-29c2e988-ad49-4869-b412-844d20b60161"
+          },
+          {
+            "name": "publication bookmarks get",
+            "id": "ba4d095f-2159-4e9a-a170-27ff3bce8a57",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/0e7e4b2b-84e4-402d-b0f7-190d29e00a35/bookmarks",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "0e7e4b2b-84e4-402d-b0f7-190d29e00a35",
+                  "bookmarks"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-ba4d095f-2159-4e9a-a170-27ff3bce8a57"
+          },
+          {
+            "name": "unbookmark publication",
+            "id": "0d445682-b24f-4372-ab75-1cecd3ec89df",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/3e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1/bookmarks",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "3e9b3e9b-91ea-4d1e-937c-18c0e36eb3d1",
+                  "bookmarks"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-0d445682-b24f-4372-ab75-1cecd3ec89df"
+          },
+          {
+            "name": "publication likes get",
+            "id": "22a2e831-805f-4fd6-8b5f-41cba51e0020",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/b6d69615-8eac-41fb-856e-37e4c895e2e5/likes",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "b6d69615-8eac-41fb-856e-37e4c895e2e5",
+                  "likes"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-22a2e831-805f-4fd6-8b5f-41cba51e0020"
+          },
+          {
+            "name": "publication like create update delete",
+            "id": "f4bc7a1c-b389-45d5-8b06-a5833c09f632",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"status\": \"false\",\r\n    \"action\": \"create\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/b6d69615-8eac-41fb-856e-37e4c895e2e5/likes",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "b6d69615-8eac-41fb-856e-37e4c895e2e5",
+                  "likes"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-f4bc7a1c-b389-45d5-8b06-a5833c09f632"
+          }
+        ],
+        "id": "b54c5d48-ef3d-4606-b606-80f63d0f5f20",
+        "description": "folder with publication endpoints",
+        "uid": "22684598-b54c5d48-ef3d-4606-b606-80f63d0f5f20"
+      },
+      {
+        "name": "file",
+        "item": [
+          {
+            "name": "file save",
+            "id": "d3dec844-e6a6-4dd4-a7ff-ed26c7ea6f48",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true,
+              "disabledSystemHeaders": {}
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "file",
+                    "type": "file",
+                    "src": "/C:/Users/Dell/Desktop/publications-files/the-world-of-nanotechnology.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/files",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "files"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-d3dec844-e6a6-4dd4-a7ff-ed26c7ea6f48"
+          },
+          {
+            "name": "file get",
+            "id": "df4a9ef4-6e5f-459b-9a5e-a4d84abe0a8c",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "localhost:8080/api/v1/files/5e91eacd-f43e-4f1f-bca2-fd586e3d7dfe",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "files",
+                  "5e91eacd-f43e-4f1f-bca2-fd586e3d7dfe"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-df4a9ef4-6e5f-459b-9a5e-a4d84abe0a8c"
+          }
+        ],
+        "id": "390b30e4-1117-4212-9623-3bda1edfb93c",
+        "description": "folder with file endpoints",
+        "uid": "22684598-390b30e4-1117-4212-9623-3bda1edfb93c"
+      },
+      {
+        "name": "publication comments",
+        "item": [
+          {
+            "name": "publication comments",
+            "id": "0675d9ac-62c0-489a-98e6-fafede2d3fb5",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/aa82a7c5-9aa5-4e2d-9863-fc69520c64c4/comments",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "aa82a7c5-9aa5-4e2d-9863-fc69520c64c4",
+                  "comments"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-0675d9ac-62c0-489a-98e6-fafede2d3fb5"
+          },
+          {
+            "name": "publication comment create",
+            "id": "f8a5c2e4-139e-4cd6-8acd-54d5f080b575",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"commentText\": \"Admin comment\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/aa82a7c5-9aa5-4e2d-9863-fc69520c64c4/comments?parentComment=393d08a9-9c16-44e2-85ab-1c287a7fa70a",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "aa82a7c5-9aa5-4e2d-9863-fc69520c64c4",
+                  "comments"
+                ],
+                "query": [
+                  {
+                    "key": "parentComment",
+                    "value": "393d08a9-9c16-44e2-85ab-1c287a7fa70a"
+                  }
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-f8a5c2e4-139e-4cd6-8acd-54d5f080b575"
+          },
+          {
+            "name": "publication comment update",
+            "id": "baf62a79-8d77-4667-a38d-016998a4c2fe",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "PATCH",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"commentUuid\": \"f3fce380-95cb-431c-8ca3-54a7e80b011c\",\r\n    \"text\": \"Updated coment\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/aa82a7c5-9aa5-4e2d-9863-fc69520c64c4/comments",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "aa82a7c5-9aa5-4e2d-9863-fc69520c64c4",
+                  "comments"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-baf62a79-8d77-4667-a38d-016998a4c2fe"
+          },
+          {
+            "name": "publication comment delete",
+            "id": "a968bce6-dddd-408a-804d-2751d4221619",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"commentUuid\": \"f3fce380-95cb-431c-8ca3-54a7e80b011c\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/aa82a7c5-9aa5-4e2d-9863-fc69520c64c4/comments",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "aa82a7c5-9aa5-4e2d-9863-fc69520c64c4",
+                  "comments"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-a968bce6-dddd-408a-804d-2751d4221619"
+          },
+          {
+            "name": "publication comment like create update delete",
+            "id": "208068a2-0e19-482d-84f5-d15b1c32bcb4",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"status\": \"false\",\r\n    \"action\": \"delete\"\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/64f8b69a-27ec-4595-be73-279026ec0ee3/comments/likes",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "64f8b69a-27ec-4595-be73-279026ec0ee3",
+                  "comments",
+                  "likes"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-208068a2-0e19-482d-84f5-d15b1c32bcb4"
+          }
+        ],
+        "id": "8775fc61-54b9-43e4-a59d-ebd17786b5ec",
+        "description": "folder with publication comment endpoints",
+        "uid": "22684598-8775fc61-54b9-43e4-a59d-ebd17786b5ec"
+      },
+      {
+        "name": "publication feeder",
+        "item": [
+          {
+            "name": "publications default feed",
+            "id": "12730c78-cd41-43ce-bfad-b22c9a98cf53",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/feed",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "feed"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-12730c78-cd41-43ce-bfad-b22c9a98cf53"
+          },
+          {
+            "name": "publication feed by rating",
+            "id": "b3ea932b-f9f4-467f-9dbb-423530805db7",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/feed/rated30",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "feed",
+                  "rated30"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-b3ea932b-f9f4-467f-9dbb-423530805db7"
+          },
+          {
+            "name": "publication feed by top",
+            "id": "8ef78dbb-5be0-44f4-a262-72cc9e05f664",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/feed/top/alltime",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "feed",
+                  "top",
+                  "alltime"
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-8ef78dbb-5be0-44f4-a262-72cc9e05f664"
+          },
+          {
+            "name": "publication search",
+            "id": "799667fa-687d-4c6a-b3e2-77204ecb1118",
+            "protocolProfileBehavior": {
+              "disableBodyPruning": true
+            },
+            "request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 20,\r\n    \"sort\": null\r\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "localhost:8080/api/v1/publications/search?q=a&order=date",
+                "host": [
+                  "localhost"
+                ],
+                "port": "8080",
+                "path": [
+                  "api",
+                  "v1",
+                  "publications",
+                  "search"
+                ],
+                "query": [
+                  {
+                    "key": "q",
+                    "value": "a"
+                  },
+                  {
+                    "key": "order",
+                    "value": "date"
+                  }
+                ]
+              }
+            },
+            "response": [],
+            "uid": "22684598-799667fa-687d-4c6a-b3e2-77204ecb1118"
+          }
+        ],
+        "id": "724bed4f-2d67-4bab-b925-f91b36db9ed5",
+        "uid": "22684598-724bed4f-2d67-4bab-b925-f91b36db9ed5"
+      }
+    ],
+    "auth": {
+      "type": "bearer",
+      "bearer": [
+        {
+          "key": "token",
+          "value": "{{jwt_token}}",
+          "type": "string"
+        }
+      ]
+    },
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "id": "750271fd-dabf-498c-8543-5c4787597dd3",
+          "type": "text/javascript",
+          "exec": [
+            ""
+          ]
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "id": "7e028b1d-8e12-4ce6-9a96-5823a76a93ee",
+          "type": "text/javascript",
+          "exec": [
+            ""
+          ]
+        }
+      }
+    ],
+    "variable": [
+      {
+        "key": "jwt_token",
+        "value": "",
+        "type": "string"
+      }
+    ]
+  }
+}
