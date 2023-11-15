@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: leir
+    password: 123
+    url: jdbc:postgresql://localhost:5432/blog
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        ddl-auto: validate
+        show_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 200MB
+      max-file-size: 215MB
+socialmedia:
+  jwt:
+    lifetime: 15m
+  "reading-speed": 250
+  files:
+    "basic-directory": D:\projects\blog\s3files
+    mime-type-to-valid-extension:
+      "[image/jpeg]": [".jpeg", ".jpg", ".jpe", ".JPEG", ".JPG", ".JPE", ".jfif", ".JFIF"]
+      "[image/png]": [".png", ".PNG"]
+      "[image/webp]": [".webp", ".WEBP"]
+      "[image/avif]" : [".avif", ".AVIF"]
+      "[image/gif]": [".gif"]
+server:
+  error:
+    include-message: always
+springdoc:
+  api-docs:
+    enabled: true
