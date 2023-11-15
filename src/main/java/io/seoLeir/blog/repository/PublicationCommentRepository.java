@@ -20,7 +20,7 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
     @Query("select count(p.id) from PublicationComment p where p.user.id = :uuid")
     Long getAllByUser(@Param("uuid") UUID userUuid);
 
-    @Query("select new io.seoLeir.socialmedia.dto.comment.PublicationCommentGetResponseDto(" +
+    @Query("select new io.seoLeir.blog.dto.comment.PublicationCommentGetResponseDto(" +
             "pc.id, " +
             "pc.user.id, " +
             "pc.publication.id, " +
@@ -39,7 +39,7 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
                                                                   @Param("userUuid") UUID userUuid,
                                                                   Pageable pageable);
 
-    @Query("select new io.seoLeir.socialmedia.dto.comment.PublicationCommentGetResponseDto(" +
+    @Query("select new io.seoLeir.blog.dto.comment.PublicationCommentGetResponseDto(" +
             "pc.id, " +
             "pc.user.id, " +
             "pc.publication.id, " +

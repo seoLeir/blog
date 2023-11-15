@@ -9,7 +9,6 @@ import io.seoLeir.blog.exception.file.UnsupportedFileExtension;
 import io.seoLeir.blog.repository.FileRepository;
 import io.seoLeir.blog.dto.file.FoundFile;
 import io.seoLeir.blog.entity.File;
-import io.seoLeir.socialmedia.exception.file.*;
 import io.seoLeir.blog.util.ExtensionResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

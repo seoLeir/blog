@@ -8,7 +8,6 @@ import io.seoLeir.blog.dto.publication.ActionType;
 import io.seoLeir.blog.entity.User;
 import io.seoLeir.blog.exception.user.UserNotFountException;
 import io.seoLeir.blog.repository.PublicationCommentRepository;
-import io.seoLeir.socialmedia.dto.comment.*;
 import io.seoLeir.blog.dto.page.PageRequestDto;
 import io.seoLeir.blog.dto.page.PageResponseDto;
 import io.seoLeir.blog.dto.publication.PublicationActionWithStatusRequest;

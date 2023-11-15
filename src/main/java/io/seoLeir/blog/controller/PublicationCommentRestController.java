@@ -2,7 +2,6 @@ package io.seoLeir.blog.controller;
 
 
 import io.seoLeir.blog.dto.comment.*;
-import io.seoLeir.socialmedia.dto.comment.*;
 import io.seoLeir.blog.dto.page.PageRequestDto;
 import io.seoLeir.blog.dto.page.PageResponseDto;
 import io.seoLeir.blog.dto.publication.PublicationActionWithStatusRequest;

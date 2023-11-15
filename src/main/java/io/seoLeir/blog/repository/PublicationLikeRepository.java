@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public interface PublicationLikeRepository extends JpaRepository<PublicationLike, PublicationLikeId> {
 
-    @Query("select new io.seoLeir.socialmedia.dto.publication.PublicationLikeAndDislikeDto( " +
+    @Query("select new io.seoLeir.blog.dto.publication.PublicationLikeAndDislikeDto( " +
             "pl.id.publicationUuid, " +
             "sum(CASE WHEN pl.isLike = true THEN 1 ELSE 0 END), " +
             "sum(CASE WHEN pl.isLike = false THEN 1 ELSE 0 END) ) " +
@@ -32,7 +32,7 @@ public interface PublicationLikeRepository extends JpaRepository<PublicationLike
     boolean isUserLikedThePost(@Param("userUuid") UUID userUuid, @Param("publicationUuid") UUID publicationUuid);
 
     @Query("""
-    select new io.seoLeir.socialmedia.dto.publication.PublicationLikesAndDislikesResponseDto(
+    select new io.seoLeir.blog.dto.publication.PublicationLikesAndDislikesResponseDto(
         pl.user.username, pl.isLike
     ) from PublicationLike pl where pl.id.publicationUuid = :publicationId
     """)

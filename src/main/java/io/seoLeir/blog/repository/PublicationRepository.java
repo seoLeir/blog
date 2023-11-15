@@ -33,7 +33,7 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     Optional<Publication> getPublicationById(@Param("id") UUID publicationUuid);
 
     @Query(value = """
-     select new io.seoLeir.socialmedia.entity.Publication(
+     select new io.seoLeir.blog.entity.Publication(
      p.id, p.title, SUBSTRING(p.text, 1, 20), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate)\s
      from Publication p where p.id = :id
      """)
@@ -123,7 +123,7 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     */
 
     @Query("""
-       select new io.seoLeir.socialmedia.entity.Publication(
+       select new io.seoLeir.blog.entity.Publication(
      p.id, p.title, SUBSTRING(p.text, 1, 20), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate) 
      from Publication p where p.text like CONCAT('%', :textToSearch, '%') OR p.title like CONCAT('%', :textToSearch, '%')
      order by p.createdDate

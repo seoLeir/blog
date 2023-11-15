@@ -17,7 +17,7 @@ public interface PublicationCommentLikeRepository extends JpaRepository<Publicat
             "and pcl.id.publicationCommentUuid = :commentUuid)")
     boolean isUserLikedComment(@Param("userUuid") UUID userUuid, @Param("commentUuid") UUID commentUuid);
 
-    @Query("select new io.seoLeir.socialmedia.dto.comment.CommentLikeAndDislikeDto(" +
+    @Query("select new io.seoLeir.blog.dto.comment.CommentLikeAndDislikeDto(" +
             "pcl.id.publicationCommentUuid, " +
             "SUM(CASE WHEN pcl.isLike = true THEN 1 ELSE 0 END), " +
             "SUM(CASE WHEN pcl.isLike = false THEN 1 ELSE 0 END) )"+

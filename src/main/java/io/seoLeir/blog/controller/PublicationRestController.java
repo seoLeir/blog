@@ -5,7 +5,6 @@ import io.seoLeir.blog.service.PublicationService;
 import io.seoLeir.blog.service.UserService;
 import io.seoLeir.blog.dto.page.PageRequestDto;
 import io.seoLeir.blog.dto.page.PageResponseDto;
-import io.seoLeir.socialmedia.dto.publication.*;
 import io.seoLeir.blog.entity.Publication;
 import io.seoLeir.blog.entity.User;
 import io.seoLeir.blog.exception.publication.PublicationNotFoundException;

@@ -7,7 +7,6 @@ import io.seoLeir.blog.dto.publication.PublicationGetResponseDto;
 import io.seoLeir.blog.dto.user.UserProfileResponseDto;
 import io.seoLeir.blog.exception.user.UserNotFountException;
 import io.seoLeir.blog.service.*;
-import io.seoLeir.socialmedia.service.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
