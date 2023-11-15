@@ -1,69 +1,77 @@
-Техническое задание: Social Media API
+# blog
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 
-Цель проекта: Разработать RESTful API для социальной медиа платформы, позволяющей пользователям регистрироваться, входить в систему, создавать посты, переписываться, подписываться на других пользователей и получать свою ленту активности.
+Blog [Spring Boot](http://projects.spring.io/spring-boot/) application.
 
-Требования:
+## Requirements
 
-1. Аутентификация и авторизация:
+For building and running the application you need:
 
-    - Пользователи могут зарегистрироваться, указав имя пользователя, электронную почту и пароль.
-    - Пользователи могут войти в систему, предоставив правильные учетные данные.
-    - API должен обеспечивать защиту конфиденциальности пользовательских данных, включая хэширование паролей и использование JWT.
+- [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
-2. Управление постами:
+## Installation
+Clone the repository 
 
-    - Пользователи могут создавать новые посты, указывая текст, заголовок и прикрепляя изображения.
-    - Пользователи могут просматривать посты других пользователей.
-    - Пользователи могут обновлять и удалять свои собственные посты.
+```shell
+https://github.com/seoLeir/blog.git
+```
 
-3. Взаимодействие пользователей:
+## Description
+The Blog application is a powerful and modern web application designed for creating and exchanging technological articles, ideas, and experiences in the field of information technology. 
+It ensures high performance, reliability, and user convenience.
+Key Features of the "Blog" Project:
 
-    - Пользователи могут отправлять заявки в друзья другим пользователям. С этого момента, пользователь, отправивший заявку, остается подписчиком до тех пор, пока сам не откажется от подписки. Если пользователь, получивший заявку, принимает ее, оба пользователя становятся друзьями. Если отклонит, то пользователь, отправивший заявку, как и указано ранее, все равно остается подписчиком.
-    - Пользователи, являющиеся друзьями, также являются подписчиками друг на друга.
-    - Если один из друзей удаляет другого из друзей, то он также отписывается. Второй пользователь при этом должен остаться подписчиком.
-    - Друзья могут писать друг другу сообщения (реализация чата не нужна, пользователи могу запросить переписку с помощью запроса)
+1. **User Registration and Authentication**
+  - Users can create accounts, log in, and manage their profiles, with authentication ensured through Spring Security for data security.
+2. **Article Creation and Editing** 
+  - Users can create, edit, and delete articles using an advanced text editor that supports formatting and image insertion for enhanced content.
+3. **Comments and Feedback**
+  - Users can comment on articles, engage in discussions, and provide feedback, fostering an active community around technology-related topics.
+4. **Categories and Tags**
+  - A system of categories and tags helps users organize their articles, facilitating content discovery through easy categorization.
+5. **Search and Filtering**
+  - Users can easily find articles through keyword searches and utilize filters to refine results.
+6. **Security and Data Validation**
+  - The project ensures user data security through Spring Security mechanisms and robust data validation, providing a secure and stable web application.
+7. **Database Management with Liquibasе** 
+  - Liquibase enables version control for the database, allowing easy changes to the structure and management of data migrations.
+8. **Object Mapping with MapStruct**
+  - MapStruct efficiently transforms objects between application layers, simplifying code and enhancing readability.
+9. **PostgreSQL for Data Storage**
+  - The project utilizes PostgreSQL as a database, ensuring reliable and efficient data storage.
+10. **Testing with Testcontainers**
+  - Integration with Testcontainers enables effective testing using containers, enhancing predictability and portability in the testing process.
 
-4. Подписки и лента активности:
-    - Лента активности пользователя должна отображать последние посты от пользователей, на которых он подписан.
-    - Лента активности должна поддерживать пагинацию и сортировку по времени создания постов.
+The application aims to unite the technology community by providing a convenient and secure platform for knowledge and experience exchange.
 
-5. Обработка ошибок:
+## Technologies used
+- Spring(Core, Boot, Data, Web, Security, Test): 3.1.3
+- Hibernate: 6.2.7
+- PostgreSQL: 15.0
+- Gradle: 8.2.1
+- Liquibase: 4.20.0
+- Testcontainers: 1.17.6
+- MapStruct: 1.5.5
+- Lombok plugin: 8.1.0 
 
-    - API должно обрабатывать и возвращать понятные сообщения об ошибках при неправильном запросе или внутренних проблемах сервера.
-    - API должно осуществлять валидацию введенных данных и возвращать информативные сообщения при неправильном формате
+## Database diagram
 
-6. Документация API:
+![ERD diagram](https://github.com/seoLeir/blog/blob/master/blog-erd.png)
 
-- API должно быть хорошо задокументировано с использованием инструментов, таких как Swagger или OpenAPI.
+## Running the application
+There are several ways to run a Spring Boot application on your local machine. One way is to execute the `main` method in the `io.seoLeir.socialmedia.SocialMediaApplication` class from your IDE.
 
-- Документация должна содержать описания доступных эндпоинтов, форматы запросов и ответов, а также требования к аутентификации.
+or run this shell command in application console
+```shell
+./gradlew bootRun
+```
 
-Технологии и инструменты:
+## Copyright
 
-- Язык программирования: Java
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
-- Фреймворк: Spring (рекомендуется использовать Spring Boot)
-
-- База данных: Рекомендуется использовать PostgreSQL или MySQL
-
-- Аутентификация и авторизация: Spring Security
-
-- Документация API: Swagger или OpenAPI
-
-Ожидаемые результаты:
-
-- Разработанное RESTful API, способное выполнять указанные требования.
-
-- Код проекта, хорошо структурированный и документированный.
-
-- Тесты, покрывающие основные функциональные возможности API.
-
-- Документация API, описывающая доступные эндпоинты и их использование.
-
-Некоторые факторы, влияющие на оценку:
-
-- Полнота соблюдения требований;
-
-- Масштабируемость кода и соблюдение важных принципов разработки;
-
-- Читаемость кода.
+Released under the MIT License. See the [LICENSE](https://github.com/seoLeir/blog/blob/master/LICENCE.md) file.
