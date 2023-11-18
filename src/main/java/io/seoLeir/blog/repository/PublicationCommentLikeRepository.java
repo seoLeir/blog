@@ -15,7 +15,7 @@ public interface PublicationCommentLikeRepository extends JpaRepository<Publicat
             "select 1 from PublicationCommentLike pcl " +
             "where pcl.id.userUuid = :userUuid " +
             "and pcl.id.publicationCommentUuid = :commentUuid)")
-    boolean isUserLikedComment(@Param("userUuid") UUID userUuid, @Param("commentUuid") UUID commentUuid);
+    boolean isUserLikedOrDislikedComment(@Param("userUuid") UUID userUuid, @Param("commentUuid") UUID commentUuid);
 
     @Query("select new io.seoLeir.blog.dto.comment.CommentLikeAndDislikeDto(" +
             "pcl.id.publicationCommentUuid, " +
@@ -26,7 +26,7 @@ public interface PublicationCommentLikeRepository extends JpaRepository<Publicat
             "group by pcl.id.publicationCommentUuid")
     CommentLikeAndDislikeDto getPublicationCommentLikesAndDislikes(@Param("commentUuid") UUID commentUuid);
 
-    @Modifying(flushAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update PublicationCommentLike pcl set pcl.isLike = :status where pcl.id = :id")
     void updateLikeStatus(@Param("status") Boolean status, @Param("id") PublicationCommentsLikeId id);
 }
