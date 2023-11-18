@@ -44,12 +44,12 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     void deleteById(@Nullable @Param("id") UUID id);
 
     @Modifying(flushAutomatically = true)
-    @Query("update Publication p set p.viewCount = :newViewCount")
-    void updateViewCount(@Param("newViewCount") Long newViewCount);
+    @Query("update Publication p set p.viewCount = :newViewCount where p.id = :publicationUuid")
+    void updateViewCount(@Param("newViewCount") Long newViewCount, @Param("publicationUuid") UUID publicationUuid);
 
     @Modifying(flushAutomatically = true)
-    @Query("update Publication p set p.title = :tittle, p.text = :text where p.id = :id")
-    void updateTittleAndText(@Param("tittle") String tittle, @Param("text") String text, @Param("id") UUID id);
+    @Query("update Publication p set p.title = :title, p.text = :text where p.id = :id")
+    void updateTitleAndText(@Param("title") String title, @Param("text") String text, @Param("id") UUID id);
 
 
     /**
@@ -75,10 +75,10 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
                     get_publication_score(p.id) as score 
                     FROM publications p 
                     WHERE 
-                        p.created_date <= :startDate
+                        p.created_date <= :endDate
                     order by score desc
             """, nativeQuery = true)
-    Page<FeedDto> getTopPublicationsAllTime(@Param("startDate") Instant start, Pageable pageable);
+    Page<FeedDto> getTopPublicationsAllTime(@Param("endDate") Instant end, Pageable pageable);
 
     /**
     * Accepted
@@ -111,8 +111,8 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
                 p.id as publicationUuid, 
                 get_publication_score(p.id) as score 
             FROM publications p 
-            WHERE 
-                p.publication_text like CONCAT('%', :textToSearch, '%')
+            WHERE lower(p.publication_text) like lower(CONCAT('%', :textToSearch, '%'))
+                OR lower(p.title) like lower(CONCAT('%', :textToSearch, '%'))
             group by p.id 
             order by score desc 
     """, nativeQuery = true)
@@ -125,8 +125,10 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     @Query("""
        select new io.seoLeir.blog.entity.Publication(
      p.id, p.title, SUBSTRING(p.text, 1, 20), p.user, p.viewCount, p.timeToReadInMinutes, p.createdDate) 
-     from Publication p where p.text like CONCAT('%', :textToSearch, '%') OR p.title like CONCAT('%', :textToSearch, '%')
-     order by p.createdDate
+     from Publication p 
+     where lower(p.text) like lower(CONCAT('%', :textToSearch, '%')) 
+           OR lower(p.title) like lower(CONCAT('%', :textToSearch, '%'))
+     order by p.createdDate desc 
        """)
     Page<Publication> searchPublicationByCreatedDateOrder(@Param("textToSearch") String text, Pageable pageable);
 

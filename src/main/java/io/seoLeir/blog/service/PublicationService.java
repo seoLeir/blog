@@ -83,7 +83,7 @@ public class PublicationService {
                         "Publication with uuid:" + publicationUuid + "not found",
                         HttpStatusCode.valueOf(404)));
         Long newViewCount = publication.getViewCount() + 1;
-        publicationRepository.updateViewCount(newViewCount);
+        publicationRepository.updateViewCount(newViewCount, publication.getId());
         List<PublicationGetResponseDto> responseDtoList = publicationService.responseContentFromRawData(List.of(publication));
         return Optional.of(responseDtoList.get(0));
     }
@@ -130,7 +130,7 @@ public class PublicationService {
             throw new PublicationNotFoundException("Publication with id:" + id + "not found", HttpStatusCode.valueOf(404));
         if (authentication.getName().equals(publicationRepository.getPublicationPublisherNameByPublicationUuid(id))
                 || jwtTokenUtils.getRoles(token).contains("ROLE_ADMIN"))
-            publicationRepository.updateTittleAndText(dto.tittle(), dto.publicationText(), id);
+            publicationRepository.updateTitleAndText(dto.tittle(), dto.publicationText(), id);
         else
             throw new AccessDeniedException("Access denied to update the publication: " + id, HttpStatusCode.valueOf(403));
     }

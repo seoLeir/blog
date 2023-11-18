@@ -15,7 +15,6 @@ spring:
       enabled: true
       max-request-size: 200MB
       max-file-size: 215MB
-
   sql:
     init:
       mode: always
