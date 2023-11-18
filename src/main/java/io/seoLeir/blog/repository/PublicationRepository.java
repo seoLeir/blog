@@ -29,7 +29,6 @@ public interface PublicationRepository extends JpaRepository<Publication, UUID>,
     @Query("select p.user.username from Publication p where p.id = :id")
     String getPublicationPublisherNameByPublicationUuid(@Param("id") UUID publicationUuid);
 
-    @Query("select p from Publication p where p.id = :id")
     Optional<Publication> getPublicationById(@Param("id") UUID publicationUuid);
 
     @Query(value = """

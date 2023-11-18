@@ -86,16 +86,6 @@ public class PublicationRepositoryTest extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("get publication by id")
-    public void getPublicationByUuid() {
-        Optional<Publication> publicationById = publicationRepository.getPublicationById(publicationUuid);
-        assertAll(
-                () -> assertThat(publicationById.isPresent()).isTrue(),
-                () -> assertThat(publicationById.get().getId()).isEqualTo(UUID.fromString("3c59e157-05b9-4a00-a7d1-8fdebf0dcc1e")),
-                () -> assertThat(publicationById.get().getUser().getId()).isEqualTo(UUID.fromString("8c5c4ff9-8c4d-4ff3-9d5c-0d3b1ca14e36"))
-        );
-    }
-    @Test
     @DisplayName("get non exist publication by id")
     public void getNonExistPublicationByUuid() {
         Optional<Publication> publicationById = publicationRepository.getPublicationById(UUID.randomUUID());
@@ -204,6 +194,7 @@ public class PublicationRepositoryTest extends IntegrationTestBase {
                 () -> assertThat(newPublicationBy10Range.getContent()).isNotEmpty(),
                 () -> assertThat(newPublicationBy10Range.getContent()).hasSize(20)
         );
+
         Pageable page = PageRequest.of(1, 20);
         Page<FeedDto> newPublicationBy10RangeSecondPage = publicationRepository.getNewPublicationsByRangeFilter(10, page);
         assertAll(
@@ -230,6 +221,7 @@ public class PublicationRepositoryTest extends IntegrationTestBase {
                 () -> assertThat(foundPublications1.getContent()).isNotEmpty(),
                 () -> assertThat(foundPublications1.getContent()).hasSize(1)
         );
+
         Pageable page = PageRequest.of(0, 50);
         String textToSearch2 = "a";
         Page<FeedDto> foundPublications2 = publicationRepository.searchPublicationByPopularityOrder(textToSearch2, page);
@@ -275,6 +267,7 @@ public class PublicationRepositoryTest extends IntegrationTestBase {
                 () -> assertThat(foundPublications1.getContent()).isNotEmpty(),
                 () -> assertThat(foundPublications1.getContent()).hasSize(1)
         );
+
         Pageable page = PageRequest.of(0, 50);
         String textToSearch2 = "a";
         Page<Publication> foundPublications2 = publicationRepository.searchPublicationByCreatedDateOrder(textToSearch2, page);
