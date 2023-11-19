@@ -1,6 +1,6 @@
 package io.seoLeir.blog.repository;
 
-import io.seoLeir.blog.IntegrationTestBase;
+import io.seoLeir.blog.AbstractIntegrationTestBase;
 import io.seoLeir.blog.dto.publication.FeedDto;
 import io.seoLeir.blog.entity.Publication;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @Tag("integration")
 @ActiveProfiles("test")
 @RequiredArgsConstructor
-public class PublicationRepositoryTest extends IntegrationTestBase {
+public class PublicationRepositoryTestAbstract extends AbstractIntegrationTestBase {
 
     private final PublicationRepository publicationRepository;
     private static UUID user10Uuid;
