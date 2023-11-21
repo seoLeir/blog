@@ -1,6 +1,6 @@
 package io.seoLeir.blog.repository;
 
-import io.seoLeir.blog.IntegrationTestBase;
+import io.seoLeir.blog.AbstractRepositoryTestBase;
 import io.seoLeir.blog.dto.comment.CommentLikeAndDislikeDto;
 import io.seoLeir.blog.entity.PublicationCommentLike;
 import io.seoLeir.blog.entity.keys.PublicationCommentsLikeId;
@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("PublicationCommentLike repository integration tests")
-@Tag("integration")
+@Tags({@Tag("integration"), @Tag("slow")})
 @ActiveProfiles("test")
 @RequiredArgsConstructor
-class PublicationCommentLikeRepositoryTest extends IntegrationTestBase {
+class PublicationCommentLikeRepositoryTest extends AbstractRepositoryTestBase {
 
     private final PublicationCommentLikeRepository publicationCommentLikeRepository;
     private static UUID publicationCommentUuid;

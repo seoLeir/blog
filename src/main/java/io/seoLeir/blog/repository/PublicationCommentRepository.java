@@ -18,7 +18,7 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
         JpaSpecificationExecutor<PublicationComment> {
 
     @Query("select count(p.id) from PublicationComment p where p.user.id = :uuid")
-    Long getAllByUser(@Param("uuid") UUID userUuid);
+    Long getUserAllCommentsCount(@Param("uuid") UUID userUuid);
 
     @Query("select new io.seoLeir.blog.dto.comment.PublicationCommentGetResponseDto(" +
             "pc.id, " +

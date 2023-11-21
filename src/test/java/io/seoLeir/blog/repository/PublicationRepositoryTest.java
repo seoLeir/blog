@@ -1,13 +1,10 @@
 package io.seoLeir.blog.repository;
 
-import io.seoLeir.blog.AbstractIntegrationTestBase;
+import io.seoLeir.blog.AbstractRepositoryTestBase;
 import io.seoLeir.blog.dto.publication.FeedDto;
 import io.seoLeir.blog.entity.Publication;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +24,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Publication repository integration tests")
-@Tag("integration")
+@Tags({@Tag("integration"), @Tag("slow")})
 @ActiveProfiles("test")
 @RequiredArgsConstructor
-public class PublicationRepositoryTestAbstract extends AbstractIntegrationTestBase {
+public class PublicationRepositoryTest extends AbstractRepositoryTestBase {
 
     private final PublicationRepository publicationRepository;
     private static UUID user10Uuid;

@@ -41,7 +41,7 @@ public class PublicationCommentService {
 
     @Transactional(readOnly = true)
     public long getPublicationCommentsCountByUserUuid(UUID userUuid){
-        return commentRepository.getAllByUser(userUuid);
+        return commentRepository.getUserAllCommentsCount(userUuid);
     }
 
     @Transactional(readOnly = true)
