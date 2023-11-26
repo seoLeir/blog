@@ -1,9 +1,6 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: leir
-    password: 123
-    url: jdbc:postgresql://localhost:5432/blog
   jpa:
     open-in-view: false
     properties:
