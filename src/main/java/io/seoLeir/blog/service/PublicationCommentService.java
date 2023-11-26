@@ -67,7 +67,7 @@ public class PublicationCommentService {
         if (parentCommentUuid == null){
             publicationComment = new PublicationComment(UUID.randomUUID(), user, publication, dto.commentText());
         }else {
-            PublicationComment parentComment = commentRepository.findPublicationCommentByUuid(parentCommentUuid)
+            PublicationComment parentComment = commentRepository.getPublicationCommentByUuid(parentCommentUuid)
                     .orElseThrow(() -> new CommentNotFoundException("Parent comment not found: " + parentCommentUuid, HttpStatusCode.valueOf(404)));
             publicationComment = new PublicationComment(UUID.randomUUID(), user, publication, parentComment, dto.commentText());
         }
@@ -118,7 +118,7 @@ public class PublicationCommentService {
     @Transactional
     public void updateComment(UUID publicationUuid, CommentUpdateDto dto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PublicationComment publicationComment = commentRepository.getCommentByUserUuid(dto.commentUuid())
+        PublicationComment publicationComment = commentRepository.getPublicationCommentByUuid(dto.commentUuid())
                 .orElseThrow(() -> new CommentNotFoundException("", HttpStatusCode.valueOf(404)));
         if(!(publicationComment.getUser().getUsername().equals(authentication.getName()) ||
                 authentication.getAuthorities().contains("ROLE_ADMIN") ||
@@ -130,7 +130,7 @@ public class PublicationCommentService {
     @Transactional
     public void deleteComment(UUID publicationUuid, UUID commentUuid){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PublicationComment publicationComment = commentRepository.getCommentByUserUuid(commentUuid)
+        PublicationComment publicationComment = commentRepository.getPublicationCommentByUuid(commentUuid)
                 .orElseThrow(() -> new CommentNotFoundException("", HttpStatusCode.valueOf(404)));
         if(!(publicationComment.getUser().getUsername().equals(authentication.getName()) ||
                 authentication.getAuthorities().contains("ROLE_ADMIN") ||

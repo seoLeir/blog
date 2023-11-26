@@ -58,19 +58,15 @@ public interface PublicationCommentRepository extends JpaRepository<PublicationC
                                                            @Param("currentUser") UUID currentUser,
                                                            Pageable pageable);
 
-    @Modifying(flushAutomatically = true)
-    @Query("update PublicationComment pc set pc.commentMessage = :text where pc.id = :commentUuid")
+    @Modifying(clearAutomatically = true)
+    @Query("update PublicationComment set commentMessage = :text where id = :commentUuid")
     void updateCommentMessage(@Param("text") String textToUpdate, @Param("commentUuid") UUID commentUuid);
 
     @Query("select pc from PublicationComment pc where pc.id = :commentUuid")
-    Optional<PublicationComment> getCommentByUserUuid(@Param("commentUuid") UUID commentUuid);
+    Optional<PublicationComment> getPublicationCommentByUuid(@Param("commentUuid") UUID commentUuid);
 
-    @Modifying(flushAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from PublicationComment pc where pc.id = :id")
     void deleteByCommentUuid(@Param("id") UUID commentUuid);
-
-    @Query("select pc from PublicationComment pc where pc.id = :commentUuid")
-    Optional<PublicationComment> findPublicationCommentByUuid(@Param("commentUuid") UUID commentUuid);
-
 
 }
