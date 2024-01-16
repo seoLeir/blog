@@ -33,9 +33,7 @@ public class UserRestController {
     private final UserInfoService userInfoService;
     private final SubscriptionService subscriptionService;
 
-    @ApiResponses(
-            @ApiResponse(responseCode = "200")
-    )
+
     @GetMapping("/{username}/profile")
     public UserProfileResponseDto getUserProfile(@PathVariable("username") String username, Principal principal){
         return userInfoService.getUserProfile(username, principal.getName());

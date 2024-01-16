@@ -33,6 +33,17 @@ socialmedia:
 server:
   error:
     include-message: always
+  port: 8080
+  ssl:
+    key-store-type: "PKCS12"
+    key-store: "classpath:ssl/seoLeir_pkcs12.p12"
+    key-password: "123456"
+    key-alias: "seoLeir"
+    enabled: true
+    trust-store: "classpath:ssl/seoLeir_pkcs12.p12"
 springdoc:
   api-docs:
     enabled: true
+logging:
+  level:
+    root: debug

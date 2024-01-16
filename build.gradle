@@ -4,6 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
 	id 'io.freefair.lombok' version "$lombokPluginVersion"
 	id 'org.springdoc.openapi-gradle-plugin' version "$openApiGradlePluginVersion"
+
 }
 
 group = 'seoLeir.io'
@@ -44,6 +45,8 @@ dependencies {
 
 	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocOpenapiStarterWebmvcUi"
 
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
 	implementation "org.mapstruct:mapstruct:$mapstructVersion"
 	annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
@@ -59,8 +62,14 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
 
+
+
 }
 
 test{
 	useJUnitPlatform()
+}
+
+bootBuildImage{
+	imageName = "${project.name}:${project.version}"
 }

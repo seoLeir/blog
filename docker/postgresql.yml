@@ -1,0 +1,11 @@
+version: "3.2"
+services:
+  blog-postgresql:
+    networks:
+      - blog
+    image: 'postgres:15.2'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - '15432:5432'

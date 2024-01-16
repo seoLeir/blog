@@ -1,0 +1,51 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: "./docker/app.yml"
+      profiles:
+        active: prod
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 123
+    url: jdbc:postgresql://blog-postgresql:5432/postgres
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        ddl-auto: validate
+        show_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 200MB
+      max-file-size: 215MB
+  sql:
+    init:
+      mode: always
+  liquibase:
+    user: postgres
+    password: 123
+socialmedia:
+  jwt:
+    lifetime: 15m
+  "reading-speed": 250
+  files:
+    "basic-directory": D:\projects\blog\s3files
+    mime-type-to-valid-extension:
+      "[image/jpeg]": [".jpeg", ".jpg", ".jpe", ".JPEG", ".JPG", ".JPE", ".jfif", ".JFIF"]
+      "[image/png]": [".png", ".PNG"]
+      "[image/webp]": [".webp", ".WEBP"]
+      "[image/avif]" : [".avif", ".AVIF"]
+      "[image/gif]": [".gif"]
+server:
+  error:
+    include-message: always
+  port: 9000
+springdoc:
+  api-docs:
+    enabled: true
+logging:
+  level:
+    root: info
